@@ -36,6 +36,7 @@ export interface GitHubModel {
     [slug: string]: GitHubProject[]
   }
   displayProject?: GitHubProject
+  error?: Error
 }
 
 export default createModel<GitHubModel, ModelConfig<GitHubModel>>({
@@ -59,15 +60,25 @@ export default createModel<GitHubModel, ModelConfig<GitHubModel>>({
       repo: GitHubRepository
     }) {
       this.setLoading(true)
-      const projects = await fetchProjects(token, repo)
-      this.setProjects({ repo, projects })
-      this.setLoading(false)
+      try {
+        const projects = await fetchProjects(token, repo)
+        this.setProjects({ repo, projects })
+      } catch (error) {
+        this.setError(error)
+      } finally {
+        this.setLoading(false)
+      }
     },
     async fetchRepos(token: string) {
       this.setLoading(true)
-      const repositories = await fetchRepositories(token)
-      this.setRepos(repositories)
-      this.setLoading(false)
+      try {
+        const repositories = await fetchRepositories(token)
+        this.setRepos(repositories)
+      } catch (error) {
+        this.setError(error)
+      } finally {
+        this.setLoading(false)
+      }
     },
     async fetchColumnsAndCards({
       token,
@@ -77,12 +88,27 @@ export default createModel<GitHubModel, ModelConfig<GitHubModel>>({
       project: GitHubProject
     }) {
       this.setLoading(true)
-      const columns = await fetchProjectColumnsAndCards(token, project)
-      this.setColumns({ project, columns })
-      this.setLoading(false)
+      try {
+        const columns = await fetchProjectColumnsAndCards(token, project)
+        this.setColumns({ project, columns })
+      } catch (error) {
+        this.setError(error)
+      } finally {
+        this.setLoading(false)
+      }
     },
   }),
   reducers: {
+    setError: (state, error: Error | undefined) => {
+      if (error) {
+        // tslint:disable-next-line:no-console
+        console.error(error)
+      }
+      return {
+        ...state,
+        error,
+      }
+    },
     setRepos: (state, repositories) => {
       return {
         ...state,

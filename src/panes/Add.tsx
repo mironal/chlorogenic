@@ -42,6 +42,7 @@ class Pane extends React.PureComponent<AddProps, State> {
     if (!displayingProject) {
       return
     }
+    this.props.addProjectTab({ project: displayingProject, pos: "first" })
   }
 
   public render() {
@@ -106,8 +107,10 @@ const mapState = (state: RematchRootState<models>) => ({
 })
 
 const mapDispatch = ({
+  tab: { addProjectTab },
   github: { fetchRepos, fetchProjects, displayProject },
 }: RematchDispatch<models>) => ({
+  addProjectTab,
   fetchRepos,
   fetchProjects,
   displayProject,
@@ -115,9 +118,15 @@ const mapDispatch = ({
 
 const mergeProps = (
   props: ReturnType<typeof mapState>,
-  { fetchRepos, fetchProjects, displayProject }: ReturnType<typeof mapDispatch>,
+  {
+    fetchRepos,
+    fetchProjects,
+    displayProject,
+    ...rest
+  }: ReturnType<typeof mapDispatch>,
 ) => ({
   ...props,
+  ...rest,
   fetchRepos: () => fetchRepos(props.token),
   fetchProjects: (repo: GitHubRepository) =>
     fetchProjects({ token: props.token, repo }),

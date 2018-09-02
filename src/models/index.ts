@@ -1,3 +1,4 @@
 import auth from "./auth"
 import github from "./github"
-export default { auth, github }
+import tab from "./tab"
+export default { auth, github, tab }

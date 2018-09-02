@@ -85,12 +85,15 @@ export const fetchProjects = async (
   token: string,
   repo: GitHubRepository,
 ): Promise<GitHubProject[]> => {
+  const query = listRepoProjects(repo)
   const resp = await axios({
     ...conf(token),
-    data: { query: listRepoProjects(repo) },
+    data: { query },
   })
 
   if (Array.isArray(resp.data.errors)) {
+    // tslint:disable-next-line:no-console
+    console.error("error query", query)
     throw new Error(resp.data.errors[0].message)
   }
 

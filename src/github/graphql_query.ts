@@ -1,7 +1,7 @@
 import { GitHubProject, GitHubRepository } from "../models/github"
 
 export const listColumnsAndCards = (project: GitHubProject) => `query {
-  repository(owner: ${project.repo.owner} name:${project.repo.name}){
+  repository(owner: "${project.repo.owner}" name: "${project.repo.name}"){
     project(number:${project.number}) {
       columns(last: 100) {
         edges {
@@ -40,7 +40,7 @@ export const listColumnsAndCards = (project: GitHubProject) => `query {
 }`
 
 export const listRepoProjects = (repo: GitHubRepository) => `query {
-  repository(owner: ${repo.owner} name: ${repo.name}) {
+  repository(owner: "${repo.owner}" name: "${repo.name}") {
     projects(last: 100) {
       edges {
         node {
