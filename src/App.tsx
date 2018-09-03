@@ -3,10 +3,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Container, Message, Tab } from "semantic-ui-react"
 import "./App.css"
-import { createProjectSlug } from "./misc/project"
-import Add from "./panes/Add"
-import Auth from "./panes/Auth"
-import Project from "./panes/Project"
+import { mapPanes } from "./misc/panes"
 import { models } from "./store"
 
 type AppProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
@@ -25,17 +22,7 @@ class App extends React.Component<AppProps> {
   }
   public render() {
     const { error, user, tabs, tabIndex } = this.props
-    const panes = tabs.map(t => {
-      if (t === "AddPane") {
-        return { menuItem: "Add", render: () => <Add /> }
-      } else if (t === "AuthPane") {
-        return { menuItem: "Auth", render: () => <Auth /> }
-      }
-      return {
-        menuItem: `${createProjectSlug(t)}`,
-        render: () => <Project identifier={t} />,
-      }
-    })
+    const panes = mapPanes(tabs)
     const header = user ? <p>{user.displayName}</p> : null
 
     return (
