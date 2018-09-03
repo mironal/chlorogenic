@@ -18,12 +18,9 @@ class Pane extends React.PureComponent<PaneProps> {
   }
   public render() {
     const { project } = this.props
-    if (!project) {
-      return <PaneContainer>Loading...</PaneContainer>
-    }
     return (
-      <PaneContainer>
-        <Project project={project} />
+      <PaneContainer loading={!project}>
+        {project && <Project project={project} />}
       </PaneContainer>
     )
   }
