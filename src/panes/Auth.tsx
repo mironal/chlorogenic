@@ -1,8 +1,9 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
-import { Button, Container, Icon } from "semantic-ui-react"
+import { Button, Icon } from "semantic-ui-react"
 import { models } from "../store"
+import PaneContainer from "./PaneContainer"
 
 type AuthProps = Partial<ReturnType<typeof mapState>> &
   Partial<ReturnType<typeof mapDispatch>>
@@ -24,7 +25,7 @@ class Pane extends React.PureComponent<AuthProps> {
       </>
     )
 
-    return <Container textAlign="center">{Content}</Container>
+    return <PaneContainer textAlign="center">{Content}</PaneContainer>
   }
 }
 const mapState = (state: RematchRootState<models>) => ({

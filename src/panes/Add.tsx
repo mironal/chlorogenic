@@ -1,10 +1,11 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
-import { Button, Container, Divider, Dropdown } from "semantic-ui-react"
+import { Button, Divider, Dropdown } from "semantic-ui-react"
 import Project from "../components/Project"
 import { GitHubProject, GitHubRepository } from "../models/github"
 import { models } from "../store"
+import PaneContainer from "./PaneContainer"
 
 type AddProps = ReturnType<typeof mergeProps>
 interface State {
@@ -64,7 +65,7 @@ class Pane extends React.PureComponent<AddProps, State> {
     }))
 
     return (
-      <Container>
+      <PaneContainer>
         <h2>タブを追加</h2>
         <p>追加したいプロジェクトを選んでタブに追加してください.</p>
         <Dropdown
@@ -94,7 +95,7 @@ class Pane extends React.PureComponent<AddProps, State> {
         <Divider />
         <h2>Preview</h2>
         {displayingProject && <Project project={displayingProject} />}
-      </Container>
+      </PaneContainer>
     )
   }
 }
