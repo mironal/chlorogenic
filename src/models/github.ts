@@ -1,8 +1,7 @@
 import { createModel, ModelConfig } from "@rematch/core"
 import {
-  fetchProjectColumnsAndCards,
-  fetchProjects,
-  fetchRepositories,
+  fetchOrganizationProject,
+  fetchRepositoryProject,
 } from "../github/runner"
 
 export interface GitHubRepository {
@@ -23,152 +22,87 @@ export interface GitHubProjectColumn {
 }
 
 export interface GitHubProject {
-  repo: GitHubRepository
+  identifier: GithubProjectIdentifier
+  url: string
+  slug: string
   name: string
-  number: number
-  columns?: GitHubProjectColumn[]
+  columns: GitHubProjectColumn[]
 }
+
+export interface GitHubRepoProjectIdentifier {
+  repository: GitHubRepository
+  number: number
+}
+
+export interface GitHubOrgProjectIdentifier {
+  organization: string
+  number: number
+}
+
+const isGithubRepoProjectIdentifier = (
+  input: any,
+): input is GitHubRepoProjectIdentifier =>
+  typeof input === "object" &&
+  typeof input.number === "number" &&
+  typeof input.repository === "object" &&
+  typeof input.repository.owner === "string" &&
+  typeof input.repository.name === "string"
+
+const isGithubOrgProjectIdentifier = (
+  input: any,
+): input is GitHubOrgProjectIdentifier =>
+  typeof input === "object" &&
+  typeof input.number === "number" &&
+  typeof input.organization === "string"
+
+export type GithubProjectIdentifier =
+  | GitHubRepoProjectIdentifier
+  | GitHubOrgProjectIdentifier
 
 export interface GitHubModel {
   loading: boolean
-  repositories: { [slug: /* owner/name */ string]: GitHubRepository }
-  projects: {
-    [slug: string]: GitHubProject[]
-  }
-  displayProject?: GitHubProject
+  identifier?: GithubProjectIdentifier
+  project?: GitHubProject
   error?: Error
 }
 
 export default createModel<GitHubModel, ModelConfig<GitHubModel>>({
   effects: dispatch => ({
-    async displayProject({
+    async fetchProject({
       token,
-      project,
+      identifier,
     }: {
       token: string
-      project: GitHubProject
-    }) {
-      this.setDisplayProject(undefined)
-      await this.fetchColumnsAndCards({ token, project })
-      this.setDisplayProject(project)
-    },
-    async fetchProjects({
-      token,
-      repo,
-    }: {
-      token: string
-      repo: GitHubRepository
+      identifier: GithubProjectIdentifier
     }) {
       this.setLoading(true)
-      try {
-        const projects = await fetchProjects(token, repo)
-        this.setProjects({ repo, projects })
-      } catch (error) {
-        this.setError(error)
-      } finally {
-        this.setLoading(false)
+      if (isGithubRepoProjectIdentifier(identifier)) {
+        const project = await fetchRepositoryProject(token, identifier)
+        this.setProject(project)
+      } else if (isGithubOrgProjectIdentifier(identifier)) {
+        const project = await fetchOrganizationProject(token, identifier)
+        this.setProject(project)
       }
-    },
-    async fetchRepos(token: string) {
-      this.setLoading(true)
-      try {
-        const repositories = await fetchRepositories(token)
-        this.setRepos(repositories)
-      } catch (error) {
-        this.setError(error)
-      } finally {
-        this.setLoading(false)
-      }
-    },
-    async fetchColumnsAndCards({
-      token,
-      project,
-    }: {
-      token: string
-      project: GitHubProject
-    }) {
-      this.setLoading(true)
-      try {
-        const columns = await fetchProjectColumnsAndCards(token, project)
-        this.setColumns({ project, columns })
-      } catch (error) {
-        this.setError(error)
-      } finally {
-        this.setLoading(false)
-      }
+      this.setLoading(false)
     },
   }),
   reducers: {
-    setError: (state, error: Error | undefined) => {
-      if (error) {
-        // tslint:disable-next-line:no-console
-        console.error(error)
-      }
+    clear: state => {
       return {
-        ...state,
-        error,
-      }
-    },
-    setRepos: (state, repositories) => {
-      return {
-        ...state,
-        repositories,
-      }
-    },
-    setDisplayProject: (state, project: GitHubProject | undefined) => {
-      if (!project) {
-        return {
-          ...state,
-          displayProject: undefined,
-        }
-      }
-      const displayProject = state.projects[
-        `${project.repo.owner}/${project.repo.name}`
-      ].find(p => p.number === project.number)
-
-      return {
-        ...state,
-        displayProject,
-      }
-    },
-    setColumns: (
-      state,
-      {
-        project,
-        columns,
-      }: { project: GitHubProject; columns: GitHubProjectColumn[] },
-    ) => {
-      const { projects } = state
-      const pr = projects[`${project.repo.owner}/${project.repo.name}`].find(
-        p => p.number === project.number,
-      )
-      if (pr) {
-        pr.columns = columns
-      }
-
-      return { ...state }
-    },
-    setProjects: (
-      state,
-      { repo, projects }: { repo: GitHubRepository; projects: GitHubProject[] },
-    ) => {
-      const p = state.projects
-
-      return {
-        ...state,
-        projects: { ...p, ...{ [`${repo.owner}/${repo.name}`]: projects } },
+        loading: false,
       }
     },
     setLoading: (state, loading) => {
+      return { ...state, loading }
+    },
+    setProject: (state, project) => {
       return {
         ...state,
-        loading,
+        project,
       }
     },
   },
   state: {
     loading: false,
-    repositories: {},
-    projects: {},
   },
 })

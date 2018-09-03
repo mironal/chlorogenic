@@ -11,32 +11,29 @@ export interface TabModel {
 export default createModel<TabModel, ModelConfig<TabModel>>({
   effects: dispatch => ({}),
   reducers: {
-    selectTab: (state, index: number) => {
+    select: (state, index: number) => {
       return { ...state, activeTabIndex: index }
     },
-    addProjectTab: (
+    add: (
       state,
-      payload: { project: GitHubProject; pos: "first" | "last" | undefined },
+      payload: {
+        tab: GitHubProject | MetaTab
+        pos: number | undefined
+        select: boolean | undefined
+      },
     ) => {
-      const { project, pos } = payload
-
-      if (pos === "first") {
-        return { ...state, tabs: [project, ...state.tabs] }
+      const { tab, pos, select } = payload
+      if (!tab) {
+        throw new Error("Invalid payload. tab is required.")
       }
-      return { ...state, tabs: [...state.tabs, project] }
-    },
-    addMetaTab: (
-      state,
-      payload: { type: MetaTab; pos: "first" | "last" | undefined },
-    ) => {
-      const { type, pos } = payload
-      if (state.tabs.some(t => t === type)) {
-        throw new Error(`Invalid argument. ${type} tab already added.`)
+      const insertIndex = typeof pos === "number" ? pos : state.tabs.length
+      const tabs = [...state.tabs]
+      tabs.splice(insertIndex, 0, tab)
+      return {
+        ...state,
+        tabs,
+        activeTabIndex: select ? insertIndex : state.activeTabIndex,
       }
-      if (pos === "first") {
-        return { ...state, tabs: [type, ...state.tabs] }
-      }
-      return { ...state, tabs: [...state.tabs, type] }
     },
   },
   state: {

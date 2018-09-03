@@ -12,14 +12,14 @@ type AppProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
 class App extends React.Component<AppProps> {
   public componentDidMount() {
-    this.props.addMetaTab({ type: "AuthPane" })
+    this.props.add({ tab: "AuthPane" })
     if (this.props.authed) {
-      this.props.addMetaTab({ type: "AddPane", pos: "first" })
+      this.props.add({ tab: "AddPane", pos: 0, select: true })
     }
   }
   public componentDidUpdate(prevProps: AppProps) {
     if (!prevProps.authed && this.props.authed) {
-      this.props.addMetaTab({ type: "AddPane", pos: "first" })
+      this.props.add({ tab: "AddPane", pos: 0, select: true })
     }
   }
   public render() {
@@ -31,7 +31,7 @@ class App extends React.Component<AppProps> {
         return { menuItem: "Auth", render: () => <Auth /> }
       }
       return {
-        menuItem: `${t.repo.owner}/${t.repo.name}:${t.name}`,
+        menuItem: `${t.slug}`,
         render: () => <Project project={t} />,
       }
     })
@@ -44,7 +44,7 @@ class App extends React.Component<AppProps> {
         <Tab
           panes={panes}
           activeIndex={tabIndex}
-          onTabChange={(_, data) => this.props.selectTab(data.activeIndex)}
+          onTabChange={(_, data) => this.props.select(data.activeIndex)}
         />
       </Container>
     )
@@ -58,11 +58,9 @@ const mapState = (state: RematchRootState<models>) => ({
   authed: typeof state.auth.accessToken === "string",
   user: state.auth.user,
 })
-const mapDispatch = ({
-  tab: { addMetaTab, selectTab },
-}: RematchDispatch<models>) => ({
-  selectTab,
-  addMetaTab,
+const mapDispatch = ({ tab: { add, select } }: RematchDispatch<models>) => ({
+  select,
+  add,
 })
 
 export default connect(

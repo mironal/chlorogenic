@@ -1,100 +1,144 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
-import { Button, Divider, Dropdown } from "semantic-ui-react"
+import {
+  Button,
+  Dimmer,
+  Divider,
+  Icon,
+  Input,
+  Loader,
+  Message,
+  Segment,
+} from "semantic-ui-react"
 import Project from "../components/Project"
-import { GitHubProject, GitHubRepository } from "../models/github"
+import { GitHubProject, GithubProjectIdentifier } from "../models/github"
 import { models } from "../store"
 import PaneContainer from "./PaneContainer"
 
 type AddProps = ReturnType<typeof mergeProps>
 interface State {
-  repo?: GitHubRepository
+  input: string
+  inputError?: Error
 }
-// select owner -> select repo -> select project
+
+const parseUrlString = (input: string): GithubProjectIdentifier | undefined => {
+  const { pathname } = new URL(input)
+  // Remove the zero length string to ignore the leading or traling "/"
+  const tokens = pathname
+    .split("/")
+    .filter(t => t.length > 0 && t !== "orgs" && t !== "projects")
+  return parseShorthandString(tokens.join("/"))
+}
+
+const parseShorthandString = (
+  input: string,
+): GithubProjectIdentifier | undefined => {
+  const tokens = input.split("/").filter(t => t.length > 0)
+  if (tokens.length === 2) {
+    // maybe org project shorthand e.g. org/num
+    const [organization, num] = tokens
+    if (/^\d+$/.test(num)) {
+      return { organization, number: parseInt(num, 10) }
+    }
+  } else if (tokens.length === 3) {
+    // maybe repo project
+    const [owner, name, num] = tokens
+    if (/^\d+$/.test(num)) {
+      return { repository: { owner, name }, number: parseInt(num, 10) }
+    }
+  }
+  return undefined
+}
+
 class Pane extends React.PureComponent<AddProps, State> {
-  public state: State = {}
-  public componentDidMount() {
-    this.props.fetchRepos()
-  }
+  public state: State = { input: "" }
 
-  private onSelecrRepo = (slug: string) => {
-    const repo = this.props.repositories[slug]
-    this.setState({ repo })
-    this.props.fetchProjects(repo)
-  }
+  private onChangeInput = (input: string) =>
+    this.setState({ input, inputError: undefined })
 
-  private onSelectProject = (num: number) => {
-    const { repo } = this.state
-    if (!repo) {
+  private onClickPreview = () => {
+    this.setState({ inputError: undefined })
+    const { input } = this.state
+    if (input.length === 0) {
       return
     }
-    const project = (
-      this.props.projects[`${repo.owner}/${repo.name}`] || []
-    ).find(p => p.number === num)
 
-    if (project) {
-      this.props.displayProject(project)
+    try {
+      const identifier = parseShorthandString(input) || parseUrlString(input)
+      if (identifier) {
+        this.props.fetchProject(identifier)
+      }
+    } catch (inputError) {
+      this.setState({ inputError })
     }
   }
-
-  private onClickAdd = () => {
-    const { displayingProject } = this.props
-    if (!displayingProject) {
-      return
+  private onClickAddTab = () => {
+    const { displayProject } = this.props
+    if (displayProject) {
+      this.props.addProjectTab(displayProject)
+      this.props.clear()
     }
-    this.props.addProjectTab({ project: displayingProject, pos: "first" })
   }
 
   public render() {
-    const { repo } = this.state
-    const { displayingProject, projects, repositories } = this.props
-    const options = Object.keys(repositories).map(slug => ({
-      key: slug,
-      value: slug,
-      text: slug,
-    }))
+    const { loading, displayProject } = this.props
 
-    const projectOptions = (
-      (repo && projects[`${repo.owner}/${repo.name}`]) ||
-      []
-    ).map(p => ({
-      key: p.number,
-      value: p.number,
-      text: p.name,
-    }))
-
+    const Preview = displayProject && (
+      <>
+        <Divider />
+        <Segment>
+          <Button
+            primary={true}
+            disabled={!displayProject}
+            onClick={this.onClickAddTab}
+            icon={true}
+            labelPosition="left"
+          >
+            <Icon name="plus" />
+            Add this project to tab
+          </Button>
+          <h2>Preview</h2>
+          <Project project={displayProject} />
+        </Segment>
+      </>
+    )
     return (
       <PaneContainer>
         <h2>タブを追加</h2>
-        <p>追加したいプロジェクトを選んでタブに追加してください.</p>
-        <Dropdown
-          placeholder="Select repository"
-          options={options}
-          search={true}
-          fluid={true}
-          selection={true}
-          onChange={(_, data) => this.onSelecrRepo(data.value as string)}
-        />
-        <Divider />
-        {projectOptions.length > 0 && (
-          <Dropdown
-            placeholder="Select project"
-            options={projectOptions}
+        <Segment>
+          <Dimmer active={loading}>
+            <Loader />
+          </Dimmer>
+          <p>追加したいプロジェクトを選んでタブに追加してください.</p>
+          <Input
             fluid={true}
-            selection={true}
-            onChange={(_, data) => this.onSelectProject(data.value as number)}
+            disabled={loading}
+            error={!!this.state.inputError}
+            placeholder="Enter https://github.com/your/repo/projects/number"
+            action={
+              <Button primary={true} onClick={this.onClickPreview}>
+                Preview
+              </Button>
+            }
+            onChange={(_, { value }) => this.onChangeInput(value)}
+            onKeyPress={(ev: { which: number }) =>
+              ev.which === 13 && this.onClickPreview()
+            }
           />
-        )}
-        <Button
-          disabled={displayingProject === undefined}
-          onClick={this.onClickAdd}
-        >
-          追加する
-        </Button>
-        <Divider />
-        <h2>Preview</h2>
-        {displayingProject && <Project project={displayingProject} />}
+          <Message
+            hidden={!!displayProject}
+            positive={true}
+            header="Hint"
+            list={[
+              "https://github.com/{owner}/{name}/projects/{number}",
+              "https://github.com/orgs/{organization}/projects/{number}",
+              "{owner}/{name}/{number}",
+              `{organization}/{number}`,
+            ]}
+          />
+        </Segment>
+        {Preview}
       </PaneContainer>
     )
   }
@@ -102,37 +146,29 @@ class Pane extends React.PureComponent<AddProps, State> {
 
 const mapState = (state: RematchRootState<models>) => ({
   token: state.auth.accessToken || "",
-  repositories: state.github.repositories,
-  projects: state.github.projects,
-  displayingProject: state.github.displayProject,
+  loading: state.github.loading,
+  displayProject: state.github.project,
 })
 
 const mapDispatch = ({
-  tab: { addProjectTab },
-  github: { fetchRepos, fetchProjects, displayProject },
+  tab: { add },
+  github: { fetchProject, clear },
 }: RematchDispatch<models>) => ({
-  addProjectTab,
-  fetchRepos,
-  fetchProjects,
-  displayProject,
+  add,
+  clear,
+  fetchProject,
 })
 
 const mergeProps = (
-  props: ReturnType<typeof mapState>,
-  {
-    fetchRepos,
-    fetchProjects,
-    displayProject,
-    ...rest
-  }: ReturnType<typeof mapDispatch>,
+  { token, ...rest }: ReturnType<typeof mapState>,
+  { fetchProject, add, clear }: ReturnType<typeof mapDispatch>,
 ) => ({
-  ...props,
   ...rest,
-  fetchRepos: () => fetchRepos(props.token),
-  fetchProjects: (repo: GitHubRepository) =>
-    fetchProjects({ token: props.token, repo }),
-  displayProject: (project: GitHubProject) =>
-    displayProject({ token: props.token, project }),
+  clear,
+  addProjectTab: (project: GitHubProject) =>
+    add({ tab: project, pos: 0, select: true }),
+  fetchProject: (identifier: GithubProjectIdentifier) =>
+    fetchProject({ token, identifier }),
 })
 
 export default connect(

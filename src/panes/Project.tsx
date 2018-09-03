@@ -1,7 +1,7 @@
 import React from "react"
-import { Container } from "semantic-ui-react"
 import Project from "../components/Project"
 import { GitHubProject } from "../models/github"
+import PaneContainer from "./PaneContainer"
 
 export interface ProjectPaneProps {
   project: GitHubProject
@@ -10,9 +10,9 @@ export interface ProjectPaneProps {
 export default class extends React.PureComponent<ProjectPaneProps> {
   public render() {
     return (
-      <Container>
+      <PaneContainer>
         <Project project={this.props.project} />
-      </Container>
+      </PaneContainer>
     )
   }
 }
