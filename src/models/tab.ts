@@ -1,11 +1,11 @@
 import { createModel, ModelConfig } from "@rematch/core"
 
-import { GitHubProject } from "./github"
+import { GithubProjectIdentifier } from "./github"
 
 export type MetaTab = "AddPane" | "AuthPane"
 export interface TabModel {
   activeTabIndex: number
-  tabs: Array<GitHubProject | MetaTab>
+  tabs: Array<GithubProjectIdentifier | MetaTab>
 }
 
 export default createModel<TabModel, ModelConfig<TabModel>>({
@@ -17,7 +17,7 @@ export default createModel<TabModel, ModelConfig<TabModel>>({
     add: (
       state,
       payload: {
-        tab: GitHubProject | MetaTab
+        tab: GithubProjectIdentifier | MetaTab
         pos: number | undefined
         select: boolean | undefined
       },

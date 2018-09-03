@@ -39,7 +39,7 @@ export interface GitHubOrgProjectIdentifier {
   number: number
 }
 
-const isGithubRepoProjectIdentifier = (
+export const isGithubRepoProjectIdentifier = (
   input: any,
 ): input is GitHubRepoProjectIdentifier =>
   typeof input === "object" &&
@@ -48,7 +48,7 @@ const isGithubRepoProjectIdentifier = (
   typeof input.repository.owner === "string" &&
   typeof input.repository.name === "string"
 
-const isGithubOrgProjectIdentifier = (
+export const isGithubOrgProjectIdentifier = (
   input: any,
 ): input is GitHubOrgProjectIdentifier =>
   typeof input === "object" &&
@@ -75,6 +75,9 @@ export default createModel<GitHubModel, ModelConfig<GitHubModel>>({
       token: string
       identifier: GithubProjectIdentifier
     }) {
+      if (!token || !identifier) {
+        throw new Error("Invalid payload. token and identifier are required.")
+      }
       this.setLoading(true)
       if (isGithubRepoProjectIdentifier(identifier)) {
         const project = await fetchRepositoryProject(token, identifier)

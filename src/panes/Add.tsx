@@ -76,7 +76,7 @@ class Pane extends React.PureComponent<AddProps, State> {
   private onClickAddTab = () => {
     const { displayProject } = this.props
     if (displayProject) {
-      this.props.addProjectTab(displayProject)
+      this.props.addProjectTab(displayProject.identifier)
       this.props.clear()
     }
   }
@@ -165,7 +165,7 @@ const mergeProps = (
 ) => ({
   ...rest,
   clear,
-  addProjectTab: (project: GitHubProject) =>
+  addProjectTab: (project: GithubProjectIdentifier) =>
     add({ tab: project, pos: 0, select: true }),
   fetchProject: (identifier: GithubProjectIdentifier) =>
     fetchProject({ token, identifier }),
