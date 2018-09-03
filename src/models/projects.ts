@@ -1,9 +1,6 @@
 import { createModel, init, ModelConfig } from "@rematch/core"
-import github, {
-  GitHubProject,
-  GithubProjectIdentifier,
-  isGithubRepoProjectIdentifier,
-} from "./github"
+import { createProjectSlug } from "../misc/project"
+import github, { GitHubProject, GithubProjectIdentifier } from "./github"
 
 export interface ProjectsModel {
   projects: { [slug: string]: GitHubProject | undefined }
@@ -17,21 +14,11 @@ const githubRegistory: {
   [slug: string]: ReturnType<typeof createStore> | undefined
 } = {}
 
-// TODO split
-export const createSlug = (identifier: GithubProjectIdentifier): string => {
-  if (isGithubRepoProjectIdentifier(identifier)) {
-    return `${identifier.repository.owner}/${identifier.repository.owner}/${
-      identifier.number
-    }`
-  }
-  return `orgs/${identifier.organization}/${identifier.number}`
-}
-
 export default createModel<ProjectsModel, ModelConfig<ProjectsModel>>({
   effects: dispatch => ({
     async add(payload: { token: string; identifier: GithubProjectIdentifier }) {
       const { identifier } = payload
-      const slug = createSlug(identifier)
+      const slug = createProjectSlug(identifier)
 
       let store = githubRegistory[slug]
       if (!store) {
@@ -47,7 +34,7 @@ export default createModel<ProjectsModel, ModelConfig<ProjectsModel>>({
   }),
   reducers: {
     setProject: (state, project: GitHubProject) => {
-      const slug = createSlug(project.identifier)
+      const slug = createProjectSlug(project.identifier)
       const projects = { ...state.projects }
       projects[slug] = project
       return {

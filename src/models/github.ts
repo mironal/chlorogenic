@@ -3,6 +3,10 @@ import {
   fetchOrganizationProject,
   fetchRepositoryProject,
 } from "../github/runner"
+import {
+  isGithubOrgProjectIdentifier,
+  isGithubRepoProjectIdentifier,
+} from "../misc/project"
 
 export interface GitHubRepository {
   owner: string
@@ -38,22 +42,6 @@ export interface GitHubOrgProjectIdentifier {
   organization: string
   number: number
 }
-
-export const isGithubRepoProjectIdentifier = (
-  input: any,
-): input is GitHubRepoProjectIdentifier =>
-  typeof input === "object" &&
-  typeof input.number === "number" &&
-  typeof input.repository === "object" &&
-  typeof input.repository.owner === "string" &&
-  typeof input.repository.name === "string"
-
-export const isGithubOrgProjectIdentifier = (
-  input: any,
-): input is GitHubOrgProjectIdentifier =>
-  typeof input === "object" &&
-  typeof input.number === "number" &&
-  typeof input.organization === "string"
 
 export type GithubProjectIdentifier =
   | GitHubRepoProjectIdentifier

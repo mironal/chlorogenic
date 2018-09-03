@@ -2,8 +2,8 @@ import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
 import Project from "../components/Project"
+import { createProjectSlug } from "../misc/project"
 import { GithubProjectIdentifier } from "../models/github"
-import { createSlug } from "../models/projects"
 import { models } from "../store"
 import PaneContainer from "./PaneContainer"
 
@@ -35,7 +35,7 @@ const mapState = (
 ) => ({
   token: state.auth.accessToken || "",
   identifier,
-  project: state.projects.projects[createSlug(identifier)],
+  project: state.projects.projects[createProjectSlug(identifier)],
 })
 
 const mapDispatch = ({ projects: { add } }: RematchDispatch<models>) => ({

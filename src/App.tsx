@@ -3,7 +3,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Container, Message, Tab } from "semantic-ui-react"
 import "./App.css"
-import { createSlug } from "./models/projects"
+import { createProjectSlug } from "./misc/project"
 import Add from "./panes/Add"
 import Auth from "./panes/Auth"
 import Project from "./panes/Project"
@@ -32,7 +32,7 @@ class App extends React.Component<AppProps> {
         return { menuItem: "Auth", render: () => <Auth /> }
       }
       return {
-        menuItem: `${createSlug(t)}`,
+        menuItem: `${createProjectSlug(t)}`,
         render: () => <Project identifier={t} />,
       }
     })
