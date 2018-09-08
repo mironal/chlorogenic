@@ -1,32 +1,45 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
-import { Container, Segment } from "semantic-ui-react"
+import { Segment } from "semantic-ui-react"
+import styled from "styled-components"
 import Editor from "./Editor"
 
 import { GithubProjectIdentifier } from "../models/github"
 import { models } from "../store"
+import Project from "./Project"
 
-type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
-
-const createView = (identiifer: GithubProjectIdentifier | undefined) => {
-  if (identiifer) {
-    return <div>TODO: project view</div>
+const Segment2 = styled(Segment)`
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  &&& {
+    width: 100%;
   }
-  return <Editor />
+`
+
+type Props = ReturnType<typeof margeProps>
+
+const createView = (
+  identiifer: GithubProjectIdentifier | undefined,
+  onClickAdd: (identifer: GithubProjectIdentifier) => void,
+) => {
+  if (identiifer) {
+    return <Project identifer={identiifer} />
+  }
+  return <Editor onClickAdd={onClickAdd} />
 }
-const Board = ({ panel }: Props) => {
+
+const Board = ({ panel, onClickAdd }: Props) => {
   if (!panel) {
     return <p>loading</p>
   }
 
   return (
-    <Container>
-      <Segment.Group horizontal={true}>
-        <Segment>{createView(panel.left)}</Segment>
-        {panel.left && <Segment>{createView(panel.right)}</Segment>}
-      </Segment.Group>
-    </Container>
+    <Segment.Group horizontal={true}>
+      <Segment2>{createView(panel.left, onClickAdd)}</Segment2>
+      {panel.left && <Segment2>{createView(panel.right, onClickAdd)}</Segment2>}
+    </Segment.Group>
   )
 }
 
@@ -40,7 +53,29 @@ const mapDispatch = ({ dashboard: { replace } }: RematchDispatch<models>) => ({
   replace,
 })
 
+const margeProps = (
+  { panel }: ReturnType<typeof mapState>,
+  { replace }: ReturnType<typeof mapDispatch>,
+) => ({
+  panel,
+  replace,
+  onClickAdd: (identifer: GithubProjectIdentifier) => {
+    if (panel) {
+      let left = panel.left
+      let right = panel.right
+      if (!left) {
+        left = identifer
+      } else if (left && !right) {
+        right = identifer
+      }
+      const next = { ...panel, left, right }
+      replace({ from: panel, to: next })
+    }
+  },
+})
+
 export default connect(
   mapState,
   mapDispatch,
+  margeProps,
 )(Board)

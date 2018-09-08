@@ -13,10 +13,14 @@ import {
 } from "semantic-ui-react"
 import Project from "../components/Project"
 
-import { GitHubProject } from "../models/github"
+import { GitHubProject, GithubProjectIdentifier } from "../models/github"
 
 import { createProjectSlug } from "../misc/project"
 import { models } from "../store"
+
+export interface IncomingEditorProps {
+  onClickAdd(input: GithubProjectIdentifier): void
+}
 
 interface EditorProps {
   loading: boolean
@@ -24,13 +28,10 @@ interface EditorProps {
   error?: Error
   changeInput(input: string): void
   fetchProject(): void
+  onClickAdd(): void
 }
 
 class Editor extends React.PureComponent<EditorProps> {
-  private onClickAddTab = () => {
-    //
-  }
-
   private onClickLoad = () => {
     const { error, fetchProject } = this.props
     if (error) {
@@ -52,7 +53,7 @@ class Editor extends React.PureComponent<EditorProps> {
           <Button
             primary={true}
             disabled={!project}
-            onClick={this.onClickAddTab}
+            onClick={this.props.onClickAdd}
             icon={true}
             labelPosition="left"
           >
@@ -117,18 +118,27 @@ const mapState = ({ auth, projects, editor }: RematchRootState<models>) => {
   }
 }
 
-const mapDispatch = ({
-  projects: { fetchProject },
-  editor: { changeInput },
-}: RematchDispatch<models>) => ({ fetchProject, changeInput })
+const mapDispatch = (
+  {
+    projects: { fetchProject },
+    editor: { changeInput, reset },
+  }: RematchDispatch<models>,
+  { onClickAdd }: IncomingEditorProps,
+) => ({ fetchProject, changeInput, reset, onClickAdd })
 
 const margeProps = (
   { token, identifier, ...rest }: ReturnType<typeof mapState>,
-  { fetchProject, ...fns }: ReturnType<typeof mapDispatch>,
+  { fetchProject, reset, onClickAdd, ...fns }: ReturnType<typeof mapDispatch>,
 ) => {
   return {
     ...rest,
     ...fns,
+    onClickAdd: () => {
+      if (identifier) {
+        onClickAdd(identifier)
+        reset()
+      }
+    },
     fetchProject: () => identifier && fetchProject({ token, identifier }),
   }
 }

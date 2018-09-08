@@ -10,6 +10,9 @@ export interface EditorModel {
 
 export default createModel<EditorModel, ModelConfig<EditorModel>>({
   reducers: {
+    reset: () => {
+      return {}
+    },
     changeInput: (state, input: string) => {
       const result = parseProjectIdentiferString(input)
       const newState: EditorModel = {

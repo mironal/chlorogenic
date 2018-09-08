@@ -29,9 +29,7 @@ class App extends React.Component<AppProps> {
     return (
       <Container>
         {header}
-        <Segment>
-          <Dashboard />
-        </Segment>
+        <Dashboard />
       </Container>
     )
   }
