@@ -1,6 +1,6 @@
 import React from "react"
-import Column from "../components/Column"
 import { GitHubProject } from "../models/github"
+import Column from "./Column"
 
 export default ({ project }: { project: GitHubProject }) => (
   <>

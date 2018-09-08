@@ -1,5 +1,5 @@
 import auth from "./auth"
-import github from "./github"
+import dashboard from "./dashboard"
+import editor from "./editor"
 import projects from "./projects"
-import tab from "./tab"
-export default { auth, github, tab, projects }
+export default { auth, projects, dashboard, editor }

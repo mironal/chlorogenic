@@ -2,8 +2,14 @@ import { createModel, init, ModelConfig } from "@rematch/core"
 import { createProjectSlug } from "../misc/project"
 import github, { GitHubProject, GithubProjectIdentifier } from "./github"
 
+export interface ProjectConditionModel {
+  project?: GitHubProject
+  loading: boolean
+  error?: Error
+}
+
 export interface ProjectsModel {
-  projects: { [slug: string]: GitHubProject | undefined }
+  [slug: string]: ProjectConditionModel | undefined
 }
 
 const createStore = () => {
@@ -16,32 +22,44 @@ const githubRegistory: {
 
 export default createModel<ProjectsModel, ModelConfig<ProjectsModel>>({
   effects: dispatch => ({
-    async add(payload: { token: string; identifier: GithubProjectIdentifier }) {
+    async fetchProject(payload: {
+      token: string
+      identifier: GithubProjectIdentifier
+    }) {
       const { identifier } = payload
-      const slug = createProjectSlug(identifier)
 
+      const slug = createProjectSlug(identifier)
       let store = githubRegistory[slug]
       if (!store) {
         store = createStore()
         githubRegistory[slug] = store
       }
 
+      this.setProject({
+        slug,
+        project: undefined,
+        loading: true,
+        error: undefined,
+      })
       await store.dispatch.github.fetchProject(payload)
-      const project = store.getState().github.project
+      const gh = store.getState().github || {}
 
-      this.setProject(project)
+      this.setProject({ slug, ...gh })
     },
   }),
   reducers: {
-    setProject: (state, project: GitHubProject) => {
-      const slug = createProjectSlug(project.identifier)
-      const projects = { ...state.projects }
-      projects[slug] = project
-      return {
-        ...state,
-        projects,
+    setProject: (state, payload: ProjectConditionModel & { slug: string }) => {
+      const { slug } = payload
+      if (typeof slug !== "string") {
+        throw new Error("Invalid payload. slug is required.")
       }
+      const condition: ProjectConditionModel = {
+        loading: payload.loading,
+        project: payload.project,
+        error: payload.error,
+      }
+      return { ...state, [slug]: condition }
     },
   },
-  state: { projects: {} },
+  state: {},
 })

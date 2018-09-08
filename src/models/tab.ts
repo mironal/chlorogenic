@@ -3,41 +3,77 @@ import { createModel, ModelConfig } from "@rematch/core"
 import { GithubProjectIdentifier } from "./github"
 
 export type MetaTab = "AddPane" | "AuthPane"
+
 export interface TabModel {
   activeTabIndex: number
   tabs: Array<GithubProjectIdentifier | MetaTab>
 }
 
-export default createModel<TabModel, ModelConfig<TabModel>>({
+export interface SplitedTabModel {
+  left: TabModel
+  right: TabModel
+}
+
+export default createModel<SplitedTabModel, ModelConfig<SplitedTabModel>>({
   effects: dispatch => ({}),
   reducers: {
-    select: (state, index: number) => {
-      return { ...state, activeTabIndex: index }
+    select: (state, payload: { index: number; which: "left" | "right" }) => {
+      const { index, which } = payload
+      if (typeof index === "number" && typeof which === "string") {
+        return {
+          ...state,
+          [which]: { tabs: state[which].tabs, activeTabIndex: index },
+        }
+      }
+      throw new Error("Invalid payload. index and which are required.")
+    },
+    remove: (state, payload: { pos: number; which: "left" | "right" }) => {
+      const { pos, which } = payload
+      const tabs = [...state[which].tabs]
+      tabs.splice(pos, 1)
+
+      return {
+        ...state,
+        [which]: {
+          tabs,
+          activeTabIndex: Math.min(
+            state[which].activeTabIndex,
+            tabs.length - 1,
+          ),
+        },
+      }
+    },
+    replace: state => {
+      return { ...state }
     },
     add: (
       state,
       payload: {
         tab: GithubProjectIdentifier | MetaTab
+        which: "left" | "right"
         pos: number | undefined
         select: boolean | undefined
       },
     ) => {
-      const { tab, pos, select } = payload
-      if (!tab) {
-        throw new Error("Invalid payload. tab is required.")
+      const { tab, pos, select, which } = payload
+      if (!tab || !which) {
+        throw new Error("Invalid payload. tab and which are required.")
       }
-      const insertIndex = typeof pos === "number" ? pos : state.tabs.length
-      const tabs = [...state.tabs]
+      const insertIndex =
+        typeof pos === "number" ? pos : state[which].tabs.length
+      const tabs = [...state[which].tabs]
       tabs.splice(insertIndex, 0, tab)
       return {
         ...state,
-        tabs,
-        activeTabIndex: select ? insertIndex : state.activeTabIndex,
+        [which]: {
+          tabs,
+          activeTabIndex: select ? insertIndex : state[which].activeTabIndex,
+        },
       }
     },
   },
   state: {
-    activeTabIndex: 0,
-    tabs: [],
+    left: { activeTabIndex: 0, tabs: [] },
+    right: { activeTabIndex: 0, tabs: [] },
   },
 })

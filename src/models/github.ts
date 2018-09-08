@@ -3,6 +3,7 @@ import {
   fetchOrganizationProject,
   fetchRepositoryProject,
 } from "../github/runner"
+import { parseProjectIdentiferString } from "../misc/parser"
 import {
   isGithubOrgProjectIdentifier,
   isGithubRepoProjectIdentifier,
@@ -63,18 +64,26 @@ export default createModel<GitHubModel, ModelConfig<GitHubModel>>({
       token: string
       identifier: GithubProjectIdentifier
     }) {
-      if (!token || !identifier) {
-        throw new Error("Invalid payload. token and identifier are required.")
+      this.setError(undefined)
+      try {
+        if (!token || !identifier) {
+          throw new Error("Invalid payload. token and identifier are required.")
+        }
+
+        this.setLoading(true)
+        if (isGithubRepoProjectIdentifier(identifier)) {
+          const project = await fetchRepositoryProject(token, identifier)
+          this.setProject(project)
+        } else if (isGithubOrgProjectIdentifier(identifier)) {
+          const project = await fetchOrganizationProject(token, identifier)
+          this.setProject(project)
+        }
+
+        this.setLoading(false)
+      } catch (error) {
+        this.setLoading(false)
+        this.setError(error)
       }
-      this.setLoading(true)
-      if (isGithubRepoProjectIdentifier(identifier)) {
-        const project = await fetchRepositoryProject(token, identifier)
-        this.setProject(project)
-      } else if (isGithubOrgProjectIdentifier(identifier)) {
-        const project = await fetchOrganizationProject(token, identifier)
-        this.setProject(project)
-      }
-      this.setLoading(false)
     },
   }),
   reducers: {
@@ -82,6 +91,9 @@ export default createModel<GitHubModel, ModelConfig<GitHubModel>>({
       return {
         loading: false,
       }
+    },
+    setError: (state, error) => {
+      return { ...state, error }
     },
     setLoading: (state, loading) => {
       return { ...state, loading }
