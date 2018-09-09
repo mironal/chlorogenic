@@ -1,6 +1,8 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
+
 import React from "react"
 import { connect } from "react-redux"
+
 import { Container } from "semantic-ui-react"
 import Dashboard from "./containers/Dashboard"
 import Notification from "./containers/Notification"
@@ -21,7 +23,7 @@ const App = ({ authed, panelCount }: Props) => (
 )
 
 const mapState = (state: RematchRootState<models>) => ({
-  authed: typeof state.auth.accessToken === "string",
+  authed: typeof state.auth.token === "string",
   panelCount: state.dashboard.panels.length,
 })
 const mapDispatch = ({  }: RematchDispatch<models>) => ({})

@@ -42,6 +42,13 @@ export interface DashboardModel<
   panels: P[]
 }
 
+const initialState: DashboardModel = {
+  activePanelIndex: 0,
+  editing: false,
+  canSave: false,
+  panels: [],
+}
+
 /**
  * ## structire
  *
@@ -127,5 +134,6 @@ export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
       return { ...state, panels, canSave }
     },
   },
-  state: { panels: [], activePanelIndex: -1, editing: false, canSave: false },
+  subscriptions: {},
+  state: initialState,
 })

@@ -163,7 +163,7 @@ class Editor extends React.PureComponent<Props, State> {
 }
 
 const mapState = (
-  { auth: { accessToken }, projects }: RematchRootState<models>,
+  { auth: { token }, projects }: RematchRootState<models>,
   { panel }: SplitProjectPanelProps,
 ) => {
   let leftCondition
@@ -182,7 +182,7 @@ const mapState = (
     panel,
     leftCondition,
     rightCondition,
-    token: accessToken || "",
+    token: token || "",
   }
 }
 

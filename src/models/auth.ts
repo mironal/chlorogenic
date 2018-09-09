@@ -3,38 +3,9 @@ import firebase from "firebase/app"
 import "firebase/auth"
 
 export interface AuthModel {
-  accessToken?: string
+  token?: string
   loading: boolean
   user?: firebase.UserInfo
-}
-
-const restore = () => {
-  const str = localStorage.getItem("chlorogenic.auth")
-  if (typeof str === "string") {
-    try {
-      const { user, accessToken } = JSON.parse(str)
-      if (typeof user === "object" && typeof accessToken === "string") {
-        return { user, accessToken }
-      }
-    } catch (e) {
-      // tslint:disable-next-line:no-console
-      console.error(e)
-      localStorage.removeItem("chlorogenic.auth")
-    }
-  }
-  return null
-}
-
-let initialState: AuthModel = {
-  accessToken: undefined,
-  loading: false,
-  user: undefined,
-}
-
-const restored = restore()
-
-if (restored) {
-  initialState = { ...initialState, ...restored }
 }
 
 export default createModel<AuthModel, ModelConfig<AuthModel>>({
@@ -49,7 +20,7 @@ export default createModel<AuthModel, ModelConfig<AuthModel>>({
       this.setLoading(false)
 
       this.setAuth({
-        accessToken: (auth.credential as any).accessToken!,
+        token: (auth.credential as any).accessToken!,
         user: {
           displayName: auth.user!.displayName,
           email: auth.user!.email,
@@ -64,22 +35,16 @@ export default createModel<AuthModel, ModelConfig<AuthModel>>({
       this.setLoading(true)
       await firebase.auth().signOut()
 
-      this.setAuth({ accessToken: undefined, user: undefined })
-      localStorage.removeItem("chlorogenic.auth")
+      this.setAuth({ token: undefined, user: undefined })
+
       this.setLoading(false)
     },
   }),
   reducers: {
-    setAuth: (
-      state,
-      { user, accessToken }: Pick<AuthModel, "user" | "accessToken">,
-    ) => {
-      const store = { user, accessToken }
-      localStorage.setItem("chlorogenic.auth", JSON.stringify(store))
-
+    setAuth: (state, { user, token }: Pick<AuthModel, "user" | "token">) => {
       return {
         ...state,
-        accessToken,
+        token,
         loading: false,
         user,
       }
@@ -87,7 +52,7 @@ export default createModel<AuthModel, ModelConfig<AuthModel>>({
     setGitHubToken: (state, token) => {
       return {
         ...state,
-        githubToken: token,
+        token,
       }
     },
     setLoading: (state, loading) => {
@@ -97,5 +62,5 @@ export default createModel<AuthModel, ModelConfig<AuthModel>>({
       }
     },
   },
-  state: initialState,
+  state: { loading: false },
 })

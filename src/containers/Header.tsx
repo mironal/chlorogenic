@@ -19,9 +19,9 @@ const View = ({
     {user && <span>{user.displayName}</span>}
     {user && <Button onClick={addNew}>Add new Panel</Button>}
     {user &&
-      panels.length > 0 && (
+      panels.length >= 0 && (
         <Dropdown
-          defaultValue={active.uid}
+          defaultValue={active && active.uid}
           placeholder="Select panel"
           onChange={(e, { value }) => onChangePanel(`${value}`)}
           options={panels.map(p => ({
@@ -36,11 +36,11 @@ const View = ({
 )
 
 const mapState = ({
-  auth: { user, accessToken },
+  auth: { user, token },
   dashboard: { panels, activePanelIndex },
 }: RematchRootState<models>) => ({
   user,
-  token: accessToken || "",
+  token: token || "",
   panels,
   active: panels[activePanelIndex],
 })
