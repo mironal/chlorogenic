@@ -3,7 +3,6 @@ import {
   fetchOrganizationProject,
   fetchRepositoryProject,
 } from "../github/runner"
-import { parseProjectIdentiferString } from "../misc/parser"
 import {
   isGithubOrgProjectIdentifier,
   isGithubRepoProjectIdentifier,

@@ -36,6 +36,8 @@ export const createEmptyGithubProjectPanel = (
 export interface DashboardModel<
   P extends PanelModel = SplitGitHubProjectPanelModel
 > {
+  canSave: boolean
+  editing: boolean
   activePanelIndex: number
   panels: P[]
 }
@@ -58,11 +60,32 @@ export interface DashboardModel<
  */
 export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
   reducers: {
+    startEdit: state => {
+      return { ...state, editing: true }
+    },
+    endEdit: state => {
+      return { ...state, editing: false }
+    },
+
     setActive: (state, { uid }: { uid: string }) => {
       const activePanelIndex = state.panels.findIndex(p => p.uid === uid)
       return {
         ...state,
         activePanelIndex,
+      }
+    },
+    addNew: (state, { token }: { token: string }) => {
+      const panel = createEmptyGithubProjectPanel(token)
+      const panels = addItemAtIndexToArray(
+        state.panels,
+        state.panels.length,
+        panel,
+      )
+      return {
+        ...state,
+        activePanelIndex: state.panels.length,
+        editing: true,
+        panels,
       }
     },
     add: (
@@ -71,7 +94,11 @@ export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
         index,
         panel,
         active,
-      }: { index: number; panel: DashboardModel["panels"][0]; active: boolean },
+      }: {
+        index: number
+        panel: DashboardModel["panels"][0]
+        active: boolean
+      },
     ) => {
       if (!panel.uid) {
         throw new Error(`Invalid panel uid(${panel.uid}). uid is required.`)
@@ -95,8 +122,10 @@ export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
       }: { from: DashboardModel["panels"][0]; to: DashboardModel["panels"][0] },
     ) => {
       const panels = replaceItemInArray(state.panels, from, to)
-      return { ...state, panels }
+
+      const canSave = !!to.name && !!to.right && !!to.left
+      return { ...state, panels, canSave }
     },
   },
-  state: { panels: [], activePanelIndex: -1 },
+  state: { panels: [], activePanelIndex: -1, editing: false, canSave: false },
 })

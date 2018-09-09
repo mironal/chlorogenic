@@ -2,7 +2,6 @@ import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
 import { Button, Dropdown } from "semantic-ui-react"
-import { createEmptyGithubProjectPanel } from "../models/dashboard"
 import { models } from "../store"
 
 type Props = ReturnType<typeof margeProps>
@@ -48,30 +47,25 @@ const mapState = ({
 
 const mapDispatch = ({
   auth: { signOut, signIn },
-  dashboard: { add, setActive },
+  dashboard: { addNew, setActive },
 }: RematchDispatch<models>) => ({
   signOut,
   signIn,
-  add,
+  addNew,
   setActive,
 })
 
 const margeProps = (
   { token, panels, ...rest }: ReturnType<typeof mapState>,
-  { add, setActive, ...fns }: ReturnType<typeof mapDispatch>,
+  { setActive, addNew, ...fns }: ReturnType<typeof mapDispatch>,
 ) => ({
   ...rest,
   ...fns,
   panels,
-  addNew: () =>
-    add({
-      index: panels.length,
-      active: true,
-      panel: createEmptyGithubProjectPanel(token),
-    }),
   onChangePanel: (uid: string) => {
     setActive({ uid })
   },
+  addNew: () => addNew({ token }),
 })
 
 export default connect(
