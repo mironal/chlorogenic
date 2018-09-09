@@ -12,17 +12,16 @@ const CardContainer = styled.div`
   margin-bottom: 0em;
   margin: 0 0 0.2em 0.2em;
   border-radius: 3px;
-  max-width: 15%;
+  max-width: 10em;
+  max-height: 5em;
   padding: 0.2em;
+  overflow: hidden;
+  white-space: pre-line;
 `
 
 const IssueTitle = styled.h3`
   font-size: small;
   margin: 0;
-`
-
-const IssueAuther = styled.p`
-  font-weight: lighter;
 `
 
 export default ({ card }: CardProps) => {
@@ -34,7 +33,6 @@ export default ({ card }: CardProps) => {
             {card.issue.title}
           </a>
         </IssueTitle>
-        <IssueAuther>Auther {card.issue.auther}</IssueAuther>
       </CardContainer>
     )
   } else if (card.note) {
