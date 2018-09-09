@@ -11,19 +11,6 @@ import { models } from "./store"
 type AppProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
 class App extends React.Component<AppProps> {
-  public componentDidMount() {
-    const { token, panelCount } = this.props
-    if (token && panelCount === 0) {
-      this.props.add({
-        index: 0,
-        active: true,
-        panel: {
-          name: "First",
-          token,
-        },
-      })
-    }
-  }
   public render() {
     return (
       <Container>
@@ -40,9 +27,7 @@ const mapState = (state: RematchRootState<models>) => ({
   user: state.auth.user,
   panelCount: state.dashboard.panels.length,
 })
-const mapDispatch = ({ dashboard: { add } }: RematchDispatch<models>) => ({
-  add,
-})
+const mapDispatch = ({  }: RematchDispatch<models>) => ({})
 
 export default connect(
   mapState,
