@@ -6,8 +6,11 @@ import {
 } from "../misc/prelude"
 import { GithubProjectIdentifier } from "./github"
 
+import uuid from "uuid/v4"
+
 export interface PanelModel {
-  name: string
+  uid: string
+  name?: string
 }
 
 export interface GitHubAccessible {
@@ -22,11 +25,10 @@ export interface SplitGitHubProjectPanelModel
 }
 
 export const createEmptyGithubProjectPanel = (
-  name: string,
   token: string,
 ): SplitGitHubProjectPanelModel => {
   return {
-    name,
+    uid: uuid(),
     token,
   }
 }
@@ -34,6 +36,8 @@ export const createEmptyGithubProjectPanel = (
 export interface DashboardModel<
   P extends PanelModel = SplitGitHubProjectPanelModel
 > {
+  canSave: boolean
+  editing: boolean
   activePanelIndex: number
   panels: P[]
 }
@@ -56,12 +60,32 @@ export interface DashboardModel<
  */
 export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
   reducers: {
-    setActive: (state, { index }: { index: number }) => {
-      const active = state.panels[index]
+    startEdit: state => {
+      return { ...state, editing: true }
+    },
+    endEdit: state => {
+      return { ...state, editing: false }
+    },
 
+    setActive: (state, { uid }: { uid: string }) => {
+      const activePanelIndex = state.panels.findIndex(p => p.uid === uid)
       return {
         ...state,
-        active,
+        activePanelIndex,
+      }
+    },
+    addNew: (state, { token }: { token: string }) => {
+      const panel = createEmptyGithubProjectPanel(token)
+      const panels = addItemAtIndexToArray(
+        state.panels,
+        state.panels.length,
+        panel,
+      )
+      return {
+        ...state,
+        activePanelIndex: state.panels.length,
+        editing: true,
+        panels,
       }
     },
     add: (
@@ -70,8 +94,15 @@ export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
         index,
         panel,
         active,
-      }: { index: number; panel: DashboardModel["panels"][0]; active: boolean },
+      }: {
+        index: number
+        panel: DashboardModel["panels"][0]
+        active: boolean
+      },
     ) => {
+      if (!panel.uid) {
+        throw new Error(`Invalid panel uid(${panel.uid}). uid is required.`)
+      }
       const panels = addItemAtIndexToArray(state.panels, index, panel)
       return {
         ...state,
@@ -91,8 +122,10 @@ export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
       }: { from: DashboardModel["panels"][0]; to: DashboardModel["panels"][0] },
     ) => {
       const panels = replaceItemInArray(state.panels, from, to)
-      return { ...state, panels }
+
+      const canSave = !!to.name && !!to.right && !!to.left
+      return { ...state, panels, canSave }
     },
   },
-  state: { panels: [], activePanelIndex: -1 },
+  state: { panels: [], activePanelIndex: -1, editing: false, canSave: false },
 })
