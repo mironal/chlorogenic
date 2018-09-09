@@ -19,8 +19,8 @@ type Props = ReturnType<typeof margeProps>
 
 interface State {
   name: string
-  leftIdentifier: GithubProjectIdentifier | Error
-  rightIdentifier: GithubProjectIdentifier | Error
+  leftIdentifier?: GithubProjectIdentifier | Error
+  rightIdentifier?: GithubProjectIdentifier | Error
 }
 
 const stringifyProjectIdentifer = (
@@ -91,6 +91,7 @@ const EditorSegment = ({
 }
 
 class Editor extends React.PureComponent<Props, State> {
+  public state: State = { name: "" }
   public render() {
     const {
       leftCondition,
@@ -102,6 +103,7 @@ class Editor extends React.PureComponent<Props, State> {
     return (
       <>
         <Segment>
+          <h3>Edit panel name</h3>
           <Input
             defaultValue={name}
             placeholder="Enter panel name"
@@ -118,6 +120,9 @@ class Editor extends React.PureComponent<Props, State> {
             }
             onClickPreview={() => {
               const identifier = this.state.leftIdentifier
+              if (!identifier) {
+                return
+              }
               if (identifier instanceof Error) {
                 this.props.setErrorNotification(identifier)
               } else {
@@ -137,6 +142,9 @@ class Editor extends React.PureComponent<Props, State> {
             }
             onClickPreview={() => {
               const identifier = this.state.rightIdentifier
+              if (!identifier) {
+                return
+              }
               if (identifier instanceof Error) {
                 this.props.setErrorNotification(identifier)
               } else {

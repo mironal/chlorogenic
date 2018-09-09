@@ -19,28 +19,38 @@ export const Segment2 = styled(Segment)`
 
 type Props = ReturnType<typeof margeProps>
 
+const Top = styled.div`
+  display: flex;
+  flex-grow: 1;
+  margin-top: 1em;
+  padding-left: 2px;
+  padding-right: 2px;
+  & :last-child {
+    margin-left: auto;
+  }
+`
+
 const Board = ({ panel, editing, canSave, startEdit, endEdit }: Props) => {
   if (!panel) {
     throw new Error("panel is required.")
   }
 
-  if (editing) {
-    return (
-      <>
-        <Button disabled={!canSave} onClick={endEdit}>
-          Save
-        </Button>
-        <Editor panel={panel} />
-      </>
-    )
-  } else {
-    return (
-      <>
-        <Button onClick={startEdit}>Edit</Button>
-        <Viewer panel={panel} />
-      </>
-    )
-  }
+  const Content = editing ? <Editor panel={panel} /> : <Viewer panel={panel} />
+  return (
+    <Segment>
+      <Top>
+        <h2>{panel.name || "Untitled"}</h2>
+        {editing ? (
+          <Button disabled={!canSave} onClick={endEdit}>
+            Save
+          </Button>
+        ) : (
+          <Button onClick={startEdit}>Edit</Button>
+        )}
+      </Top>
+      {Content}
+    </Segment>
+  )
 }
 
 const mapState = ({

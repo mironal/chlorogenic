@@ -12,13 +12,10 @@ type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
 class View extends React.PureComponent<Props> {
   public render() {
-    const { panel, leftCondition, rightCondition } = this.props
+    const { leftCondition, rightCondition } = this.props
 
     return (
       <>
-        <Segment>
-          <h2>{panel.name}</h2>
-        </Segment>
         <Segment.Group horizontal={true}>
           <Segment2 loading={leftCondition.loading}>
             {leftCondition.project && (
