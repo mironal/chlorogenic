@@ -37,14 +37,14 @@ export interface DashboardModel<
   P extends PanelModel = SplitGitHubProjectPanelModel
 > {
   canSave: boolean
-  editing: boolean
+  boardState: "viewer" | "editor" | "manipulater"
   activePanelIndex: number
   panels: P[]
 }
 
 const initialState: DashboardModel = {
   activePanelIndex: 0,
-  editing: false,
+  boardState: "viewer",
   canSave: false,
   panels: [],
 }
@@ -67,13 +67,12 @@ const initialState: DashboardModel = {
  */
 export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
   reducers: {
-    startEdit: state => {
-      return { ...state, editing: true }
+    changeState: (
+      state,
+      { boardState }: { boardState: DashboardModel["boardState"] },
+    ) => {
+      return { ...state, boardState }
     },
-    endEdit: state => {
-      return { ...state, editing: false }
-    },
-
     setActive: (state, { uid }: { uid: string }) => {
       const activePanelIndex = state.panels.findIndex(p => p.uid === uid)
       return {

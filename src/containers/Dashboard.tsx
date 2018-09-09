@@ -5,6 +5,7 @@ import { Button, Segment } from "semantic-ui-react"
 import styled from "styled-components"
 import Editor from "./SplitProjectPanel/Editor"
 
+import { DashboardModel } from "../models/dashboard"
 import { models } from "../store"
 import Viewer from "./SplitProjectPanel/Viewer"
 
@@ -25,28 +26,44 @@ const Top = styled.div`
   margin-top: 1em;
   padding-left: 2px;
   padding-right: 2px;
-  & :last-child {
-    margin-left: auto;
+  & :first-child {
+    margin-right: auto;
   }
 `
 
-const Board = ({ panel, editing, canSave, startEdit, endEdit }: Props) => {
+const Board = ({ panel, boardState, canSave, changeState }: Props) => {
   if (!panel) {
     throw new Error("panel is required.")
   }
 
-  const Content = editing ? <Editor panel={panel} /> : <Viewer panel={panel} />
+  const Content =
+    boardState === "viewer" ? (
+      <Viewer panel={panel} />
+    ) : boardState === "editor" ? (
+      <Editor panel={panel} />
+    ) : (
+      <p>manipurator</p>
+    )
+
+  const Buttons =
+    boardState === "viewer" ? (
+      <>
+        <Button onClick={() => changeState("editor")}>Editor</Button>
+        <Button onClick={() => changeState("manipulater")}>Manipulator</Button>
+      </>
+    ) : boardState === "editor" ? (
+      <Button onClick={() => changeState("viewer")} disabled={!canSave}>
+        Save
+      </Button>
+    ) : (
+      <Button onClick={() => changeState("viewer")}>Viewer</Button>
+    )
+
   return (
     <Segment>
       <Top>
         <h2>{panel.name || "Untitled"}</h2>
-        {editing ? (
-          <Button disabled={!canSave} onClick={endEdit}>
-            Save
-          </Button>
-        ) : (
-          <Button onClick={startEdit}>Edit</Button>
-        )}
+        {Buttons}
       </Top>
       {Content}
     </Segment>
@@ -54,16 +71,19 @@ const Board = ({ panel, editing, canSave, startEdit, endEdit }: Props) => {
 }
 
 const mapState = ({
-  dashboard: { activePanelIndex, panels, editing, canSave },
+  dashboard: { activePanelIndex, panels, boardState, canSave },
 }: RematchRootState<models>) => ({
-  editing,
+  boardState,
   canSave,
   panel: activePanelIndex >= 0 ? panels[activePanelIndex] : undefined,
 })
 
 const mapDispatch = ({
-  dashboard: { startEdit, endEdit },
-}: RematchDispatch<models>) => ({ startEdit, endEdit })
+  dashboard: { changeState },
+}: RematchDispatch<models>) => ({
+  changeState: (boardState: DashboardModel["boardState"]) =>
+    changeState({ boardState }),
+})
 
 const margeProps = (
   { ...rest }: ReturnType<typeof mapState>,
