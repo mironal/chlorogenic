@@ -7,7 +7,14 @@ export interface PersistConfig {
   debug?: boolean
 }
 
+export let persistor: { purge(): void }
+
 const persistPlugin = (config: PersistConfig): Plugin => {
+  if (persistor) {
+    throw new Error(
+      "Currently only one instance of persistPlugin can be created.",
+    )
+  }
   const { whitelist, debug, version, delay } = config
   let merged = {}
   const rootKey = `persist:root-${version || -1}`
@@ -20,16 +27,32 @@ const persistPlugin = (config: PersistConfig): Plugin => {
         }
 
   let timerHandler: number | undefined
-  const lazyStore = () => {
+  const storeLazy = () => {
     if (timerHandler) {
       debugLog("persist:cancel:store")
       clearTimeout(timerHandler)
+      timerHandler = undefined
     }
 
     timerHandler = window.setTimeout(() => {
-      debugLog("persist:store")
-      localStorage.setItem(rootKey, JSON.stringify(merged))
+      storeImmediate()
     }, delay || 1000)
+  }
+  const storeImmediate = () => {
+    if (timerHandler) {
+      debugLog("persist:cancel:store")
+      clearTimeout(timerHandler)
+      timerHandler = undefined
+    }
+    debugLog("persist:store")
+    localStorage.setItem(rootKey, JSON.stringify(merged))
+  }
+
+  persistor = {
+    purge: () => {
+      localStorage.removeItem(rootKey)
+      merged = {}
+    },
   }
 
   return {
@@ -64,7 +87,7 @@ const persistPlugin = (config: PersistConfig): Plugin => {
           const after = store.getState()
           merged = { ...merged, [key]: after[key] || {} }
           debugLog("persist:schedule:store", key, after[key])
-          lazyStore()
+          storeLazy()
           return nextState
         }
       }

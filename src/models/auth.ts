@@ -1,6 +1,7 @@
 import { createModel, ModelConfig } from "@rematch/core"
 import firebase from "firebase/app"
 import "firebase/auth"
+import { persistor } from "../misc/persist"
 
 export interface AuthModel {
   token?: string
@@ -36,6 +37,7 @@ export default createModel<AuthModel, ModelConfig<AuthModel>>({
       await firebase.auth().signOut()
 
       this.setAuth({ token: undefined, user: undefined })
+      persistor.purge()
 
       this.setLoading(false)
     },
