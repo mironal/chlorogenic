@@ -11,6 +11,18 @@ import { Segment2 } from "../Dashboard"
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
 class View extends React.PureComponent<Props> {
+  public componentDidMount() {
+    const {
+      token,
+      panel: { left, right },
+      fetchProject,
+    } = this.props
+
+    if (left && right) {
+      fetchProject({ token, identifier: left })
+      fetchProject({ token, identifier: right })
+    }
+  }
   public render() {
     const { leftCondition, rightCondition } = this.props
 
@@ -34,7 +46,7 @@ class View extends React.PureComponent<Props> {
 }
 
 const mapState = (
-  { projects }: RematchRootState<models>,
+  { projects, auth: { token } }: RematchRootState<models>,
   { panel }: SplitProjectPanelProps,
 ) => {
   if (!panel.left || !panel.right) {
@@ -46,10 +58,11 @@ const mapState = (
   const rightCondition = projects[createProjectSlug(panel.right)] || {
     loading: false,
   }
-  return { leftCondition, rightCondition, panel }
+  return { leftCondition, rightCondition, panel, token: token || "" }
 }
-const mapDispatch = ({ projects: fetchProject }: RematchDispatch<models>) => ({
-  fetchProject,
+
+const mapDispatch = ({ projects }: RematchDispatch<models>) => ({
+  ...projects,
 })
 
 export default connect(

@@ -3,12 +3,12 @@ import { Plugin } from "@rematch/core"
 export interface PersistConfig {
   whitelist: string[]
   version?: number
-  throttle?: number
+  delay?: number
   debug?: boolean
 }
 
 const persistPlugin = (config: PersistConfig): Plugin => {
-  const { whitelist, debug, version } = config
+  const { whitelist, debug, version, delay } = config
   let merged = {}
   const rootKey = `persist:root-${version || -1}`
   const debugLog = debug
@@ -17,6 +17,19 @@ const persistPlugin = (config: PersistConfig): Plugin => {
     : (message?: any, ...optionalParams: any[]) => {
         /*NOOP*/
       }
+
+  let timerHandler: number | undefined
+  const lazyStore = () => {
+    if (timerHandler) {
+      debugLog("persist:cancel:store")
+      clearTimeout(timerHandler)
+    }
+
+    timerHandler = window.setTimeout(() => {
+      debugLog("persist:store")
+      localStorage.setItem(rootKey, JSON.stringify(merged))
+    }, delay || 1000)
+  }
 
   return {
     onInit() {
@@ -28,7 +41,7 @@ const persistPlugin = (config: PersistConfig): Plugin => {
           merged = obj
         } catch (e) {
           // tslint:disable-next-line:no-console
-          console.error("persist:onStoreCreated", e)
+          console.error("persist:restore", e)
           localStorage.removeItem(rootKey)
         }
       }
@@ -49,8 +62,8 @@ const persistPlugin = (config: PersistConfig): Plugin => {
           const nextState = next(action)
           const after = store.getState()
           merged = { ...merged, [key]: after[key] || {} }
-          localStorage.setItem(rootKey, JSON.stringify(merged))
-          debugLog("persist:store", key, after[key])
+          debugLog("persist:schedule:store", key, after[key])
+          lazyStore()
           return nextState
         }
       }
