@@ -22,22 +22,15 @@ export interface IncomingEditorProps {
   onClickAdd(input: GithubProjectIdentifier): void
 }
 
-interface EditorProps {
-  loading: boolean
-  project?: GitHubProject
-  error?: Error
-  changeInput(input: string): void
-  fetchProject(): void
-  onClickAdd(): void
-}
+type Props = ReturnType<typeof margeProps>
 
-class Editor extends React.PureComponent<EditorProps> {
+class Editor extends React.PureComponent<Props> {
   private onClickLoad = () => {
-    const { error, fetchProject } = this.props
+    const { error, fetchProject, setErrorNotification } = this.props
     if (error) {
       // tslint:disable-next-line:no-console
       console.error(error)
-      // TODO show error
+      setErrorNotification(error)
       return
     }
     fetchProject()
@@ -122,9 +115,17 @@ const mapDispatch = (
   {
     projects: { fetchProject },
     editor: { changeInput, reset },
+    notification: { setError: setErrorNotification, clear: clearNotifiacation },
   }: RematchDispatch<models>,
   { onClickAdd }: IncomingEditorProps,
-) => ({ fetchProject, changeInput, reset, onClickAdd })
+) => ({
+  fetchProject,
+  changeInput,
+  reset,
+  onClickAdd,
+  setErrorNotification,
+  clearNotifiacation,
+})
 
 const margeProps = (
   { token, identifier, ...rest }: ReturnType<typeof mapState>,

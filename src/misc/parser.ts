@@ -1,6 +1,6 @@
 import { GithubProjectIdentifier } from "../models/github"
+import CHLOError from "./CHLOError"
 
-// todo split other file
 const parseUrlString = (input: string): GithubProjectIdentifier | undefined => {
   const { pathname } = new URL(input)
   // Remove the zero length string to ignore the leading or traling "/"
@@ -35,14 +35,14 @@ export const parseProjectIdentiferString = (
 ): GithubProjectIdentifier | Error => {
   try {
     if (input === undefined) {
-      throw new Error("Invalid state. identiferString is required.")
+      throw new Error(`A input string is undefined.`)
     }
     const identifier = parseShorthandString(input) || parseUrlString(input)
     if (identifier) {
       return identifier
     }
-    return new Error(`Invalid format error: ${input}`)
+    return new Error(`Can not parse input string: ${input}`)
   } catch (e) {
-    return e
+    return new CHLOError("Invalid string format", e.message, e)
   }
 }
