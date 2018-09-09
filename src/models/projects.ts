@@ -1,15 +1,9 @@
 import { createModel, init, ModelConfig } from "@rematch/core"
 import { createProjectSlug } from "../misc/project"
-import github, { GitHubProject, GithubProjectIdentifier } from "./github"
-
-export interface ProjectConditionModel {
-  project?: GitHubProject
-  loading: boolean
-  error?: Error
-}
+import github, { GitHubModel, GithubProjectIdentifier } from "./github"
 
 export interface ProjectsModel {
-  [slug: string]: ProjectConditionModel | undefined
+  [slug: string]: GitHubModel | undefined
 }
 
 const createStore = () => {
@@ -35,30 +29,31 @@ export default createModel<ProjectsModel, ModelConfig<ProjectsModel>>({
         githubRegistory[slug] = store
       }
 
-      this.setProject({
+      const condition = store.getState().github
+
+      this.updateModel({
         slug,
-        project: undefined,
-        loading: true,
-        error: undefined,
+        ...condition,
       })
       await store.dispatch.github.fetchProject(payload)
       const gh = store.getState().github || {}
 
-      this.setProject({ slug, ...gh })
+      this.updateModel({ slug, ...gh })
     },
   }),
   reducers: {
-    setProject: (state, payload: ProjectConditionModel & { slug: string }) => {
+    updateModel: (state, payload: GitHubModel & { slug: string }) => {
       const { slug } = payload
       if (typeof slug !== "string") {
         throw new Error("Invalid payload. slug is required.")
       }
-      const condition: ProjectConditionModel = {
+      const model: GitHubModel = {
         loading: payload.loading,
         project: payload.project,
         error: payload.error,
+        identifier: payload.identifier,
       }
-      return { ...state, [slug]: condition }
+      return { ...state, [slug]: model }
     },
   },
   state: {},

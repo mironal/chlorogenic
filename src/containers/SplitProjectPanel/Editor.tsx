@@ -10,8 +10,7 @@ import {
   createProjectSlug,
   isGithubOrgProjectIdentifier,
 } from "../../misc/project"
-import { GithubProjectIdentifier } from "../../models/github"
-import { ProjectConditionModel } from "../../models/projects"
+import { GitHubModel, GithubProjectIdentifier } from "../../models/github"
 import { models } from "../../store"
 import { Segment2 } from "../Dashboard"
 
@@ -41,7 +40,7 @@ const EditorSegment = ({
   onClickPreview,
 }: {
   identifer?: GithubProjectIdentifier
-  condition?: ProjectConditionModel
+  condition?: GitHubModel
   onChangeInput(value: string): void
   onClickPreview(): void
 }) => {
