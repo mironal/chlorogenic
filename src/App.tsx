@@ -8,23 +8,20 @@ import Notification from "./containers/Notification"
 import Header from "./containers/Header"
 import { models } from "./store"
 
-type AppProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
+type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
-class App extends React.Component<AppProps> {
-  public render() {
-    return (
-      <Container>
-        <Header />
-        <Notification />
-        <Dashboard />
-      </Container>
-    )
-  }
-}
+const App = ({ authed, panelCount }: Props) => (
+  <Container>
+    <Header />
+    <Notification />
+    {!authed && <p>Please Sign in with GitHub</p>}
+    {authed && panelCount === 0 && <p>Please Add new Panel</p>}
+    {authed && panelCount > 0 && <Dashboard />}
+  </Container>
+)
 
 const mapState = (state: RematchRootState<models>) => ({
-  token: state.auth.accessToken,
-  user: state.auth.user,
+  authed: typeof state.auth.accessToken === "string",
   panelCount: state.dashboard.panels.length,
 })
 const mapDispatch = ({  }: RematchDispatch<models>) => ({})

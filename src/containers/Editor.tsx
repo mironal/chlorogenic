@@ -51,7 +51,7 @@ class Editor extends React.PureComponent<Props> {
             labelPosition="left"
           >
             <Icon name="plus" />
-            Add this project to tab
+            Select this project
           </Button>
           <h2>Preview</h2>
           <Project project={project} />
@@ -60,12 +60,12 @@ class Editor extends React.PureComponent<Props> {
     )
     return (
       <>
-        <h2>タブを追加</h2>
+        <h2>Select project</h2>
         <Segment>
           <Dimmer active={loading}>
             <Loader />
           </Dimmer>
-          <p>追加したいプロジェクトを選んでタブに追加してください.</p>
+          <p>Please enter your project url and click Preview.</p>
           <Input
             fluid={true}
             disabled={loading}
@@ -86,10 +86,10 @@ class Editor extends React.PureComponent<Props> {
             positive={true}
             header="Hint"
             list={[
-              "https://github.com/{owner}/{name}/projects/{number}",
-              "https://github.com/orgs/{organization}/projects/{number}",
               "{owner}/{name}/{number}",
               `{organization}/{number}`,
+              "https://github.com/{owner}/{name}/projects/{number}",
+              "https://github.com/orgs/{organization}/projects/{number}",
             ]}
           />
         </Segment>
