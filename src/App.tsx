@@ -1,10 +1,11 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
-import { Container, Message, Segment } from "semantic-ui-react"
+import { Container } from "semantic-ui-react"
 import Dashboard from "./containers/Dashboard"
 import Notification from "./containers/Notification"
 
+import Header from "./containers/Header"
 import { models } from "./store"
 
 type AppProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
@@ -26,6 +27,7 @@ class App extends React.Component<AppProps> {
   public render() {
     return (
       <Container>
+        <Header />
         <Notification />
         <Dashboard />
       </Container>
