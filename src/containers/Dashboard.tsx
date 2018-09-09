@@ -7,6 +7,7 @@ import Editor from "./SplitProjectPanel/Editor"
 
 import { DashboardModel } from "../models/dashboard"
 import { models } from "../store"
+import Manipulater from "./SplitProjectPanel/Manipulater"
 import Viewer from "./SplitProjectPanel/Viewer"
 
 export const Segment2 = styled(Segment)`
@@ -42,7 +43,7 @@ const Board = ({ panel, boardState, canSave, changeState }: Props) => {
     ) : boardState === "editor" ? (
       <Editor panel={panel} />
     ) : (
-      <p>manipurator</p>
+      <Manipulater panel={panel} />
     )
 
   const Buttons =
