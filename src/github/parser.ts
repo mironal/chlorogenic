@@ -12,6 +12,7 @@ export const parseProjectColumns = (project: any): GitHubProjectColumn[] => {
             databaseId: number
             note?: string
             content?: {
+              id: string
               title: string
               number: number
               url: string
@@ -29,6 +30,7 @@ export const parseProjectColumns = (project: any): GitHubProjectColumn[] => {
           id: c.node.id,
           note: c.node.note,
           issue: {
+            id: c.node.content.id,
             title: c.node.content.title,
             number: c.node.content.number,
             url: c.node.content.url,

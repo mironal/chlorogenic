@@ -23,6 +23,7 @@ export const organizationProjectQuery = ({
                   note
                   content {
                     ... on Issue {
+                      id
                       number
                       title
                       author {
@@ -31,6 +32,7 @@ export const organizationProjectQuery = ({
                       url
                     }
                     ... on PullRequest {
+                      id
                       number
                       title
                       author {
@@ -70,6 +72,7 @@ export const repositoryProjectQuery = ({
                   note
                   content {
                     ... on Issue {
+                      id
                       number
                       title
                       author {
@@ -78,6 +81,7 @@ export const repositoryProjectQuery = ({
                       url
                     }
                     ... on PullRequest {
+                      id
                       number
                       title
                       author {
@@ -92,6 +96,21 @@ export const repositoryProjectQuery = ({
           }
         }
       }
+    }
+  }
+}
+`
+
+export const addProjectCardQuery = (
+  projectColumnId: string,
+  contentId: string,
+) => `mutation {
+  addProjectCard (input: {
+    projectColumnId: "${projectColumnId}",
+    contentId:"${contentId}"
+  }) {
+    projectColumn {
+      name
     }
   }
 }

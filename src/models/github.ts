@@ -16,7 +16,13 @@ export interface GitHubRepository {
 export interface GitHubProjectCard {
   id: string
   note?: string
-  issue?: { title: string; number: number; auther: string; url: string }
+  issue?: {
+    id: string
+    title: string
+    number: number
+    auther: string
+    url: string
+  }
 }
 
 export interface GitHubProjectColumn {
