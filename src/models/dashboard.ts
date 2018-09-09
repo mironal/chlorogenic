@@ -6,8 +6,11 @@ import {
 } from "../misc/prelude"
 import { GithubProjectIdentifier } from "./github"
 
+import uuid from "uuid/v4"
+
 export interface PanelModel {
-  name: string
+  uid: string
+  name?: string
 }
 
 export interface GitHubAccessible {
@@ -22,11 +25,10 @@ export interface SplitGitHubProjectPanelModel
 }
 
 export const createEmptyGithubProjectPanel = (
-  name: string,
   token: string,
 ): SplitGitHubProjectPanelModel => {
   return {
-    name,
+    uid: uuid(),
     token,
   }
 }
@@ -56,12 +58,11 @@ export interface DashboardModel<
  */
 export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
   reducers: {
-    setActive: (state, { index }: { index: number }) => {
-      const active = state.panels[index]
-
+    setActive: (state, { uid }: { uid: string }) => {
+      const activePanelIndex = state.panels.findIndex(p => p.uid === uid)
       return {
         ...state,
-        active,
+        activePanelIndex,
       }
     },
     add: (
@@ -72,6 +73,9 @@ export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
         active,
       }: { index: number; panel: DashboardModel["panels"][0]; active: boolean },
     ) => {
+      if (!panel.uid) {
+        throw new Error(`Invalid panel uid(${panel.uid}). uid is required.`)
+      }
       const panels = addItemAtIndexToArray(state.panels, index, panel)
       return {
         ...state,

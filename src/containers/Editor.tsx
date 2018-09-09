@@ -19,7 +19,9 @@ import { createProjectSlug } from "../misc/project"
 import { models } from "../store"
 
 export interface IncomingEditorProps {
+  defaultPanelName?: string
   onClickAdd(input: GithubProjectIdentifier): void
+  saveName(name: string): void
 }
 
 type Props = ReturnType<typeof margeProps>
@@ -28,16 +30,22 @@ class Editor extends React.PureComponent<Props> {
   private onClickLoad = () => {
     const { error, fetchProject, setErrorNotification } = this.props
     if (error) {
-      // tslint:disable-next-line:no-console
-      console.error(error)
       setErrorNotification(error)
       return
     }
     fetchProject()
   }
 
+  public componentDidMount() {
+    const { reset, defaultPanelName, changeName } = this.props
+    reset()
+    if (defaultPanelName) {
+      changeName(defaultPanelName)
+    }
+  }
+
   public render() {
-    const { loading, project } = this.props
+    const { loading, project, changeName, saveName, name } = this.props
 
     const Preview = project && (
       <>
@@ -60,8 +68,16 @@ class Editor extends React.PureComponent<Props> {
     )
     return (
       <>
-        <h2>Select project</h2>
         <Segment>
+          <Input
+            defaultValue={name}
+            placeholder="Enter panel name"
+            onChange={(_, { value }) => changeName(value)}
+            onBlur={() => name && saveName(name)}
+          />
+        </Segment>
+        <Segment>
+          <h3>Select project</h3>
           <Dimmer active={loading}>
             <Loader />
           </Dimmer>
@@ -114,17 +130,18 @@ const mapState = ({ auth, projects, editor }: RematchRootState<models>) => {
 const mapDispatch = (
   {
     projects: { fetchProject },
-    editor: { changeInput, reset },
+    editor: { changeInput, changeName, reset },
     notification: { setError: setErrorNotification, clear: clearNotifiacation },
   }: RematchDispatch<models>,
-  { onClickAdd }: IncomingEditorProps,
+  ownProps: IncomingEditorProps,
 ) => ({
   fetchProject,
   changeInput,
+  changeName,
   reset,
-  onClickAdd,
   setErrorNotification,
   clearNotifiacation,
+  ...ownProps,
 })
 
 const margeProps = (
@@ -134,12 +151,8 @@ const margeProps = (
   return {
     ...rest,
     ...fns,
-    onClickAdd: () => {
-      if (identifier) {
-        onClickAdd(identifier)
-        reset()
-      }
-    },
+    reset,
+    onClickAdd: () => identifier && onClickAdd(identifier),
     fetchProject: () => identifier && fetchProject({ token, identifier }),
   }
 }

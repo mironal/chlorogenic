@@ -6,12 +6,17 @@ export interface EditorModel {
   identifier?: GithubProjectIdentifier
   input?: string
   error?: Error
+
+  name?: string
 }
 
 export default createModel<EditorModel, ModelConfig<EditorModel>>({
   reducers: {
     reset: () => {
       return {}
+    },
+    changeName: (state, name: string) => {
+      return { ...state, name }
     },
     changeInput: (state, input: string) => {
       const result = parseProjectIdentiferString(input)

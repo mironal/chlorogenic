@@ -22,23 +22,22 @@ type Props = ReturnType<typeof margeProps>
 
 const createView = (
   identiifer: GithubProjectIdentifier | undefined,
-  onClickAdd: (identifer: GithubProjectIdentifier) => void,
+  props: Pick<Props, "onClickAdd" | "saveName" | "defaultPanelName">,
 ) => {
   if (identiifer) {
     return <Project identifer={identiifer} />
   }
-  return <Editor onClickAdd={onClickAdd} />
+  return <Editor {...props} />
 }
 
-const Board = ({ panel, onClickAdd }: Props) => {
+const Board = ({ panel, ...rest }: Props) => {
   if (!panel) {
-    return <p>loading</p>
+    throw new Error("panel is required.")
   }
-
   return (
     <Segment.Group horizontal={true}>
-      <Segment2>{createView(panel.left, onClickAdd)}</Segment2>
-      {panel.left && <Segment2>{createView(panel.right, onClickAdd)}</Segment2>}
+      <Segment2>{createView(panel.left, rest)}</Segment2>
+      {panel.left && <Segment2>{createView(panel.right, rest)}</Segment2>}
     </Segment.Group>
   )
 }
@@ -58,7 +57,7 @@ const margeProps = (
   { replace }: ReturnType<typeof mapDispatch>,
 ) => ({
   panel,
-  replace,
+  defaultPanelName: panel ? panel.name : undefined,
   onClickAdd: (identifer: GithubProjectIdentifier) => {
     if (panel) {
       let left = panel.left
@@ -69,6 +68,12 @@ const margeProps = (
         right = identifer
       }
       const next = { ...panel, left, right }
+      replace({ from: panel, to: next })
+    }
+  },
+  saveName: (name: string) => {
+    if (panel) {
+      const next = { ...panel, name }
       replace({ from: panel, to: next })
     }
   },
