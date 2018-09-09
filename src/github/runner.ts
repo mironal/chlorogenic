@@ -1,5 +1,6 @@
 import axios from "axios"
 import {
+  addProjectCardQuery,
   organizationProjectQuery,
   repositoryProjectQuery,
 } from "../github/graphql_query"
@@ -18,6 +19,19 @@ const conf = (token: string) => ({
   },
   method: "POST",
 })
+
+export const addProjectCard = async (
+  token: string,
+  projectColumnId: string,
+  contentId: string,
+): Promise<void> => {
+  const query = addProjectCardQuery(projectColumnId, contentId)
+
+  const resp = await axios({ ...conf(token), data: { query } })
+  // tslint:disable-next-line:no-console
+  console.log(resp)
+  return Promise.resolve()
+}
 
 export const fetchRepositoryProject = async (
   token: string,

@@ -4,6 +4,7 @@ import { connect } from "react-redux"
 import { Button, Dropdown, Icon, Segment } from "semantic-ui-react"
 import { SplitProjectPanelProps } from "."
 import Column from "../../components/Column"
+import { addProjectCard } from "../../github/runner"
 import { createProjectSlug } from "../../misc/project"
 import {
   GitHubProject,
@@ -59,18 +60,53 @@ class View extends React.PureComponent<Props, State> {
     }
   }
   public render() {
-    const { leftProject, rightProject } = this.props
+    const {
+      panel,
+      leftProject,
+      rightProject,
+      setError,
+      setSuccess,
+      fetchProject,
+    } = this.props
     const { leftColumnId, rightColumnId } = this.state
     return (
       <Segment.Group horizontal={true}>
         <Segment2 loading={leftProject.loading}>
+          <h3>{leftProject.project && leftProject.project.name}</h3>
           <ColumnSelector
             project={leftProject.project}
             onSelect={id => this.setState({ leftColumnId: id })}
           />
           {leftColumnId &&
             rightColumnId && (
-              <Button icon={true} labelPosition="right">
+              <Button
+                icon={true}
+                labelPosition="right"
+                onClick={() => {
+                  const issueCards = leftProject
+                    .project!.columns.find(c => c.id === leftColumnId)!
+                    .cards.filter(c => c.issue)
+
+                  setSuccess(`${issueCards.length} 件の card をコピーします`)
+                  let count = 0
+
+                  Promise.all(
+                    issueCards.map(c =>
+                      this.props
+                        .addProjectCard(rightColumnId, c.issue!.id)
+                        .then(() => {
+                          count++
+                          setSuccess(`残り ${issueCards.length - count} 件`)
+                        }),
+                    ),
+                  )
+                    .then(() => {
+                      setSuccess("完了 ヾ(･∀･)ﾉダー")
+                      fetchProject(panel.right!)
+                    })
+                    .catch(setError)
+                }}
+              >
                 <Icon name="angle double right" />
                 Copy all projects to right project column
               </Button>
@@ -85,13 +121,40 @@ class View extends React.PureComponent<Props, State> {
             )}
         </Segment2>
         <Segment2 loading={rightProject.loading}>
+          <h3>{rightProject.project && rightProject.project.name}</h3>
           <ColumnSelector
             project={rightProject.project}
             onSelect={id => this.setState({ rightColumnId: id })}
           />
           {leftColumnId &&
             rightColumnId && (
-              <Button icon={true} labelPosition="left">
+              <Button
+                icon={true}
+                labelPosition="left"
+                onClick={() => {
+                  const issueCards = rightProject
+                    .project!.columns.find(c => c.id === rightColumnId)!
+                    .cards.filter(c => c.issue)
+
+                  setSuccess(`${issueCards.length} 件の card をコピーします`)
+                  let count = 0
+                  Promise.all(
+                    issueCards.map(c =>
+                      this.props
+                        .addProjectCard(leftColumnId, c.issue!.id)
+                        .then(() => {
+                          count++
+                          setSuccess(`残り ${issueCards.length - count} 件`)
+                        }),
+                    ),
+                  )
+                    .then(() => {
+                      setSuccess("完了 ヾ(･∀･)ﾉダー")
+                      fetchProject(panel.left!)
+                    })
+                    .catch(setError)
+                }}
+              >
                 <Icon name="angle double left" />
                 Copy all projects to left project column
               </Button>
@@ -117,13 +180,19 @@ const mapState = (
   ownProps: SplitProjectPanelProps,
 ) => ({ ...ownProps, projects, token: token || "" })
 
-const mapDispatch = ({ projects }: RematchDispatch<models>) => ({
+const mapDispatch = ({ projects, notification }: RematchDispatch<models>) => ({
+  ...notification,
   ...projects,
 })
 
 const mergeProps = (
   { token, projects, ...rest }: ReturnType<typeof mapState>,
-  { fetchProject, ...fns }: ReturnType<typeof mapDispatch>,
+  {
+    fetchProject,
+    setError,
+    setSuccess,
+    ...fns
+  }: ReturnType<typeof mapDispatch>,
 ) => {
   const leftProject = (rest.panel.left &&
     projects[createProjectSlug(rest.panel.left)]) || { loading: true }
@@ -135,6 +204,10 @@ const mergeProps = (
     ...fns,
     leftProject,
     rightProject,
+    setError: (error: Error) => setError(error),
+    setSuccess: (message: string) => setSuccess({ message }),
+    addProjectCard: (projectColumId: string, contentId: string) =>
+      addProjectCard(token, projectColumId, contentId),
     fetchProject: (identifier: GithubProjectIdentifier) => {
       fetchProject({ token, identifier })
     },
