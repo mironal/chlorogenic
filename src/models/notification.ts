@@ -1,4 +1,5 @@
 import { createModel, ModelConfig } from "@rematch/core"
+import CHLOError from "../misc/CHLOError"
 
 export interface NotificationModel {
   type?: "error" | "success"
@@ -30,11 +31,9 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
     },
     setError: (
       state,
-      {
-        message,
-        description,
-      }: Pick<NotificationModel, "message" | "description">,
+      payload: Pick<NotificationModel, "message" | "description"> | CHLOError,
     ) => {
+      const { message, description } = payload
       if (!message) {
         // tslint:disable-next-line:no-console
         console.warn(

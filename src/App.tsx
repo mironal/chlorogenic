@@ -3,6 +3,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Container, Message, Segment } from "semantic-ui-react"
 import Dashboard from "./containers/Dashboard"
+import Notification from "./containers/Notification"
 
 import { models } from "./store"
 
@@ -23,12 +24,9 @@ class App extends React.Component<AppProps> {
     }
   }
   public render() {
-    const { user } = this.props
-    const header = user ? <p>{user.displayName}</p> : null
-
     return (
       <Container>
-        {header}
+        <Notification />
         <Dashboard />
       </Container>
     )
