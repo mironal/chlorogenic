@@ -21,6 +21,16 @@ export interface SplitGitHubProjectPanelModel
   right?: GithubProjectIdentifier
 }
 
+export const createEmptyGithubProjectPanel = (
+  name: string,
+  token: string,
+): SplitGitHubProjectPanelModel => {
+  return {
+    name,
+    token,
+  }
+}
+
 export interface DashboardModel<
   P extends PanelModel = SplitGitHubProjectPanelModel
 > {
