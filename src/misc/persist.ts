@@ -11,12 +11,13 @@ const persistPlugin = (config: PersistConfig): Plugin => {
   const { whitelist, debug, version, delay } = config
   let merged = {}
   const rootKey = `persist:root-${version || -1}`
-  const debugLog = debug
-    ? // tslint:disable-next-line:no-console
-      console.debug
-    : (message?: any, ...optionalParams: any[]) => {
-        /*NOOP*/
-      }
+  const debugLog =
+    debug && process.env.NODE_ENV !== "production"
+      ? // tslint:disable-next-line:no-console
+        console.debug
+      : (message?: any, ...optionalParams: any[]) => {
+          /*NOOP*/
+        }
 
   let timerHandler: number | undefined
   const lazyStore = () => {

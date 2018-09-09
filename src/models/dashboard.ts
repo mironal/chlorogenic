@@ -90,7 +90,7 @@ export default createModel<DashboardModel, ModelConfig<DashboardModel>>({
       return {
         ...state,
         activePanelIndex: state.panels.length,
-        editing: true,
+        boardState: "editor",
         panels,
       }
     },
