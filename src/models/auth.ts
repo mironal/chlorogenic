@@ -1,7 +1,7 @@
 import { createModel, ModelConfig } from "@rematch/core"
 import firebase from "firebase/app"
 import "firebase/auth"
-import { persistor } from "../misc/persist"
+import { resetOnSignout } from "../store"
 
 export interface AuthModel {
   token?: string
@@ -35,9 +35,9 @@ export default createModel<AuthModel, ModelConfig<AuthModel>>({
     async signOut() {
       this.setLoading(true)
       await firebase.auth().signOut()
+      resetOnSignout()
 
       this.setAuth({ token: undefined, user: undefined })
-      persistor.purge()
 
       this.setLoading(false)
     },

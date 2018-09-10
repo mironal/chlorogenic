@@ -70,13 +70,8 @@ const persistPlugin = (config: PersistConfig): Plugin => {
         }
       }
     },
-    onModel(model) {
-      const { name } = model
-      const obj = merged[name]
-      if (obj) {
-        debugLog("persist:initialize state", name, obj)
-        model.state = obj
-      }
+    onStoreCreated(store) {
+      store.dispatch({ type: "@@RESTORE", payload: merged })
     },
     middleware: store => next => action => {
       const { type } = action
