@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 
 import Select from "react-select"
 import Column from "../components/Column"
-import ProjectColumnSelector from "../components/ProjectColumnSelector"
+
 import { parseProjectIdentifierString } from "../misc/parser"
 import { createProjectSlug } from "../misc/project"
 import {
@@ -90,12 +90,16 @@ class View extends React.PureComponent<Props, State> {
     return (
       <ColumnContainer>
         <h3>Add</h3>
-        <ProjectColumnSelector
-          input={input}
-          error={error}
-          onClickFetch={this.onClickFetch}
-          onChange={this.onChangeInput}
-        />
+        <>
+          <input
+            value={input}
+            onChange={ev => this.onChangeInput(ev.currentTarget.value)}
+            onKeyDown={e => e.which === 13 && this.onClickFetch()}
+          />
+          <Button onClick={this.onClickFetch} size="small">
+            fetch
+          </Button>
+        </>
         {loadingAny && <p>Loading...</p>}
         {!loadingAny &&
           project && (
