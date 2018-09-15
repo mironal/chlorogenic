@@ -53,6 +53,20 @@ export type GithubProjectIdentifier =
   | GitHubRepoProjectIdentifier
   | GitHubOrgProjectIdentifier
 
+export interface GitHubProjectColumnIdentifier {
+  project: GithubProjectIdentifier
+  id: string
+}
+
+export const isGitHubProjectColumnIdentifier = (
+  obj: any,
+): obj is GitHubProjectColumnIdentifier =>
+  typeof obj === "object" &&
+  typeof obj.id === "string" &&
+  typeof obj.project === "object" &&
+  (isGithubOrgProjectIdentifier(obj.project) ||
+    isGithubRepoProjectIdentifier(obj.project))
+
 export interface GitHubModel {
   loading: boolean
   identifier?: GithubProjectIdentifier

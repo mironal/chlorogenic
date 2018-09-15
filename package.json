@@ -5,13 +5,14 @@
   "dependencies": {
     "@rematch/core": "1.0.0-beta.5",
     "axios": "0.18.0",
+    "color": "3.0.0",
     "firebase": "5.4.2",
+    "mdi-react": "4.3.0",
     "react": "16.5.0",
-    "react-beautiful-dnd": "9.0.2",
     "react-dom": "16.5.0",
     "react-redux": "5.0.7",
     "react-scripts-ts": "2.17.0",
-    "semantic-ui-react": "0.82.3",
+    "react-select": "2.0.0",
     "styled-components": "3.4.5",
     "uuid": "3.3.2"
   },
@@ -22,12 +23,13 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/color": "3.0.0",
     "@types/jest": "23.3.2",
     "@types/node": "10.9.4",
     "@types/react": "16.4.13",
-    "@types/react-beautiful-dnd": "7.1.2",
     "@types/react-dom": "16.0.7",
     "@types/react-redux": "6.0.7",
+    "@types/react-select": "2.0.3",
     "@types/uuid": "3.4.4",
     "prettier": "1.14.2",
     "typescript": "3.0.3"

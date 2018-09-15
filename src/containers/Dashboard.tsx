@@ -1,90 +1,44 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
-import { Button, Segment } from "semantic-ui-react"
+
 import styled from "styled-components"
-import Editor from "./SplitProjectPanel/Editor"
 
-import { DashboardModel } from "../models/dashboard"
 import { models } from "../store"
-import Manipulater from "./SplitProjectPanel/Manipulater"
-import Viewer from "./SplitProjectPanel/Viewer"
-
-export const Segment2 = styled(Segment)`
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  &&& {
-    width: 100%;
-  }
-`
+import { Box, Button, Flexbox, VFlexbox } from "../UX"
+import ProjectColumn from "./ProjectColumn"
+import ProjectColumnSelector from "./ProjectColumnSelector"
 
 type Props = ReturnType<typeof margeProps>
 
-const Top = styled.div`
-  display: flex;
-  flex-grow: 1;
-  margin-top: 1em;
-  padding-left: 2px;
-  padding-right: 2px;
-  & :first-child {
-    margin-right: auto;
-  }
+const BoardContainer = styled(Flexbox)`
+  flex-flow: row nowrap;
+  width: 100vw;
+  height: 100%;
 `
 
-const Board = ({ panel, boardState, canSave, changeState }: Props) => {
-  if (!panel) {
-    throw new Error("panel is required.")
-  }
+const Scroller = styled(Flexbox)`
+  overflow-x: auto;
+`
 
-  const Content =
-    boardState === "viewer" ? (
-      <Viewer panel={panel} />
-    ) : boardState === "editor" ? (
-      <Editor panel={panel} />
-    ) : (
-      <Manipulater panel={panel} />
-    )
-
-  const Buttons =
-    boardState === "viewer" ? (
-      <>
-        <Button onClick={() => changeState("editor")}>Editor</Button>
-        <Button onClick={() => changeState("manipulater")}>Manipulator</Button>
-      </>
-    ) : boardState === "editor" ? (
-      <Button onClick={() => changeState("viewer")} disabled={!canSave}>
-        Save
-      </Button>
-    ) : (
-      <Button onClick={() => changeState("viewer")}>Viewer</Button>
-    )
-
+const Board = ({ columns }: Props) => {
   return (
-    <Segment>
-      <Top>
-        <h2>{panel.name || "Untitled"}</h2>
-        {Buttons}
-      </Top>
-      {Content}
-    </Segment>
+    <BoardContainer>
+      <Scroller>
+        {columns.map(c => (
+          <ProjectColumn key={c.id} column={c} />
+        ))}
+        <ProjectColumnSelector />
+      </Scroller>
+    </BoardContainer>
   )
 }
 
-const mapState = ({
-  dashboard: { activePanelIndex, panels, boardState, canSave },
-}: RematchRootState<models>) => ({
-  boardState,
-  canSave,
-  panel: activePanelIndex >= 0 ? panels[activePanelIndex] : undefined,
+const mapState = ({ columns }: RematchRootState<models>) => ({
+  columns,
 })
 
-const mapDispatch = ({
-  dashboard: { changeState },
-}: RematchDispatch<models>) => ({
-  changeState: (boardState: DashboardModel["boardState"]) =>
-    changeState({ boardState }),
-})
+const mapDispatch = ({  }: RematchDispatch<models>) => ({})
 
 const margeProps = (
   { ...rest }: ReturnType<typeof mapState>,

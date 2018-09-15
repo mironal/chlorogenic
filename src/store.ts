@@ -2,7 +2,7 @@ import { init } from "@rematch/core"
 import persistPluginFactory, { persistor } from "./misc/persist"
 import models from "./models"
 const persistPlugin = persistPluginFactory({
-  whitelist: ["auth", "dashboard"],
+  whitelist: ["auth", "columns"],
   debug: true,
   delay: 2000,
 })

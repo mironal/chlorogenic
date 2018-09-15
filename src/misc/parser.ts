@@ -30,7 +30,7 @@ const parseShorthandString = (
   return undefined
 }
 
-export const parseProjectIdentiferString = (
+export const parseProjectIdentifierString = (
   input: string,
 ): GithubProjectIdentifier | Error => {
   try {

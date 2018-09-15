@@ -3,30 +3,35 @@ import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
 
-import { Container } from "semantic-ui-react"
 import Dashboard from "./containers/Dashboard"
 import Notification from "./containers/Notification"
 
 import Header from "./containers/Header"
+import SignIn from "./containers/SignIn"
 import { models } from "./store"
+import { Flexbox } from "./UX"
+import styled from "./UX/Styled"
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
-const App = ({ authed, panelCount }: Props) => (
+const Container = styled(Flexbox)`
+  flex-direction: column;
+  height: 100%;
+`
+
+const App = ({ authed }: Props) => (
   <Container>
     <Header />
     <Notification />
-    {!authed && <p>Please Sign in with GitHub</p>}
-    {authed && panelCount === 0 && <p>Please Add new Panel</p>}
-    {authed && panelCount > 0 && <Dashboard />}
+    {!authed && <SignIn />}
+    {authed && <Dashboard />}
   </Container>
 )
 
 const mapState = (state: RematchRootState<models>) => ({
   authed: typeof state.auth.token === "string",
-  panelCount: state.dashboard.panels.length,
 })
-const mapDispatch = ({  }: RematchDispatch<models>) => ({})
+const mapDispatch = ({}) => ({})
 
 export default connect(
   mapState,
