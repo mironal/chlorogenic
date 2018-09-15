@@ -4,15 +4,7 @@ import { GitHubProjectColumnIdentifier } from "./github.types"
 
 export type ColumnsModel = GitHubProjectColumnIdentifier[]
 
-const initialState: ColumnsModel = [
-  {
-    project: {
-      repository: { owner: "covelline", name: "facilio" },
-      number: 4,
-    },
-    id: "MDEzOlByb2plY3RDb2x1bW4zMTMxMTE2",
-  },
-]
+const initialState: ColumnsModel = []
 
 export default createModel<ColumnsModel, ModelConfig<ColumnsModel>>({
   reducers: {
