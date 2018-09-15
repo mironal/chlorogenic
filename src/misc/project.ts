@@ -11,7 +11,7 @@ export const createProjectSlug = (
     throw new Error("Invalid argument: identifier is required.")
   }
   if (isGithubRepoProjectIdentifier(identifier)) {
-    return `${identifier.repository.owner}/${identifier.repository.owner}/${
+    return `${identifier.repository.owner}/${identifier.repository.name}/${
       identifier.number
     }`
   }

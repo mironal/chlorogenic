@@ -39,7 +39,6 @@ const Card = ({ card }: { card: GitHubProjectCard }) => {
 export default ({ column }: ProjectColumnProps) => {
   return (
     <>
-      <h3>{column.name}</h3>
       {column.cards.map(c => (
         <Card key={c.id} card={c} />
       ))}

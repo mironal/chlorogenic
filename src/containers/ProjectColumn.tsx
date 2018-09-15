@@ -9,7 +9,7 @@ import {
   GitHubProjectColumnIdentifier,
 } from "../models/github"
 import { models } from "../store"
-import { ColumnContainer } from "../UX/elements/ColumnContainer"
+import ColumnContainer from "../UX/elements/ColumnContainer"
 
 export interface ProjectColumnProps {
   column: GitHubProjectColumnIdentifier
@@ -21,16 +21,12 @@ class View extends React.PureComponent<Props> {
     this.props.fetchProject()
   }
   public render() {
-    const { loading, column } = this.props
+    const { loading, column, slug } = this.props
     if (loading || !column) {
-      return (
-        <ColumnContainer>
-          <p>loading</p>
-        </ColumnContainer>
-      )
+      return <ColumnContainer header="loading..." />
     }
     return (
-      <ColumnContainer>
+      <ColumnContainer header={column.name} description={slug}>
         <ProjectColumn column={column} />
       </ColumnContainer>
     )
@@ -56,6 +52,7 @@ const mergeProps = (
     column = github.project.columns.find(c => c.id === columnIdentifer.id)
   }
   return {
+    slug,
     column,
     ...github,
     fetchProject: () =>

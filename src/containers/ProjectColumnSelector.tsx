@@ -13,7 +13,7 @@ import {
 } from "../models/github"
 import { models } from "../store"
 import { Button } from "../UX"
-import { ColumnContainer } from "../UX/elements/ColumnContainer"
+import ColumnContainer from "../UX/elements/ColumnContainer"
 
 type Props = ReturnType<typeof mergeProps>
 
@@ -88,8 +88,7 @@ class View extends React.PureComponent<Props, State> {
       ? project.columns.find(c => c.id === selectedColumnId)
       : undefined
     return (
-      <ColumnContainer>
-        <h3>Add</h3>
+      <ColumnContainer header="Add">
         <>
           <input
             value={input}

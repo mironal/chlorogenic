@@ -31,7 +31,10 @@ const mainTheme: Theme = {
     .toString(),
   background: RoastBeanColors.medium,
   text: RoastBeanColors.italian,
-  secondaryText: RoastBeanColors.medium,
+  secondaryText: Color(RoastBeanColors.italian)
+    .lighten(2)
+    .grayscale()
+    .toString(),
   negative: RoastBeanColors.cherry,
   positive: "green",
   disable: "gray",
