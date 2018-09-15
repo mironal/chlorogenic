@@ -89,6 +89,7 @@ class View extends React.PureComponent<Props, State> {
       : undefined
     return (
       <ColumnContainer>
+        <h3>Add</h3>
         <ProjectColumnSelector
           input={input}
           error={error}

@@ -11,7 +11,7 @@ const View = ({ signOut }: Props) => (
   <HeaderMenu
     left="chlorogenic"
     right={
-      <Button onClick={signOut} negative={true}>
+      <Button size="small" onClick={signOut} negative={true}>
         Sign out
       </Button>
     }

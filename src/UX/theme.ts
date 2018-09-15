@@ -1,3 +1,5 @@
+import Color from "color"
+
 const RoastBeanColors = {
   green: "rgb(249, 255, 239)", // greenbeans. not roasted yet.
   light: "rgb(254, 261, 247)", // Light roast beans.
@@ -7,8 +9,9 @@ const RoastBeanColors = {
 }
 
 export interface Theme {
+  baseBackground: string
   background: string
-  lightBackground: string
+  secondaryBackground: string
   text: string
   secondaryText: string
   disable: string
@@ -22,7 +25,10 @@ export interface Theme {
 }
 
 const mainTheme: Theme = {
-  lightBackground: RoastBeanColors.green,
+  baseBackground: RoastBeanColors.green,
+  secondaryBackground: Color(RoastBeanColors.green)
+    .darken(0.04)
+    .toString(),
   background: RoastBeanColors.medium,
   text: RoastBeanColors.italian,
   secondaryText: RoastBeanColors.medium,

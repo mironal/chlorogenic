@@ -55,8 +55,6 @@ const mergeProps = (
   if (github.project) {
     column = github.project.columns.find(c => c.id === columnIdentifer.id)
   }
-  // tslint:disable-next-line:no-console
-  console.log(column)
   return {
     column,
     ...github,

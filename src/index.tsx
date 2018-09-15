@@ -46,7 +46,7 @@ injectGlobal`
 `
 const Background = styled.div`
   height: 100%;
-  background: ${props => props.theme.lightBackground};
+  background: ${props => props.theme.baseBackground};
 `
 
 const Root = () => (

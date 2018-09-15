@@ -5,7 +5,7 @@ import { connect } from "react-redux"
 import styled from "styled-components"
 
 import { models } from "../store"
-import { Box, Button, Flexbox, VFlexbox } from "../UX"
+import { Flexbox } from "../UX"
 import ProjectColumn from "./ProjectColumn"
 import ProjectColumnSelector from "./ProjectColumnSelector"
 
@@ -13,6 +13,8 @@ type Props = ReturnType<typeof margeProps>
 
 const BoardContainer = styled(Flexbox)`
   flex-flow: row nowrap;
+  margin-top: 1em;
+  justify-content: center;
   width: 100vw;
   height: 100%;
 `
