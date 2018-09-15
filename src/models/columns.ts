@@ -1,8 +1,6 @@
 import { createModel, ModelConfig } from "@rematch/core"
-import {
-  GitHubProjectColumnIdentifier,
-  isGitHubProjectColumnIdentifier,
-} from "./github"
+import { isGitHubProjectColumnIdentifier } from "../misc/github"
+import { GitHubProjectColumnIdentifier } from "./github.types"
 
 export type ColumnsModel = GitHubProjectColumnIdentifier[]
 

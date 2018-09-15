@@ -1,12 +1,12 @@
 import DragHorizontalIcon from "mdi-react/DragHorizontalIcon"
 import React from "react"
 import { ConnectDropTarget, DropTarget } from "react-dnd"
-import { isSameProject } from "../misc/project"
+import { isSameProject } from "../misc/github"
 import {
   GitHubProjectCard,
   GitHubProjectColumn,
   GitHubProjectColumnIdentifier,
-} from "../models/github"
+} from "../models/github.types"
 import styled from "../UX/Styled"
 import ProjectCard, { CardProps } from "./ProjectCard"
 

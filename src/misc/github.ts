@@ -1,8 +1,9 @@
 import {
   GitHubOrgProjectIdentifier,
+  GitHubProjectColumnIdentifier,
   GithubProjectIdentifier,
   GitHubRepoProjectIdentifier,
-} from "../models/github"
+} from "../models/github.types"
 
 export const createProjectSlug = (
   identifier: GithubProjectIdentifier,
@@ -52,3 +53,12 @@ export const isGithubOrgProjectIdentifier = (
   typeof input === "object" &&
   typeof input.number === "number" &&
   typeof input.organization === "string"
+
+export const isGitHubProjectColumnIdentifier = (
+  obj: any,
+): obj is GitHubProjectColumnIdentifier =>
+  typeof obj === "object" &&
+  typeof obj.id === "string" &&
+  typeof obj.project === "object" &&
+  (isGithubOrgProjectIdentifier(obj.project) ||
+    isGithubRepoProjectIdentifier(obj.project))

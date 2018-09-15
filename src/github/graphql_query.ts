@@ -1,7 +1,7 @@
 import {
   GitHubOrgProjectIdentifier,
   GitHubRepoProjectIdentifier,
-} from "../models/github"
+} from "../models/github.types"
 
 export const organizationProjectQuery = ({
   organization,

@@ -3,11 +3,11 @@ import React from "react"
 import { connect } from "react-redux"
 
 import ProjectColumn from "../components/ProjectColumn"
-import { createProjectSlug } from "../misc/project"
+import { createProjectSlug } from "../misc/github"
 import {
   GitHubProjectColumn,
   GitHubProjectColumnIdentifier,
-} from "../models/github"
+} from "../models/github.types"
 import { models } from "../store"
 import ColumnContainer from "../UX/elements/ColumnContainer"
 
@@ -34,19 +34,27 @@ class View extends React.PureComponent<Props> {
 }
 
 const mapState = (
-  { projects, auth: { token } }: RematchRootState<models>,
+  { projectStore, auth: { token } }: RematchRootState<models>,
   { column }: ProjectColumnProps,
-) => ({ column, projects, token: token || "" })
+) => ({
+  column,
+  projectStore,
+  token: token || "",
+})
 const mapDispatch = ({
-  projects: { fetchProject },
+  projectStore: { fetchProject },
 }: RematchDispatch<models>) => ({ fetchProject })
 
 const mergeProps = (
-  { token, projects, column: columnIdentifier }: ReturnType<typeof mapState>,
+  {
+    token,
+    projectStore,
+    column: columnIdentifier,
+  }: ReturnType<typeof mapState>,
   { fetchProject }: ReturnType<typeof mapDispatch>,
 ) => {
   const slug = createProjectSlug(columnIdentifier.project)
-  const github = projects[slug] || { loading: true }
+  const github = projectStore[slug] || { loading: true }
   let column: GitHubProjectColumn | undefined
   if (github.project) {
     column = github.project.columns.find(c => c.id === columnIdentifier.id)

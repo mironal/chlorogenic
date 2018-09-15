@@ -1,9 +1,10 @@
 import { createModel, init, ModelConfig } from "@rematch/core"
-import { createProjectSlug } from "../misc/project"
-import github, { GitHubModel, GithubProjectIdentifier } from "./github"
+import { createProjectSlug } from "../misc/github"
+import github, { ProjectLoadingConditionModel } from "./gh_project_loader"
+import { GithubProjectIdentifier } from "./github.types"
 
-export interface ProjectsModel {
-  [slug: string]: GitHubModel | undefined
+export interface ProjectStoreModel {
+  [slug: string]: ProjectLoadingConditionModel | undefined
 }
 
 const createStore = () => {
@@ -14,7 +15,7 @@ const githubRegistory: {
   [slug: string]: ReturnType<typeof createStore> | undefined
 } = {}
 
-export default createModel<ProjectsModel, ModelConfig<ProjectsModel>>({
+export default createModel<ProjectStoreModel, ModelConfig<ProjectStoreModel>>({
   effects: dispatch => ({
     async fetchProject(payload: {
       token: string
@@ -42,12 +43,15 @@ export default createModel<ProjectsModel, ModelConfig<ProjectsModel>>({
     },
   }),
   reducers: {
-    updateModel: (state, payload: GitHubModel & { slug: string }) => {
+    updateModel: (
+      state,
+      payload: ProjectLoadingConditionModel & { slug: string },
+    ) => {
       const { slug } = payload
       if (typeof slug !== "string") {
         throw new Error("Invalid payload. slug is required.")
       }
-      const model: GitHubModel = {
+      const model: ProjectLoadingConditionModel = {
         loading: payload.loading,
         project: payload.project,
         error: payload.error,

@@ -8,7 +8,7 @@ import {
   GitHubOrgProjectIdentifier,
   GitHubProject,
   GitHubRepoProjectIdentifier,
-} from "../models/github"
+} from "../models/github.types"
 import { parseProjectColumns } from "./parser"
 
 const conf = (token: string) => ({
@@ -28,8 +28,6 @@ export const addProjectCard = async (
   const query = addProjectCardQuery(projectColumnId, contentId)
 
   const resp = await axios({ ...conf(token), data: { query } })
-  // tslint:disable-next-line:no-console
-  console.log(resp)
   return Promise.resolve()
 }
 

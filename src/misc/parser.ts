@@ -1,4 +1,4 @@
-import { GithubProjectIdentifier } from "../models/github"
+import { GithubProjectIdentifier } from "../models/github.types"
 import CHLOError from "./CHLOError"
 
 const parseUrlString = (input: string): GithubProjectIdentifier | undefined => {

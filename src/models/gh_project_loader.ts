@@ -6,75 +6,20 @@ import {
 import {
   isGithubOrgProjectIdentifier,
   isGithubRepoProjectIdentifier,
-} from "../misc/project"
+} from "../misc/github"
+import { GitHubProject, GithubProjectIdentifier } from "./github.types"
 
-export interface GitHubRepository {
-  owner: string
-  name: string
-}
-
-export interface GitHubProjectCard {
-  id: string
-  note?: string
-  issue?: {
-    id: string
-    title: string
-    number: number
-    auther: string
-    url: string
-  }
-}
-
-export interface GitHubProjectColumn {
-  id: string
-  name: string
-  cards: GitHubProjectCard[]
-}
-
-export interface GitHubProject {
-  identifier: GithubProjectIdentifier
-  url: string
-  slug: string
-  name: string
-  columns: GitHubProjectColumn[]
-}
-
-export interface GitHubRepoProjectIdentifier {
-  repository: GitHubRepository
-  number: number
-}
-
-export interface GitHubOrgProjectIdentifier {
-  organization: string
-  number: number
-}
-
-export type GithubProjectIdentifier =
-  | GitHubRepoProjectIdentifier
-  | GitHubOrgProjectIdentifier
-
-export interface GitHubProjectColumnIdentifier {
-  project: GithubProjectIdentifier
-  id: string
-}
-
-export const isGitHubProjectColumnIdentifier = (
-  obj: any,
-): obj is GitHubProjectColumnIdentifier =>
-  typeof obj === "object" &&
-  typeof obj.id === "string" &&
-  typeof obj.project === "object" &&
-  (isGithubOrgProjectIdentifier(obj.project) ||
-    isGithubRepoProjectIdentifier(obj.project))
-
-export interface GitHubModel {
+export interface ProjectLoadingConditionModel {
   loading: boolean
   identifier?: GithubProjectIdentifier
   project?: GitHubProject
   error?: Error
 }
 
-export default createModel<GitHubModel, ModelConfig<GitHubModel>>({
+export default createModel<
+  ProjectLoadingConditionModel,
+  ModelConfig<ProjectLoadingConditionModel>
+>({
   effects: dispatch => ({
     async fetchProject({
       token,

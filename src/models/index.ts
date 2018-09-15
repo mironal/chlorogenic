@@ -1,6 +1,6 @@
 import auth from "./auth"
 import columns from "./columns"
+import projectStore from "./gh_project_store"
 import notification from "./notification"
-import projects from "./projects"
 
-export default { auth, projects, notification, columns }
+export default { auth, projectStore, notification, columns }

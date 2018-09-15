@@ -3,7 +3,7 @@ import { DragSource } from "react-dnd"
 import {
   GitHubProjectCard,
   GitHubProjectColumnIdentifier,
-} from "../models/github"
+} from "../models/github.types"
 import { Box } from "../UX"
 import styled from "../UX/Styled"
 
