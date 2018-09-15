@@ -2,6 +2,7 @@ import React from "react"
 import { ConnectDropTarget, DropTarget } from "react-dnd"
 import { isSameProject } from "../misc/project"
 import {
+  GitHubProjectCard,
   GitHubProjectColumn,
   GitHubProjectColumnIdentifier,
 } from "../models/github"
@@ -15,6 +16,7 @@ const SPAN = styled.span`
 export interface ProjectColumnProps {
   identifier?: GitHubProjectColumnIdentifier
   column: GitHubProjectColumn
+  onDropCard?(card: GitHubProjectCard, column: GitHubProjectColumn): void
 }
 
 interface DnDTargetProps {
@@ -28,11 +30,11 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
   "Card",
   {
     drop(props, monitor) {
-      const { column } = props
+      const { column, onDropCard } = props
       const card = monitor.getItem() as CardProps
-
-      // tslint:disable-next-line:no-console
-      console.log(column, card)
+      if (onDropCard) {
+        onDropCard(card.card, column)
+      }
       return props
     },
     canDrop(props, monitor) {
