@@ -3,8 +3,8 @@ import React from "react"
 import { connect } from "react-redux"
 
 import Select from "react-select"
-import Column from "../components/Column"
 
+import ProjectColumn from "../components/ProjectColumn"
 import { parseProjectIdentifierString } from "../misc/parser"
 import { createProjectSlug } from "../misc/project"
 import {
@@ -115,7 +115,7 @@ class View extends React.PureComponent<Props, State> {
             <Button onClick={this.onClickAdd} size="small">
               Add
             </Button>
-            <Column column={column} />
+            <ProjectColumn column={column} />
           </>
         )}
       </ColumnContainer>
