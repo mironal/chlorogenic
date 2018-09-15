@@ -1,4 +1,4 @@
-import { RematchDispatch, RematchRootState } from "@rematch/core"
+import { RematchRootState } from "@rematch/core"
 
 import React from "react"
 import { connect } from "react-redux"

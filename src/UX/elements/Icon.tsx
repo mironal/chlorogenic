@@ -1,4 +1,3 @@
-import React from "react"
 import { ThemedStyledProps } from "styled-components"
 import { Theme } from "../../UX/theme"
 import { SizeProps } from "../props"

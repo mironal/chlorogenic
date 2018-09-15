@@ -67,7 +67,7 @@ class View extends React.PureComponent<Props, State> {
   }
 
   public render() {
-    const { input, error, identifier, selectedColumnId } = this.state
+    const { input, identifier, selectedColumnId } = this.state
     const { getProjectModel } = this.props
 
     let loadingAny = false

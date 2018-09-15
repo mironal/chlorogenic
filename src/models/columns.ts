@@ -1,7 +1,6 @@
 import { createModel, ModelConfig } from "@rematch/core"
 import {
   GitHubProjectColumnIdentifier,
-  GithubProjectIdentifier,
   isGitHubProjectColumnIdentifier,
 } from "./github"
 
