@@ -1,49 +1,83 @@
 import React from "react"
-import { GitHubProjectCard, GitHubProjectColumn } from "../models/github"
-import { Box } from "../UX"
+import { ConnectDropTarget, DropTarget } from "react-dnd"
+import { isSameProject } from "../misc/project"
+import {
+  GitHubProjectColumn,
+  GitHubProjectColumnIdentifier,
+} from "../models/github"
 import styled from "../UX/Styled"
+import ProjectCard, { CardProps } from "./ProjectCard"
+
+const SPAN = styled.span`
+  color: ${({ theme }) => theme.redColor};
+`
 
 export interface ProjectColumnProps {
+  identifier?: GitHubProjectColumnIdentifier
   column: GitHubProjectColumn
 }
-const CardBox = styled(Box)`
-  border-radius: 4px;
-  padding: 0.2em;
-  background: ${({ theme }) => theme.baseBackground};
-  margin-bottom: 0.2em;
-  font-size: small;
-`
 
-const EllipsisP = styled.p`
-  font-size: small;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  margin: 2px;
-`
+interface DnDTargetProps {
+  canDrop?: boolean
+  isOver?: boolean
+  connectDropTarget?: ConnectDropTarget
+  item?: CardProps
+}
 
-const Card = ({ card }: { card: GitHubProjectCard }) => {
-  let Content = <span>Unknown</span>
-  if (card.note) {
-    Content = <EllipsisP>{card.note}</EllipsisP>
-  } else if (card.issue) {
-    Content = (
-      <a href={card.issue.url} target="_blank">
-        <EllipsisP>
-          #{card.issue.number} {card.issue.title}
-        </EllipsisP>
-      </a>
-    )
+export default DropTarget<ProjectColumnProps & DnDTargetProps>(
+  "Card",
+  {
+    drop(props, monitor) {
+      const { column } = props
+      const card = monitor.getItem() as CardProps
+
+      // tslint:disable-next-line:no-console
+      console.log(column, card)
+      return props
+    },
+    canDrop(props, monitor) {
+      const cardProp = monitor.getItem()
+      if (props.column.id === cardProp.identifier.id) {
+        return false
+      }
+      return !!props.identifier
+    },
+  },
+  (connect, monitor) => {
+    return {
+      connectDropTarget: connect.dropTarget(),
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
+      item: monitor.getItem(),
+    }
+  },
+)(props => {
+  const { column, item, identifier, connectDropTarget, isOver, canDrop } = props
+
+  let msg
+  if (item && item.identifier && isOver && canDrop && identifier) {
+    if (isSameProject(identifier.project, item.identifier.project)) {
+      msg = (
+        <p>
+          The card will be <SPAN>moved</SPAN> to this column
+        </p>
+      )
+    } else {
+      msg = (
+        <p>
+          The card will be <SPAN>copied</SPAN> to this column
+        </p>
+      )
+    }
   }
-  return <CardBox>{Content}</CardBox>
-}
-
-export default ({ column }: ProjectColumnProps) => {
-  return (
-    <>
-      {column.cards.map(c => (
-        <Card key={c.id} card={c} />
-      ))}
-    </>
-  )
-}
+  return connectDropTarget
+    ? connectDropTarget(
+        <div>
+          {msg}
+          {column.cards.map(c => (
+            <ProjectCard key={c.id} card={c} identifier={identifier} />
+          ))}
+        </div>,
+      )
+    : null
+})

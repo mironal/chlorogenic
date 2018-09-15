@@ -18,6 +18,25 @@ export const createProjectSlug = (
   return `orgs/${identifier.organization}/${identifier.number}`
 }
 
+export const isSameProject = (
+  a: GithubProjectIdentifier,
+  b: GithubProjectIdentifier,
+): boolean => {
+  if (isGithubRepoProjectIdentifier(a) && isGithubRepoProjectIdentifier(b)) {
+    return (
+      a.repository.owner === b.repository.owner &&
+      a.repository.name === b.repository.name &&
+      a.number === b.number
+    )
+  } else if (
+    isGithubOrgProjectIdentifier(a) &&
+    isGithubOrgProjectIdentifier(b)
+  ) {
+    return a.organization === b.organization && a.number === b.number
+  }
+  return false
+}
+
 export const isGithubRepoProjectIdentifier = (
   input: any,
 ): input is GitHubRepoProjectIdentifier =>

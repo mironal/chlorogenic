@@ -4,6 +4,8 @@ import { connect } from "react-redux"
 
 import styled from "styled-components"
 
+import { DragDropContext } from "react-dnd"
+import HTML5Backend from "react-dnd-html5-backend"
 import { models } from "../store"
 import { Flexbox } from "../UX"
 import ProjectColumn from "./ProjectColumn"
@@ -23,16 +25,18 @@ const Scroller = styled(Flexbox)`
   overflow-x: auto;
 `
 
+const DnDBoard = DragDropContext(HTML5Backend)(BoardContainer)
+
 const Board = ({ columns }: Props) => {
   return (
-    <BoardContainer>
+    <DnDBoard>
       <Scroller>
         {columns.map(c => (
           <ProjectColumn key={c.id} column={c} />
         ))}
         <ProjectColumnSelector />
       </Scroller>
-    </BoardContainer>
+    </DnDBoard>
   )
 }
 

@@ -9,6 +9,8 @@
     "firebase": "5.4.2",
     "mdi-react": "4.3.0",
     "react": "16.5.0",
+    "react-dnd": "5.0.0",
+    "react-dnd-html5-backend": "5.0.1",
     "react-dom": "16.5.0",
     "react-redux": "5.0.7",
     "react-scripts-ts": "2.17.0",

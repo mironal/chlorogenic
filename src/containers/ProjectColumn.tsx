@@ -21,13 +21,13 @@ class View extends React.PureComponent<Props> {
     this.props.fetchProject()
   }
   public render() {
-    const { loading, column, slug } = this.props
-    if (loading || !column) {
+    const { loading, column, project, columnIdentifier } = this.props
+    if (loading || !column || !project) {
       return <ColumnContainer header="loading..." />
     }
     return (
-      <ColumnContainer header={column.name} description={slug}>
-        <ProjectColumn column={column} />
+      <ColumnContainer header={column.name} description={project.name}>
+        <ProjectColumn column={column} identifier={columnIdentifier} />
       </ColumnContainer>
     )
   }
@@ -42,21 +42,22 @@ const mapDispatch = ({
 }: RematchDispatch<models>) => ({ fetchProject })
 
 const mergeProps = (
-  { token, projects, column: columnIdentifer }: ReturnType<typeof mapState>,
+  { token, projects, column: columnIdentifier }: ReturnType<typeof mapState>,
   { fetchProject }: ReturnType<typeof mapDispatch>,
 ) => {
-  const slug = createProjectSlug(columnIdentifer.project)
+  const slug = createProjectSlug(columnIdentifier.project)
   const github = projects[slug] || { loading: true }
   let column: GitHubProjectColumn | undefined
   if (github.project) {
-    column = github.project.columns.find(c => c.id === columnIdentifer.id)
+    column = github.project.columns.find(c => c.id === columnIdentifier.id)
   }
   return {
-    slug,
+    columnIdentifier,
+    project: github.project,
     column,
     ...github,
     fetchProject: () =>
-      fetchProject({ token, identifier: columnIdentifer.project }),
+      fetchProject({ token, identifier: columnIdentifier.project }),
   }
 }
 
