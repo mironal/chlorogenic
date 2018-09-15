@@ -29,7 +29,9 @@ const Card = ({ card }: { card: GitHubProjectCard }) => {
   } else if (card.issue) {
     Content = (
       <a href={card.issue.url} target="_blank">
-        <EllipsisP>{card.issue.title}</EllipsisP>
+        <EllipsisP>
+          #{card.issue.number} {card.issue.title}
+        </EllipsisP>
       </a>
     )
   }
