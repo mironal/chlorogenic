@@ -1,3 +1,4 @@
+import DragHorizontalIcon from "mdi-react/DragHorizontalIcon"
 import React from "react"
 import { ConnectDropTarget, DropTarget } from "react-dnd"
 import { isSameProject } from "../misc/project"
@@ -76,6 +77,7 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
     ? connectDropTarget(
         <div>
           {msg}
+          <DragHorizontalIcon />
           {column.cards.map(c => (
             <ProjectCard key={c.id} card={c} identifier={identifier} />
           ))}

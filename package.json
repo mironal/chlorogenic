@@ -22,7 +22,10 @@
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "eject": "react-scripts-ts eject",
+    "_fm": "prettier --config .prettierrc '{*,src/**/*,../bin/*}.{js,jsx,css,ts,tsx,json}'",
+    "fmt": "npm run _fm -- --write",
+    "fmt:check": "npm run _fm -- -l"
   },
   "devDependencies": {
     "@types/color": "3.0.0",
