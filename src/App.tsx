@@ -8,6 +8,7 @@ import Notification from "./containers/Notification"
 
 import Header from "./containers/Header"
 import SignIn from "./containers/SignIn"
+import Modal from "./Modal"
 import { models } from "./store"
 import { Flexbox } from "./UX"
 import styled from "./UX/Styled"
@@ -20,12 +21,15 @@ const Container = styled(Flexbox)`
 `
 
 const App = ({ authed }: Props) => (
-  <Container>
-    <Header />
-    <Notification />
-    {!authed && <SignIn />}
-    {authed && <Dashboard />}
-  </Container>
+  <>
+    <Container>
+      <Header />
+      <Notification />
+      {!authed && <SignIn />}
+      {authed && <Dashboard />}
+    </Container>
+    <Modal />
+  </>
 )
 
 const mapState = (state: RematchRootState<models>) => ({

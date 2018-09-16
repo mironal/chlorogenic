@@ -6,6 +6,8 @@ import styled from "styled-components"
 
 import { DragDropContext } from "react-dnd"
 import HTML5Backend from "react-dnd-html5-backend"
+import { ModalEditor } from "../components/NameEditor"
+import Modal from "../Modal"
 import { models } from "../store"
 import { Flexbox } from "../UX"
 import ProjectColumn from "./ProjectColumn"
@@ -28,14 +30,20 @@ const DnDBoard = DragDropContext(HTML5Backend)(BoardContainer)
 type Props = ReturnType<typeof margeProps>
 interface State {
   panelIndex: number
+  editingIndex?: number
 }
+
 class Board extends React.PureComponent<Props, State> {
   public state: State = { panelIndex: 0 }
   private changePanelIndex = (panelIndex: number) =>
     this.setState({ panelIndex })
+
+  private startEdit = (editingIndex: number) => this.setState({ editingIndex })
+  private endEdit = () => this.setState({ editingIndex: undefined })
+
   public render() {
-    const { columns, createPanel } = this.props
-    const { panelIndex } = this.state
+    const { columns, createPanel, renameColumn } = this.props
+    const { panelIndex, editingIndex } = this.state
     return (
       <Flexbox style={{ height: "100%" }}>
         <Sidebar
@@ -43,6 +51,7 @@ class Board extends React.PureComponent<Props, State> {
           columns={columns}
           onClick={this.changePanelIndex}
           onClickAdd={createPanel}
+          onClickEdit={this.startEdit}
         />
         <DnDBoard>
           <Scroller>
@@ -52,6 +61,18 @@ class Board extends React.PureComponent<Props, State> {
             <ProjectColumnSelector panelIndex={panelIndex} />
           </Scroller>
         </DnDBoard>
+        {editingIndex !== undefined && (
+          <Modal onClickOutside={this.endEdit}>
+            <ModalEditor
+              defaultName={columns[editingIndex].name}
+              onClickCancel={this.endEdit}
+              onClickOk={name => {
+                this.endEdit()
+                renameColumn({ index: editingIndex, name })
+              }}
+            />
+          </Modal>
+        )}
       </Flexbox>
     )
   }
@@ -62,9 +83,10 @@ const mapState = ({ columns }: RematchRootState<models>) => ({
 })
 
 const mapDispatch = ({
-  columns: { createPanel },
+  columns: { createPanel, renameColumn },
 }: RematchDispatch<models>) => ({
   createPanel,
+  renameColumn,
 })
 
 const margeProps = (
