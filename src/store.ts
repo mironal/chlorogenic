@@ -5,6 +5,7 @@ const persistPlugin = persistPluginFactory({
   whitelist: ["auth", "columns"],
   debug: true,
   delay: 2000,
+  version: 2,
 })
 
 export type models = typeof models
