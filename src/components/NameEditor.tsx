@@ -10,14 +10,15 @@ const Title = styled.h3`
 
 export interface NameEditorProps {
   defaultName?: string
-  onClickOk(name: string): void
-  onClickCancel(): void
+  onClickOk?(name: string): void
+  onClickCancel?(): void
+  onClickDelete?(): void
 }
 
 class Editor extends React.PureComponent<NameEditorProps> {
   private inputRef = React.createRef<HTMLInputElement>()
   public render() {
-    const { defaultName, onClickCancel, onClickOk } = this.props
+    const { defaultName, onClickCancel, onClickOk, onClickDelete } = this.props
     return (
       <VFlexbox>
         <Title>Edit name</Title>
@@ -27,9 +28,10 @@ class Editor extends React.PureComponent<NameEditorProps> {
           ref={this.inputRef}
         />
         <Flexbox>
-          <Button onClick={onClickCancel} negative={true}>
-            Cancel
+          <Button onClick={onClickDelete} negative={true}>
+            Delete
           </Button>
+          <Button onClick={onClickCancel}>Cancel</Button>
           <Button
             onClick={() =>
               this.inputRef &&

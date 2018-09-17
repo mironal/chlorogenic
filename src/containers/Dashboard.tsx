@@ -42,7 +42,7 @@ class Board extends React.PureComponent<Props, State> {
   private endEdit = () => this.setState({ editingIndex: undefined })
 
   public render() {
-    const { columns, createPanel, renameColumn } = this.props
+    const { columns, createPanel, renamePanel, removePanel } = this.props
     const { panelIndex, editingIndex } = this.state
     return (
       <Flexbox style={{ height: "100%" }}>
@@ -66,9 +66,13 @@ class Board extends React.PureComponent<Props, State> {
             <ModalEditor
               defaultName={columns[editingIndex].name}
               onClickCancel={this.endEdit}
+              onClickDelete={() => {
+                this.endEdit()
+                removePanel(columns[editingIndex])
+              }}
               onClickOk={name => {
                 this.endEdit()
-                renameColumn({ index: editingIndex, name })
+                renamePanel({ index: editingIndex, name })
               }}
             />
           </Modal>
@@ -83,10 +87,11 @@ const mapState = ({ columns }: RematchRootState<models>) => ({
 })
 
 const mapDispatch = ({
-  columns: { createPanel, renameColumn },
+  columns: { createPanel, renamePanel, removePanel },
 }: RematchDispatch<models>) => ({
   createPanel,
-  renameColumn,
+  renamePanel,
+  removePanel,
 })
 
 const margeProps = (

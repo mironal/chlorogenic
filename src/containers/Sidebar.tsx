@@ -1,4 +1,5 @@
 import CircleEditOutlineIcon from "mdi-react/CircleEditOutlineIcon"
+import DeleteOutlineIcon from "mdi-react/DeleteOutlineIcon"
 import React from "react"
 import { ColumnPanel } from "../models/columns"
 import { Button, Flexbox } from "../UX"
@@ -23,7 +24,7 @@ const UL = styled.ul`
 const LI = styled.li<{ active: boolean }>`
   padding-left: 1em;
   text-indent: -0.7em;
-
+  margin-top: 0.3em;
   &::before {
     content: "•";
     color: ${({ theme, active }) =>
@@ -32,6 +33,10 @@ const LI = styled.li<{ active: boolean }>`
   }
   > span {
     cursor: pointer;
+    margin-right: 0.2em;
+  }
+  svg.mdi-icon {
+    vertical-align: -0.2em;
   }
 `
 
@@ -52,7 +57,7 @@ const View = ({
             </span>
             <span onClick={() => onClickEdit && onClickEdit(i)}>
               {" "}
-              <CircleEditOutlineIcon size={14} />
+              <CircleEditOutlineIcon size={16} />
             </span>
           </LI>
         ))}

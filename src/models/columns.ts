@@ -21,18 +21,6 @@ const initialState: ColumnPanelModel = [{ columns: [] }]
 
 export default createModel<ColumnPanelModel, ModelConfig<ColumnPanelModel>>({
   reducers: {
-    renameColumn: (
-      state,
-      { index, name }: { index: number; name?: string },
-    ) => {
-      if (typeof index !== "number") {
-        throw new Error("Invalid payload")
-      }
-      const next = state.slice()
-      next[index].name = name
-
-      return next
-    },
     addColumn: (state, { index, column }: ColumnPayload) => {
       if (!isGitHubProjectColumnIdentifier(column)) {
         throw new Error("Invalid payload")
@@ -64,6 +52,15 @@ export default createModel<ColumnPanelModel, ModelConfig<ColumnPanelModel>>({
       return next
     },
     createPanel: (state, {}) => [...state, { columns: [] }],
+    renamePanel: (state, { index, name }: { index: number; name?: string }) => {
+      if (typeof index !== "number") {
+        throw new Error("Invalid payload")
+      }
+      const next = state.slice()
+      next[index].name = name
+
+      return next
+    },
     removePanel: (state, panel: ColumnPanel) => {
       if (!Array.isArray(panel.columns)) {
         throw new Error("Invalid payload")
