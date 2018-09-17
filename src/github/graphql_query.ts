@@ -115,3 +115,22 @@ export const addProjectCardQuery = (
   }
 }
 `
+
+export const moveProjectCardQuery = (
+  cardId: string,
+  columnId: string,
+) => `mutation {
+  moveProjectCard(input: {
+    cardId: "${cardId}",
+    columnId: "${columnId}",
+  }) {
+    cardEdge {
+      node {
+        column {
+          name
+          id
+        }
+      }
+    }
+  }
+}`

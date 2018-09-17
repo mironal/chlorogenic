@@ -15,8 +15,9 @@ const SPAN = styled.span`
 `
 
 export interface ProjectColumnProps {
+  loading?: boolean
   identifier?: GitHubProjectColumnIdentifier
-  column: GitHubProjectColumn
+  column?: GitHubProjectColumn
   onDropCard?(
     column: GitHubProjectColumnIdentifier,
     card: GitHubProjectCard,
@@ -43,6 +44,9 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
     },
     canDrop(props, monitor) {
       const cardProp = monitor.getItem()
+      if (!props.column) {
+        return false
+      }
       if (props.column.id === cardProp.identifier.id) {
         return false
       }
@@ -58,7 +62,15 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
     }
   },
 )(props => {
-  const { column, item, identifier, connectDropTarget, isOver, canDrop } = props
+  const {
+    loading,
+    column,
+    item,
+    identifier,
+    connectDropTarget,
+    isOver,
+    canDrop,
+  } = props
 
   let msg
   if (item && item.identifier && isOver && canDrop && identifier) {
@@ -76,12 +88,15 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
       )
     }
   }
+
+  const cards = loading || !column ? [] : column.cards
   return connectDropTarget
     ? connectDropTarget(
-        <div>
+        <div style={{ height: "100%" }}>
+          {loading && <p>Loading...</p>}
           {msg}
           <DragHorizontalIcon />
-          {column.cards.map(c => (
+          {cards.map(c => (
             <ProjectCard key={c.id} card={c} identifier={identifier} />
           ))}
         </div>,
