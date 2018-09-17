@@ -14,7 +14,7 @@ interface SidebarProps {
 }
 const SideBar = styled(Flexbox)`
   flex-direction: column;
-  width: 12em;
+  width: 10em;
 `
 const UL = styled.ul`
   list-style: none;

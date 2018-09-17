@@ -3,7 +3,7 @@ import React from "react"
 import { connect } from "react-redux"
 
 import ProjectColumn from "../components/ProjectColumn"
-import { createProjectSlug } from "../misc/github"
+import { getLoadingConditionForIdentifer } from "../models/gh_project_store"
 import {
   GitHubProjectColumn,
   GitHubProjectColumnIdentifier,
@@ -53,17 +53,19 @@ const mergeProps = (
   }: ReturnType<typeof mapState>,
   { fetchProject }: ReturnType<typeof mapDispatch>,
 ) => {
-  const slug = createProjectSlug(columnIdentifier.project)
-  const github = projectStore[slug] || { loading: true }
   let column: GitHubProjectColumn | undefined
-  if (github.project) {
-    column = github.project.columns.find(c => c.id === columnIdentifier.id)
+  const condition = getLoadingConditionForIdentifer(
+    projectStore,
+    columnIdentifier.project,
+  )
+  if (condition.project) {
+    column = condition.project.columns.find(c => c.id === columnIdentifier.id)
   }
+
   return {
     columnIdentifier,
-    project: github.project,
+    ...condition,
     column,
-    ...github,
     fetchProject: () =>
       fetchProject({ token, identifier: columnIdentifier.project }),
   }

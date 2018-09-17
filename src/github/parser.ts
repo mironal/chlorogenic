@@ -1,6 +1,9 @@
 import { GitHubProjectCard, GitHubProjectColumn } from "../models/github.types"
 
 export const parseProjectColumns = (project: any): GitHubProjectColumn[] => {
+  if (!project) {
+    return []
+  }
   const rawColumns = project.columns.edges as Array<{
     node: {
       id: string

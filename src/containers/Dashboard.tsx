@@ -17,11 +17,11 @@ import Sidebar from "./Sidebar"
 const BoardContainer = styled(Flexbox)`
   flex-flow: row nowrap;
   justify-content: center;
-  width: 100vw;
+  width: calc(100vw - 12em);
   height: 100%;
 `
 
-const Scroller = styled(Flexbox)`
+const Stroller = styled(Flexbox)`
   overflow-x: auto;
 `
 
@@ -54,12 +54,12 @@ class Board extends React.PureComponent<Props, State> {
           onClickEdit={this.startEdit}
         />
         <DnDBoard>
-          <Scroller>
+          <Stroller>
             {columns[panelIndex].columns.map(c => (
               <ProjectColumn key={c.id} column={c} />
             ))}
             <ProjectColumnSelector panelIndex={panelIndex} />
-          </Scroller>
+          </Stroller>
         </DnDBoard>
         {editingIndex !== undefined && (
           <Modal onClickOutside={this.endEdit}>

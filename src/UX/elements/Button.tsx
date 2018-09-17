@@ -8,7 +8,7 @@ import { SizeProps } from "../props"
 
 export type ButtonProps = {
   [key: string]: any
-
+  transparent?: boolean
   disabled?: boolean
   negative?: boolean
   positive?: boolean
@@ -31,23 +31,39 @@ const buttonActiveStyle = (color: string) => css`
   }
 `
 
-const normalStyles: Styles = ({ theme }) => css`
+const disabledColor = (color: string, disabled?: boolean): string =>
+  disabled
+    ? Color(color)
+        .grayscale()
+        .toString()
+    : color
+
+const normalStyles: Styles = ({ theme, disabled }) => css`
   color: ${theme.textColor};
-  background: ${theme.secondaryBaseColor};
+  border: solid 1px ${theme.secondaryBaseColor};
+  background: ${disabledColor(theme.secondaryBaseColor, disabled)};
   ${buttonActiveStyle(theme.baseColor)};
 `
 const disabledStyles: Styles = () => css`
-  cursor: "default";
+  cursor: default;
 `
-const positiveStyles: Styles = ({ theme }) => css`
+const positiveStyles: Styles = ({ theme, disabled }) => css`
   color: ${theme.textColor};
-  background: ${theme.greenColor};
+  border: solid 1px ${theme.greenColor};
+  background: ${disabledColor(theme.greenColor, disabled)};
   ${buttonActiveStyle(theme.greenColor)};
 `
-const negativeStyles: Styles = ({ theme }) => css`
+const negativeStyles: Styles = ({ theme, disabled }) => css`
   color: ${theme.textColor};
-  background: ${theme.redColor};
+  border: solid 1px ${theme.redColor};
+  background: ${disabledColor(theme.redColor, disabled)};
   ${buttonActiveStyle(theme.redColor)};
+`
+
+const transparentStyles: Styles = ({}) => css`
+  background: transparent;
+  border: 0;
+  ${buttonActiveStyle("transparent")};
 `
 
 const Button = styled.button<ButtonProps>`
@@ -77,9 +93,10 @@ const Button = styled.button<ButtonProps>`
     return "0.6em"
   }};
   ${normalStyles}
-  ${({ disabled }) => disabled && disabledStyles}
   ${({ positive }) => positive && positiveStyles}
   ${({ negative }) => negative && negativeStyles}
+  ${({ transparent }) => transparent && transparentStyles}
+  ${({ disabled }) => disabled && disabledStyles}
 }
 `
 

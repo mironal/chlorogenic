@@ -3,6 +3,7 @@ import {
   fetchOrganizationProject,
   fetchRepositoryProject,
 } from "../github/runner"
+import CHLOError from "../misc/CHLOError"
 import {
   isGithubOrgProjectIdentifier,
   isGithubRepoProjectIdentifier,
@@ -11,9 +12,9 @@ import { GitHubProject, GithubProjectIdentifier } from "./github.types"
 
 export interface ProjectLoadingConditionModel {
   loading: boolean
-  identifier?: GithubProjectIdentifier
-  project?: GitHubProject
-  error?: Error
+  identifier: GithubProjectIdentifier | null
+  project: GitHubProject | null
+  error: Error | null
 }
 
 export default createModel<
@@ -28,48 +29,41 @@ export default createModel<
       token: string
       identifier: GithubProjectIdentifier
     }) {
-      this.setError(undefined)
       try {
         if (!token || !identifier) {
-          throw new Error("Invalid payload. token and identifier are required.")
+          throw new CHLOError(
+            "Invalid payload",
+            "token and identifier are required.",
+          )
         }
 
-        this.setLoading(true)
+        this.update({ error: undefined, loading: true, identifier })
         if (isGithubRepoProjectIdentifier(identifier)) {
           const project = await fetchRepositoryProject(token, identifier)
-          this.setProject(project)
+          this.update({ ...this.state, project, loading: false })
         } else if (isGithubOrgProjectIdentifier(identifier)) {
           const project = await fetchOrganizationProject(token, identifier)
-          this.setProject(project)
+          this.update({ ...this.state, project, loading: false })
         }
-
-        this.setLoading(false)
       } catch (error) {
-        this.setLoading(false)
-        this.setError(error)
+        this.update({
+          loading: false,
+          error,
+          identifier,
+        })
+        throw error
       }
     },
   }),
   reducers: {
-    clear: state => {
-      return {
-        loading: false,
-      }
-    },
-    setError: (state, error) => {
-      return { ...state, error }
-    },
-    setLoading: (state, loading) => {
-      return { ...state, loading }
-    },
-    setProject: (state, project) => {
-      return {
-        ...state,
-        project,
-      }
+    update: (state, payload: ProjectLoadingConditionModel) => {
+      return { ...payload }
     },
   },
   state: {
     loading: false,
+    error: null,
+    project: null,
+    identifier: null,
   },
 })

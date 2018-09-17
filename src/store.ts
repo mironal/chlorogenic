@@ -1,5 +1,5 @@
 import { init } from "@rematch/core"
-import persistPluginFactory, { persistor } from "./misc/persist"
+import persistPluginFactory, { persister } from "./misc/persist"
 import models from "./models"
 const persistPlugin = persistPluginFactory({
   whitelist: ["auth", "columns"],
@@ -13,7 +13,7 @@ export const store = init({
   redux: {
     rootReducers: {
       "@@SIGNOUT": (state, action) => {
-        persistor.purge()
+        persister.purge()
         return undefined
       },
       "@@RESTORE": (state, action) => {

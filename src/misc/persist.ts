@@ -7,10 +7,10 @@ export interface PersistConfig {
   debug?: boolean
 }
 
-export let persistor: { purge(): void }
+export let persister: { purge(): void }
 
 const persistPlugin = (config: PersistConfig): Plugin => {
-  if (persistor) {
+  if (persister) {
     throw new Error(
       "Currently only one instance of persistPlugin can be created.",
     )
@@ -48,7 +48,7 @@ const persistPlugin = (config: PersistConfig): Plugin => {
     localStorage.setItem(rootKey, JSON.stringify(merged))
   }
 
-  persistor = {
+  persister = {
     purge: () => {
       localStorage.removeItem(rootKey)
       merged = {}
