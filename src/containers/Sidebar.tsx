@@ -22,13 +22,15 @@ const UL = styled.ul`
   margin: 0;
 `
 const LI = styled.li<{ active: boolean }>`
+  color: ${({ theme, active }) =>
+    active ? theme.textColor : theme.secondaryTextColor};
   padding-left: 1em;
   text-indent: -0.7em;
   margin-top: 0.3em;
   &::before {
     content: "•";
     color: ${({ theme, active }) =>
-      active ? theme.greenColor : theme.baseColor};
+      active ? theme.secondaryBaseColor : theme.baseColor};
     margin-right: 0.2em;
   }
   > span {

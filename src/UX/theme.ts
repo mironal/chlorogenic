@@ -14,9 +14,10 @@ const colorPalet = {
 export interface Theme {
   secondaryBackgroundColor: string
   backgroundColor: string
-  textColor: string
   baseColor: string
   secondaryBaseColor: string
+  textColor: string
+  secondaryTextColor: string
   redColor: string
   blueColor: string
   greenColor: string
@@ -30,6 +31,9 @@ const mainTheme: Theme = {
     .toString(),
   secondaryBaseColor: Color(colorPalet.baseColor)
     .lighten(0.2)
+    .toString(),
+  secondaryTextColor: Color(colorPalet.textColor)
+    .darken(0.4)
     .toString(),
 }
 
