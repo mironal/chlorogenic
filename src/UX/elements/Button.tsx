@@ -20,11 +20,11 @@ type Styles = StylesFunc<ThemedStylesProps>
 const buttonActiveStyle = (color: string) => css`
   :focus {
     outline: none;
-    border: none;
+    border: inherit;
   }
   :active {
     outline: none;
-    border: none;
+    border: inherit;
     background: ${Color(color)
       .darken(0.1)
       .toString()};
@@ -32,28 +32,30 @@ const buttonActiveStyle = (color: string) => css`
 `
 
 const normalStyles: Styles = ({ theme }) => css`
-  color: ${theme.text};
-  background: ${theme.background};
-  ${buttonActiveStyle(theme.background)};
+  color: ${theme.textColor};
+  background: ${theme.secondaryBaseColor};
+  ${buttonActiveStyle(theme.baseColor)};
 `
 const disabledStyles: Styles = () => css`
   cursor: "default";
 `
 const positiveStyles: Styles = ({ theme }) => css`
-  background: ${theme.positive};
-  ${buttonActiveStyle(theme.positive)};
+  color: ${theme.textColor};
+  background: ${theme.greenColor};
+  ${buttonActiveStyle(theme.greenColor)};
 `
 const negativeStyles: Styles = ({ theme }) => css`
-  background: ${theme.negative};
-  ${buttonActiveStyle(theme.negative)};
+  color: ${theme.textColor};
+  background: ${theme.redColor};
+  ${buttonActiveStyle(theme.redColor)};
 `
 
 const Button = styled.button<ButtonProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 0.3em;
   border: 0;
-  border-radius: 2px;
   font-size: ${({ size }) => {
     let baseSize = 1
     switch (size) {
@@ -67,12 +69,12 @@ const Button = styled.button<ButtonProps>`
     return `${baseSize}em`
   }};
   cursor: pointer;
-  margin: 0.4em;
+  margin: 0.2em;
   padding: ${({ size }) => {
     if (size) {
       return "0.4em"
     }
-    return "0.8em"
+    return "0.6em"
   }};
   ${normalStyles}
   ${({ disabled }) => disabled && disabledStyles}

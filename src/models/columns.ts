@@ -1,18 +1,78 @@
 import { createModel, ModelConfig } from "@rematch/core"
 import { isGitHubProjectColumnIdentifier } from "../misc/github"
-import { GitHubProjectColumnIdentifier } from "./github.types"
+import {
+  GitHubProjectColumnIdentifier,
+  GithubProjectIdentifier,
+} from "./github.types"
 
-export type ColumnsModel = GitHubProjectColumnIdentifier[]
+export interface ColumnPanel {
+  name?: string
+  columns: GitHubProjectColumnIdentifier[]
+}
 
-const initialState: ColumnsModel = []
+export type ColumnPanelModel = ColumnPanel[]
 
-export default createModel<ColumnsModel, ModelConfig<ColumnsModel>>({
+export interface ColumnPayload {
+  index: number
+  column: GithubProjectIdentifier
+}
+
+const initialState: ColumnPanelModel = [{ columns: [] }]
+
+export default createModel<ColumnPanelModel, ModelConfig<ColumnPanelModel>>({
   reducers: {
-    addColumn: (state, payload: GitHubProjectColumnIdentifier) => {
-      if (!isGitHubProjectColumnIdentifier(payload)) {
+    addColumn: (state, { index, column }: ColumnPayload) => {
+      if (!isGitHubProjectColumnIdentifier(column)) {
         throw new Error("Invalid payload")
       }
-      return [...state, payload]
+      if (typeof index !== "number") {
+        throw new Error("Invalid payload")
+      }
+
+      const next = state.slice()
+      next[index].columns.push(column)
+
+      return next
+    },
+    removeColumn: (state, { index, column }: ColumnPayload) => {
+      if (!isGitHubProjectColumnIdentifier(column)) {
+        throw new Error("Invalid payload")
+      }
+      if (typeof index !== "number") {
+        throw new Error("Invalid payload")
+      }
+
+      const next = state.slice()
+      const columns = state[index]
+      const i = columns.columns.indexOf(column)
+      if (i >= 0) {
+        next[index].columns.splice(i, 1)
+      }
+
+      return next
+    },
+    createPanel: (state, {}) => [...state, { columns: [] }],
+    renamePanel: (state, { index, name }: { index: number; name?: string }) => {
+      if (typeof index !== "number") {
+        throw new Error("Invalid payload")
+      }
+      const next = state.slice()
+      next[index].name = name
+
+      return next
+    },
+    removePanel: (state, panel: ColumnPanel) => {
+      if (!Array.isArray(panel.columns)) {
+        throw new Error("Invalid payload")
+      }
+
+      const index = state.indexOf(panel)
+      const next = state.slice()
+      if (index >= 0) {
+        next.splice(index, 1)
+      }
+
+      return next
     },
   },
   state: initialState,

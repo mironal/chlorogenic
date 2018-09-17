@@ -41,12 +41,32 @@ injectGlobal`
   body {
     height: 100%;
     margin: 0;
-    font-family: "Noto Sans", "Noto Sans CJK JP", Roboto ,sans-serif;
+    font-family: "Noto Sans", "Noto Sans CJK JP", "Roboto" ,sans-serif;
+  }
+
+  input {
+    font-family: inherit;
+    outline: 0;
+    line-height: 1.2em;
+    border: 1px solid rgba(34,36,38,.15);
+    border-radius: 0.3em;
+    box-shadow: none;
+    padding: 0.2em;
+    font-size: 1em;
   }
 `
 const Background = styled.div`
+  color: ${({ theme: t }) => t.textColor};
   height: 100%;
-  background: ${props => props.theme.baseBackground};
+  background: ${props => props.theme.secondaryBackgroundColor};
+
+  a {
+    color: ${({ theme: t }) => t.secondaryBaseColor};
+
+    &:visited {
+      color: ${({ theme: t }) => t.baseColor};
+    }
+  }
 `
 
 const Root = () => (

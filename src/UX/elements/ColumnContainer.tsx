@@ -4,11 +4,11 @@ import styled from "../Styled"
 import { VFlexbox } from "./Flexbox"
 
 const ColumnContainer = styled(VFlexbox)`
-  border: solid 1px gray;
+  border: solid 1px ${({ theme }) => theme.baseColor};
   border-radius: 4px;
   padding: 0.4em;
   margin: 2px;
-  background: ${({ theme }) => theme.secondaryBackground};
+  background: ${({ theme }) => theme.backgroundColor};
   width: 16em;
 `
 
@@ -28,7 +28,7 @@ const Header = styled.h3`
 
 const Description = styled.p`
   margin: 0;
-  color: ${({ theme }) => theme.secondaryText};
+  color: ${({ theme }) => theme.textColor};
   font-size: small;
   text-align: right;
 `

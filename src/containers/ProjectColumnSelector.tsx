@@ -122,12 +122,13 @@ class View extends React.PureComponent<Props, State> {
   }
 }
 
-const mapState = ({
-  auth: { token },
-  projectStore,
-}: RematchRootState<models>) => ({
+const mapState = (
+  { auth: { token }, projectStore }: RematchRootState<models>,
+  { panelIndex }: { panelIndex: number },
+) => ({
   token: token || "",
   projectStore,
+  panelIndex,
 })
 const mapDispatch = ({
   projectStore: { fetchProject },
@@ -135,13 +136,14 @@ const mapDispatch = ({
 }: RematchDispatch<models>) => ({ fetchProject, addColumn })
 
 const mergeProps = (
-  { token, projectStore, ...rest }: ReturnType<typeof mapState>,
+  { token, panelIndex, projectStore, ...rest }: ReturnType<typeof mapState>,
   { fetchProject, addColumn, ...fns }: ReturnType<typeof mapDispatch>,
 ) => {
   return {
     ...rest,
     ...fns,
-    addColumn: (column: GitHubProjectColumnIdentifier) => addColumn(column),
+    addColumn: (column: GitHubProjectColumnIdentifier) =>
+      addColumn({ column, index: panelIndex }),
     getProjectModel: (identifier?: GithubProjectIdentifier) =>
       identifier ? projectStore[createProjectSlug(identifier)] : undefined,
     fetchProject: (identifier: GithubProjectIdentifier) =>

@@ -10,7 +10,7 @@ import styled from "../UX/Styled"
 const CardBox = styled(Box)`
   border-radius: 4px;
   padding: 0.2em;
-  background: ${({ theme }) => theme.baseBackground};
+  border-bottom: solid 1px ${({ theme }) => theme.secondaryBackgroundColor};
   margin-bottom: 0.2em;
   font-size: small;
 `
