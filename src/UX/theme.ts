@@ -1,47 +1,36 @@
 import Color from "color"
 
-const RoastBeanColors = {
-  green: "rgb(249, 255, 239)", // greenbeans. not roasted yet.
-  light: "rgb(254, 261, 247)", // Light roast beans.
-  medium: "rgb(255, 196, 120)", // Medium roast beans.
-  italian: "rgb(39, 20, 5)", // Italian roast beans. very bitter.
-  cherry: "#ff6e6e",
+const colorPalet = {
+  backgroundColor: "#393939",
+  textColor: "#efefef",
+  baseColor: "#2c9a9a",
+
+  redColor: "#CA4C4C",
+  greenColor: "#4CCA7E",
+  yellowColor: "#B1CA4C",
+  blueColor: "#4C7ECA",
 }
 
 export interface Theme {
-  baseBackground: string
-  background: string
-  secondaryBackground: string
-  text: string
-  secondaryText: string
-  disable: string
-  negative: string
-  positive: string
-
-  // primitive colors
-  whiteColor: string
+  secondaryBackgroundColor: string
+  backgroundColor: string
+  textColor: string
+  baseColor: string
+  secondaryBaseColor: string
   redColor: string
+  blueColor: string
   greenColor: string
+  yellowColor: string
 }
 
 const mainTheme: Theme = {
-  baseBackground: RoastBeanColors.green,
-  secondaryBackground: Color(RoastBeanColors.green)
-    .darken(0.04)
+  ...colorPalet,
+  secondaryBackgroundColor: Color(colorPalet.backgroundColor)
+    .darken(0.4)
     .toString(),
-  background: RoastBeanColors.medium,
-  text: RoastBeanColors.italian,
-  secondaryText: Color(RoastBeanColors.italian)
-    .lighten(2)
-    .grayscale()
+  secondaryBaseColor: Color(colorPalet.baseColor)
+    .lighten(0.2)
     .toString(),
-  negative: RoastBeanColors.cherry,
-  positive: "green",
-  disable: "gray",
-
-  whiteColor: "white",
-  redColor: "red",
-  greenColor: "green",
 }
 
 export const theme = {

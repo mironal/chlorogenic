@@ -26,7 +26,8 @@ const LI = styled.li<{ active: boolean }>`
 
   &::before {
     content: "•";
-    color: ${({ theme, active }) => (active ? theme.positive : theme.text)};
+    color: ${({ theme, active }) =>
+      active ? theme.greenColor : theme.baseColor};
     margin-right: 0.2em;
   }
   > span {

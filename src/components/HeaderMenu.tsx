@@ -5,7 +5,7 @@ import styled from "../UX/Styled"
 const HeaderContainer = styled(Flexbox)`
   padding: 0em 1em;
   align-items: center;
-  background: ${({ theme }) => theme.background};
+  background: ${({ theme }) => theme.backgroundColor};
 `
 
 const Left = styled(Box)`
