@@ -40,3 +40,5 @@ const mainTheme: Theme = {
 export const theme = {
   main: mainTheme,
 }
+
+export const currentTheme = () => theme.main

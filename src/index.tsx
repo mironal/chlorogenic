@@ -43,17 +43,17 @@ injectGlobal`
     margin: 0;
     font-family: "Noto Sans", "Noto Sans CJK JP", "Roboto" ,sans-serif;
   }
-
   input {
     font-family: inherit;
     outline: 0;
     line-height: 1.2em;
-    border: 1px solid rgba(34,36,38,.15);
+    border: 1px solid rgba(34, 36, 38, 0.15);
     border-radius: 0.3em;
     box-shadow: none;
     padding: 0.2em;
     font-size: 1em;
   }
+
 `
 const Background = styled.div`
   color: ${({ theme: t }) => t.textColor};
@@ -66,6 +66,14 @@ const Background = styled.div`
     &:visited {
       color: ${({ theme: t }) => t.baseColor};
     }
+  }
+
+  input {
+    &:placeholder-shown {
+      color: ${({ theme: t }) => t.secondaryTextColor};
+    }
+    color: ${({ theme: t }) => t.textColor};
+    background: ${({ theme: t }) => t.secondaryBackgroundColor};
   }
 `
 

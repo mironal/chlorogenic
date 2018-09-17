@@ -15,6 +15,7 @@ import { models } from "../store"
 import { Button, Flexbox } from "../UX"
 import ColumnContainer from "../UX/elements/ColumnContainer"
 import styled from "../UX/Styled"
+import { currentTheme } from "../UX/theme"
 
 type Props = ReturnType<typeof mergeProps>
 interface State {
@@ -34,12 +35,12 @@ const Hint = styled.pre`
 `
 
 const Input = styled(Flexbox)<{ error?: Error }>`
-  > input {
+  input {
     flex-grow: 2;
     margin-right: 0;
-    border-radius: 0;
     border: ${({ theme, error }) =>
       error ? `solid 1px ${theme.redColor}` : 0};
+    border-radius: 0;
     border-top-left-radius: 0.3em;
     border-bottom-left-radius: 0.3em;
   }
@@ -111,6 +112,7 @@ class View extends React.PureComponent<Props, State> {
     const column = project
       ? project.columns.find(c => c.id === selectedColumnId)
       : undefined
+
     return (
       <ColumnContainer header="Add new project column">
         <>
@@ -140,6 +142,46 @@ class View extends React.PureComponent<Props, State> {
         {!loadingAny &&
           project && (
             <Select
+              styles={{
+                singleValue: styles => ({
+                  ...styles,
+                  color: currentTheme().textColor,
+                }),
+                placeholder: styles => ({
+                  ...styles,
+                  color: currentTheme().secondaryTextColor,
+                }),
+                control: (styles: {}) => ({
+                  ...styles,
+                  background: currentTheme().secondaryBackgroundColor,
+                  minHeight: "34px",
+                }),
+                clearIndicator: (styles: {}) => ({
+                  ...styles,
+                  color: currentTheme().secondaryTextColor,
+                  padding: "2px 8px",
+                }),
+                dropdownIndicator: (styles: {}) => ({
+                  ...styles,
+                  padding: "2px 8px",
+                }),
+                loadingIndicator: (styles: {}) => ({
+                  ...styles,
+                  padding: "2px 8px",
+                }),
+                option: (styles, { isFocused, isSelected }) => ({
+                  ...styles,
+                  color: currentTheme().textColor,
+                  background: isFocused
+                    ? currentTheme().backgroundColor
+                    : currentTheme().secondaryBackgroundColor,
+                }),
+                menu: (styles: {}) => ({
+                  ...styles,
+                  background: currentTheme().secondaryBackgroundColor,
+                  zIndex: 3,
+                }),
+              }}
               value={columns.find(c => c.value === selectedColumnId)}
               autoFocus={true}
               options={columns}
