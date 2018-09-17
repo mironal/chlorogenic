@@ -1,5 +1,5 @@
 import React from "react"
-import { DragSource } from "react-dnd"
+import { ConnectDragSource, DragSource } from "react-dnd"
 import {
   GitHubProjectCard,
   GitHubProjectColumnIdentifier,
@@ -24,18 +24,19 @@ const EllipsisP = styled.p`
 `
 
 export interface CardProps {
-  identifier?: GitHubProjectColumnIdentifier
+  identifier: GitHubProjectColumnIdentifier
   card: GitHubProjectCard
 }
+interface DnDTargetProps {
+  connectDragSource: ConnectDragSource
+  isDragging: boolean
+}
 
-export default DragSource<CardProps>(
+export default DragSource<CardProps, DnDTargetProps>(
   "Card",
   {
     beginDrag(props) {
       return props
-    },
-    canDrag(props) {
-      return !!props.identifier && !!props.card.issue
     },
   },
   (connect, monitor) => {
@@ -45,7 +46,7 @@ export default DragSource<CardProps>(
     }
   },
 )(props => {
-  const { card, connectDragSource } = props as any
+  const { card, connectDragSource } = props as DnDTargetProps & CardProps
   let Content = <span>Unknown</span>
   if (card.note) {
     Content = <EllipsisP>{card.note}</EllipsisP>

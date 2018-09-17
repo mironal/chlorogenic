@@ -2,6 +2,7 @@ import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
 
+import DragAllCardHandle from "../components/DragAllCardHandle"
 import ProjectColumn from "../components/ProjectColumn"
 import { createProjectSlug, isSameProject } from "../misc/github"
 import { getLoadingConditionForIdentifer } from "../models/gh_project_store"
@@ -21,58 +22,49 @@ export interface ProjectColumnProps {
 type Props = ReturnType<typeof mergeProps>
 
 class View extends React.PureComponent<Props> {
-  private onDropCard = (
+  private onDropCards = (
     column: GitHubProjectColumnIdentifier,
-    card: GitHubProjectCard,
+    cards: GitHubProjectCard[],
   ) => {
     const {
       columnIdentifier,
       moveProjectCard,
       createProjectContentCard,
-      fetchProject,
-      setSuccess,
-      setError,
-      clearNotification,
     } = this.props
-
     if (isSameProject(column.project, columnIdentifier.project)) {
+      const opts = cards.map(c => ({
+        columnId: columnIdentifier.id,
+        cardId: c.id,
+      }))
       // move
-      moveProjectCard([
-        {
-          columnId: columnIdentifier.id,
-          cardId: card.id,
-        },
-      ])
-        .then(() => {
-          setSuccess({ message: "φ(•ᴗ•๑)" })
-          return fetchProject()
-        })
-        .then(() => clearNotification())
-        .catch(setError)
+      moveProjectCard(opts)
     } else {
       // copy
-      const { issue } = card
-      if (!issue) {
-        return
+      const opts = cards.map(c => ({
+        columnId: columnIdentifier.id,
+        contentId: c.issue ? c.issue.id : "",
+      }))
+      createProjectContentCard(opts)
+    }
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (prevProps.ops.running && !this.props.ops.running) {
+      const error = this.props.ops.error
+      if (error) {
+        this.props.setError(error)
+      } else {
+        this.props.setSuccess({ message: "Success φ(•ᴗ•๑)" })
+        window.setTimeout(() => this.props.clearNotification(), 2000)
       }
-      createProjectContentCard([
-        {
-          columnId: columnIdentifier.id,
-          contentId: issue.id,
-        },
-      ])
-        .then(() => {
-          setSuccess({ message: "φ(•ᴗ•๑)" })
-          return fetchProject()
-        })
-        .then(() => clearNotification())
-        .catch(setError)
+      this.props.fetchProject(true)
     }
   }
 
   public componentDidMount() {
     this.props.fetchProject()
   }
+
   public render() {
     const {
       loading,
@@ -93,12 +85,16 @@ class View extends React.PureComponent<Props> {
         }`}
         onClickClose={removeColumn}
       >
-        <ProjectColumn
-          loading={running}
-          onDropCard={this.onDropCard}
-          column={column}
-          identifier={columnIdentifier}
-        />
+        {column && (
+          <DragAllCardHandle identifier={columnIdentifier} cards={column.cards}>
+            <ProjectColumn
+              loading={running}
+              onDropCards={this.onDropCards}
+              column={column}
+              identifier={columnIdentifier}
+            />
+          </DragAllCardHandle>
+        )}
       </ColumnContainer>
     )
   }
@@ -160,13 +156,13 @@ const mergeProps = (
     ...condition,
     column,
     moveProjectCard: (opts: MoveProjectCardOpt[]) =>
-      Promise.resolve(moveProjectCard({ token, opts })),
+      moveProjectCard({ token, opts }),
     createProjectContentCard: (opts: CreateProjectContentCardOpt[]) =>
-      Promise.resolve(createProjectContentCard({ token, opts })),
+      createProjectContentCard({ token, opts }),
     removeColumn: () =>
       removeColumn({ index: panelIndex, column: columnIdentifier }),
-    fetchProject: () =>
-      fetchProject({ token, identifier: columnIdentifier.project }),
+    fetchProject: (purge: boolean = false) =>
+      fetchProject({ token, identifier: columnIdentifier.project, purge }),
   }
 }
 

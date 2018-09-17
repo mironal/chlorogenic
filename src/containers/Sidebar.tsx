@@ -1,5 +1,4 @@
 import CircleEditOutlineIcon from "mdi-react/CircleEditOutlineIcon"
-import DeleteOutlineIcon from "mdi-react/DeleteOutlineIcon"
 import React from "react"
 import { ColumnPanel } from "../models/columns"
 import { Button, Flexbox } from "../UX"

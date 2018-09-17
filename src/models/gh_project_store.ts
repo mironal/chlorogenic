@@ -25,10 +25,21 @@ export default createModel<ProjectStoreModel, ModelConfig<ProjectStoreModel>>({
     async fetchProject(payload: {
       token: string
       identifier: GithubProjectIdentifier
+      purge?: boolean
     }) {
-      const { identifier } = payload
+      const { identifier, purge } = payload
 
       const slug = createProjectSlug(identifier)
+
+      if (purge === true) {
+        delete githubRegistry[slug]
+        const o = loadingRegistry[slug]
+        if (o) {
+          o()
+          delete loadingRegistry[slug]
+        }
+      }
+
       let store = githubRegistry[slug]
 
       if (!store) {

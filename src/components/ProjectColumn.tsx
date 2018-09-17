@@ -1,26 +1,42 @@
-import DragHorizontalIcon from "mdi-react/DragHorizontalIcon"
 import React from "react"
 import { ConnectDropTarget, DropTarget } from "react-dnd"
-import { isSameProject } from "../misc/github"
 import {
   GitHubProjectCard,
   GitHubProjectColumn,
   GitHubProjectColumnIdentifier,
 } from "../models/github.types"
+
+import { isSameProject } from "../misc/github"
 import styled from "../UX/Styled"
+import { DragAllCardHandleProps } from "./DragAllCardHandle"
 import ProjectCard, { CardProps } from "./ProjectCard"
 
-const SPAN = styled.span`
+const ErrorSpan = styled.span`
   color: ${({ theme }) => theme.redColor};
 `
 
+const CopySpan = styled.span`
+  color: ${({ theme }) => theme.blueColor};
+  > span {
+    font-size: xx-large;
+  }
+`
+
+const MoveSpan = styled.span`
+  color: ${({ theme }) => theme.yellowColor};
+  > span {
+    font-size: xx-large;
+  }
+`
+
 export interface ProjectColumnProps {
+  readOnly?: boolean
   loading?: boolean
-  identifier?: GitHubProjectColumnIdentifier
+  identifier: GitHubProjectColumnIdentifier
   column?: GitHubProjectColumn
-  onDropCard?(
+  onDropCards?(
     column: GitHubProjectColumnIdentifier,
-    card: GitHubProjectCard,
+    cards: GitHubProjectCard[],
   ): void
 }
 
@@ -28,29 +44,51 @@ interface DnDTargetProps {
   canDrop?: boolean
   isOver?: boolean
   connectDropTarget?: ConnectDropTarget
-  item?: CardProps
+  item?: { identifier: GitHubProjectColumnIdentifier }
+  itemType?: string
 }
 
 export default DropTarget<ProjectColumnProps & DnDTargetProps>(
-  "Card",
+  ["Card", "All-Card"],
   {
     drop(props, monitor) {
-      const { identifier, onDropCard } = props
-      const card = monitor.getItem() as CardProps
-      if (onDropCard && identifier) {
-        onDropCard(identifier, card.card)
+      const { identifier, onDropCards } = props
+      if (monitor.getItemType() === "Card") {
+        const card = monitor.getItem() as CardProps
+        if (onDropCards && identifier) {
+          onDropCards(identifier, [card.card])
+        }
+      } else if (monitor.getItemType() === "All-Card") {
+        const { cards } = monitor.getItem() as DragAllCardHandleProps
+        if (onDropCards && identifier) {
+          onDropCards(identifier, cards)
+        }
       }
       return props
     },
     canDrop(props, monitor) {
-      const cardProp = monitor.getItem()
-      if (!props.column) {
+      if (props.readOnly === true) {
         return false
       }
-      if (props.column.id === cardProp.identifier.id) {
-        return false
+      if (monitor.getItemType() === "Card") {
+        const cardProp = monitor.getItem() as CardProps
+        if (!props.column || props.column.id === cardProp.identifier.id) {
+          return false
+        }
+
+        if (!cardProp.card.issue && cardProp.card.note) {
+          return isSameProject(
+            props.identifier.project,
+            cardProp.identifier.project,
+          )
+        }
+
+        return !!cardProp.card.issue
       }
-      return !!props.identifier
+      return (
+        monitor.getItemType() === "All-Card" &&
+        monitor.getItem().identifier.id !== props.identifier.id
+      )
     },
   },
   (connect, monitor) => {
@@ -59,43 +97,63 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
       item: monitor.getItem(),
+      itemType: monitor.getItemType(),
     }
   },
 )(props => {
   const {
     loading,
     column,
-    item,
     identifier,
     connectDropTarget,
     isOver,
     canDrop,
+    item,
+    itemType,
   } = props
 
-  let msg
-  if (item && item.identifier && isOver && canDrop && identifier) {
-    if (isSameProject(identifier.project, item.identifier.project)) {
-      msg = (
-        <p>
-          The card will be <SPAN>moved</SPAN> to this column
-        </p>
-      )
-    } else {
-      msg = (
-        <p>
-          The card will be <SPAN>copied</SPAN> to this column
-        </p>
-      )
-    }
-  }
-
+  const myColumn = column && item && column.id === item.identifier.id
   const cards = loading || !column ? [] : column.cards
+  let msg = <span />
+
+  if (item && isOver && canDrop) {
+    if (itemType === "Card") {
+      if (isSameProject(identifier.project, item.identifier.project)) {
+        msg = (
+          <MoveSpan>
+            The card will be <span>moved</span> to this column
+          </MoveSpan>
+        )
+      } else {
+        msg = (
+          <CopySpan>
+            The card will be <span>copied</span> to this column
+          </CopySpan>
+        )
+      }
+    } else if (itemType === "All-Card") {
+      if (isSameProject(identifier.project, item.identifier.project)) {
+        msg = (
+          <MoveSpan>
+            All cards will be <span>moved</span> to this column
+          </MoveSpan>
+        )
+      } else {
+        msg = (
+          <CopySpan>
+            All cards will be <span>copied</span> to this column
+          </CopySpan>
+        )
+      }
+    }
+  } else if (isOver && !canDrop && !myColumn) {
+    msg = <ErrorSpan>The card Can not copy or move.</ErrorSpan>
+  }
   return connectDropTarget
     ? connectDropTarget(
         <div style={{ height: "100%" }}>
           {loading && <p>Loading...</p>}
           {msg}
-          <DragHorizontalIcon />
           {cards.map(c => (
             <ProjectCard key={c.id} card={c} identifier={identifier} />
           ))}

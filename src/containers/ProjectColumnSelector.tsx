@@ -196,7 +196,14 @@ class View extends React.PureComponent<Props, State> {
             <Button onClick={this.onClickAdd} size="small">
               Add
             </Button>
-            <ProjectColumn column={column} />
+            <ProjectColumn
+              readOnly={true}
+              identifier={{
+                id: selectedColumnId!,
+                project: project!.identifier,
+              }}
+              column={column}
+            />
           </>
         )}
       </ColumnContainer>
