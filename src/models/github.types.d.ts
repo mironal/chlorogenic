@@ -10,7 +10,7 @@ export interface GitHubProjectCard {
     id: string
     title: string
     number: number
-    auther: string
+    author: string
     url: string
   }
 }

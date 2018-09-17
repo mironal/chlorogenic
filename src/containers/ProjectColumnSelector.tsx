@@ -114,7 +114,10 @@ class View extends React.PureComponent<Props, State> {
       : undefined
 
     return (
-      <ColumnContainer header="Add new project column">
+      <ColumnContainer
+        header="Add"
+        description={`Fetch your project &\n select project's column.`}
+      >
         <>
           <Input error={notifyingError}>
             <input

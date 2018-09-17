@@ -37,7 +37,7 @@ export const parseProjectColumns = (project: any): GitHubProjectColumn[] => {
             title: c.node.content.title,
             number: c.node.content.number,
             url: c.node.content.url,
-            auther: c.node.content.author.login,
+            author: c.node.content.author.login,
           },
         }
       }

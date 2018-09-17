@@ -3,8 +3,10 @@ import React from "react"
 import { connect } from "react-redux"
 
 import ProjectColumn from "../components/ProjectColumn"
+import { createProjectSlug } from "../misc/github"
 import { getLoadingConditionForIdentifer } from "../models/gh_project_store"
 import {
+  GitHubProjectCard,
   GitHubProjectColumn,
   GitHubProjectColumnIdentifier,
 } from "../models/github.types"
@@ -18,6 +20,14 @@ export interface ProjectColumnProps {
 type Props = ReturnType<typeof mergeProps>
 
 class View extends React.PureComponent<Props> {
+  private onDropCard = (
+    card: GitHubProjectCard,
+    column: GitHubProjectColumn,
+  ) => {
+    // tslint:disable-next-line:no-console
+    console.log(card, column)
+  }
+
   public componentDidMount() {
     this.props.fetchProject()
   }
@@ -35,10 +45,16 @@ class View extends React.PureComponent<Props> {
     return (
       <ColumnContainer
         header={column.name}
-        description={project.name}
+        description={`${createProjectSlug(columnIdentifier.project)}\n${
+          project.name
+        }`}
         onClickClose={removeColumn}
       >
-        <ProjectColumn column={column} identifier={columnIdentifier} />
+        <ProjectColumn
+          onDropCard={this.onDropCard}
+          column={column}
+          identifier={columnIdentifier}
+        />
       </ColumnContainer>
     )
   }

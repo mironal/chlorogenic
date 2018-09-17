@@ -25,7 +25,6 @@ const Scroller = styled(Flexbox)`
 const Header = styled(Flexbox)`
   margin: 0;
   font-size: large;
-  margin-bottom: 1em;
   align-items: flex-start;
   h3 {
     margin: 0;
@@ -42,8 +41,9 @@ const Header = styled(Flexbox)`
 `
 
 const Description = styled.p`
+  white-space: pre;
   margin: 0;
-  color: ${({ theme }) => theme.textColor};
+  color: ${({ theme }) => theme.secondaryTextColor};
   font-size: small;
   text-align: right;
 `

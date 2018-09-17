@@ -17,7 +17,10 @@ const SPAN = styled.span`
 export interface ProjectColumnProps {
   identifier?: GitHubProjectColumnIdentifier
   column: GitHubProjectColumn
-  onDropCard?(card: GitHubProjectCard, column: GitHubProjectColumn): void
+  onDropCard?(
+    column: GitHubProjectColumnIdentifier,
+    card: GitHubProjectCard,
+  ): void
 }
 
 interface DnDTargetProps {
@@ -31,10 +34,10 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
   "Card",
   {
     drop(props, monitor) {
-      const { column, onDropCard } = props
+      const { identifier, onDropCard } = props
       const card = monitor.getItem() as CardProps
-      if (onDropCard) {
-        onDropCard(card.card, column)
+      if (onDropCard && identifier) {
+        onDropCard(identifier, card.card)
       }
       return props
     },
