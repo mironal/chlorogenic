@@ -99,8 +99,6 @@ class View extends React.PureComponent<Props, State> {
     const { notifyingError, project, loading } = this.props
 
     let loadingAny = false
-    // tslint:disable-next-line:no-console
-    console.log("loading", loading)
     if (!project && loading) {
       loadingAny = true
     }

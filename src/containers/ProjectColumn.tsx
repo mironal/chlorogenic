@@ -13,6 +13,7 @@ import ColumnContainer from "../UX/elements/ColumnContainer"
 
 export interface ProjectColumnProps {
   column: GitHubProjectColumnIdentifier
+  panelIndex: number
 }
 type Props = ReturnType<typeof mergeProps>
 
@@ -21,12 +22,22 @@ class View extends React.PureComponent<Props> {
     this.props.fetchProject()
   }
   public render() {
-    const { loading, column, project, columnIdentifier } = this.props
+    const {
+      loading,
+      column,
+      project,
+      columnIdentifier,
+      removeColumn,
+    } = this.props
     if (loading || !column || !project) {
       return <ColumnContainer header="loading..." />
     }
     return (
-      <ColumnContainer header={column.name} description={project.name}>
+      <ColumnContainer
+        header={column.name}
+        description={project.name}
+        onClickClose={removeColumn}
+      >
         <ProjectColumn column={column} identifier={columnIdentifier} />
       </ColumnContainer>
     )
@@ -35,23 +46,25 @@ class View extends React.PureComponent<Props> {
 
 const mapState = (
   { projectStore, auth: { token } }: RematchRootState<models>,
-  { column }: ProjectColumnProps,
+  ownProps: ProjectColumnProps,
 ) => ({
-  column,
+  ...ownProps,
   projectStore,
   token: token || "",
 })
 const mapDispatch = ({
   projectStore: { fetchProject },
-}: RematchDispatch<models>) => ({ fetchProject })
+  columns: { removeColumn },
+}: RematchDispatch<models>) => ({ fetchProject, removeColumn })
 
 const mergeProps = (
   {
     token,
     projectStore,
     column: columnIdentifier,
+    panelIndex,
   }: ReturnType<typeof mapState>,
-  { fetchProject }: ReturnType<typeof mapDispatch>,
+  { fetchProject, removeColumn }: ReturnType<typeof mapDispatch>,
 ) => {
   let column: GitHubProjectColumn | undefined
   const condition = getLoadingConditionForIdentifer(
@@ -66,6 +79,8 @@ const mergeProps = (
     columnIdentifier,
     ...condition,
     column,
+    removeColumn: () =>
+      removeColumn({ index: panelIndex, column: columnIdentifier }),
     fetchProject: () =>
       fetchProject({ token, identifier: columnIdentifier.project }),
   }
