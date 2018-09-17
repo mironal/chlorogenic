@@ -11,3 +11,13 @@ A panel based [GitHub Projects](https://help.github.com/articles/about-project-b
 ![ss](./ss/ss.png)
 
 ![usage gif](./ss/usage.gif)
+
+## Technologies (੭•̀ᴗ•̀)
+
+- Front end
+    - React + Rematch + Redux
+    - styled-components
+    - TypeScript
+- Back end
+    - firebase
+    - Graph QL
