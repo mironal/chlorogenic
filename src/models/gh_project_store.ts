@@ -1,4 +1,5 @@
 import { createModel, init, ModelConfig } from "@rematch/core"
+import { Unsubscribe } from "redux"
 import { createProjectSlug } from "../misc/github"
 import github, { ProjectLoadingConditionModel } from "./gh_project_loader"
 import { GithubProjectIdentifier } from "./github.types"
@@ -15,6 +16,10 @@ const githubRegistry: {
   [slug: string]: ReturnType<typeof createStore> | undefined
 } = {}
 
+const loadingRegistry: {
+  [slug: string]: Unsubscribe | null
+} = {}
+
 export default createModel<ProjectStoreModel, ModelConfig<ProjectStoreModel>>({
   effects: dispatch => ({
     async fetchProject(payload: {
@@ -25,19 +30,35 @@ export default createModel<ProjectStoreModel, ModelConfig<ProjectStoreModel>>({
 
       const slug = createProjectSlug(identifier)
       let store = githubRegistry[slug]
+
       if (!store) {
         const s = createStore()
         store = s
         githubRegistry[slug] = store
-        s.subscribe(() => {
+        loadingRegistry[slug] = s.subscribe(() => {
           this.updateModel({
             slug,
             ...s.getState().github,
           })
         })
+      } else {
+        this.updateModel({
+          slug,
+          ...store.getState().github,
+          loading: false,
+        })
       }
 
-      await store.dispatch.github.fetchProject(payload)
+      await Promise.resolve(store.dispatch.github.fetchProject(payload)).catch()
+      this.updateModel({
+        slug,
+        ...store.getState().github,
+      })
+      const off = loadingRegistry[slug]
+      if (off) {
+        off()
+        loadingRegistry[slug] = null
+      }
     },
   }),
   reducers: {
