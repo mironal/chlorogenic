@@ -151,7 +151,7 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
   }
   return connectDropTarget
     ? connectDropTarget(
-        <div style={{ height: "100%" }}>
+        <div>
           {loading && <p>Loading...</p>}
           {msg}
           {cards.map(c => (
