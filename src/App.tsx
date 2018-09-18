@@ -23,7 +23,7 @@ const Container = styled(Flexbox)`
 const App = ({ authed }: Props) => (
   <>
     <Container>
-      <Header />
+      {authed && <Header />}
       <Notification />
       {!authed && <SignIn />}
       {authed && <Dashboard />}
