@@ -22,7 +22,6 @@ const Container = styled(Flexbox)`
 
 const Content = styled(Flexbox)`
   height: 100%;
-  margin-right: 1em;
 `
 
 const App = ({ authed }: Props) => (
