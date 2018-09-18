@@ -12,8 +12,14 @@ interface SidebarProps {
   onClickEdit?(index: number): void
 }
 const SideBar = styled(Flexbox)`
+  z-index: 1000;
   flex-direction: column;
   width: 10em;
+  background: ${({ theme }) => theme.backgroundColor};
+  border-right: solid 1px ${({ theme }) => theme.baseColor};
+  padding: 0.6em;
+  padding-bottom: 0;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 `
 const UL = styled.ul`
   list-style: none;

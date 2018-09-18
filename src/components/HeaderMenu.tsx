@@ -7,6 +7,7 @@ const HeaderContainer = styled(Flexbox)`
   align-items: center;
   background: ${({ theme }) => theme.backgroundColor};
   height: 3em;
+  border-bottom: solid 1px ${({ theme }) => theme.baseColor};
 `
 
 const Left = styled(Box)`

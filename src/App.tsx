@@ -23,7 +23,6 @@ const Container = styled(Flexbox)`
 
 const Content = styled(Flexbox)`
   height: 100%;
-  margin-left: 1em;
   margin-right: 1em;
 `
 

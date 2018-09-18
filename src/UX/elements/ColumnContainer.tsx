@@ -7,11 +7,13 @@ import { VFlexbox } from "./Flexbox"
 
 const ColumnContainer = styled(VFlexbox)`
   border: solid 1px ${({ theme }) => theme.baseColor};
-  border-radius: 4px;
-  padding: 0.4em;
-  margin: 2px;
+  border-top: 0;
+  border-bottom: 0;
+  padding: 0.6em;
+  padding-bottom: 0;
   background: ${({ theme }) => theme.backgroundColor};
   width: 16em;
+  margin-left: 0.2em;
 `
 
 ColumnContainer.displayName = "ColumnContainer"
