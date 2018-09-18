@@ -6,6 +6,7 @@ const HeaderContainer = styled(Flexbox)`
   padding: 0em 1em;
   align-items: center;
   background: ${({ theme }) => theme.backgroundColor};
+  height: 3em;
 `
 
 const Left = styled(Box)`

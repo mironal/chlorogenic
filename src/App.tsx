@@ -18,6 +18,13 @@ type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 const Container = styled(Flexbox)`
   flex-direction: column;
   height: 100%;
+  width: 100%;
+`
+
+const Content = styled(Flexbox)`
+  height: 100%;
+  margin-left: 1em;
+  margin-right: 1em;
 `
 
 const App = ({ authed }: Props) => (
@@ -25,8 +32,10 @@ const App = ({ authed }: Props) => (
     <Container>
       {authed && <Header />}
       <Notification />
-      {!authed && <SignIn />}
-      {authed && <Dashboard />}
+      <Content>
+        {!authed && <SignIn />}
+        {authed && <Dashboard />}
+      </Content>
     </Container>
     <Modal />
   </>
