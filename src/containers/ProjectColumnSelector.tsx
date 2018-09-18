@@ -97,13 +97,13 @@ class View extends React.PureComponent<Props, State> {
 
   public render() {
     const { input, selectedColumnId } = this.state
-    const { notifyingError, project, loading } = this.props
+    const { notifyingError, project, loading, columns } = this.props
 
     let loadingAny = false
     if (!project && loading) {
       loadingAny = true
     }
-    const columns = project
+    const options = project
       ? project.columns.map((c, i) => ({
           value: c.id,
           label: `${i + 1}-${c.name}`,
@@ -185,15 +185,20 @@ class View extends React.PureComponent<Props, State> {
                   zIndex: 3,
                 }),
               }}
-              value={columns.find(c => c.value === selectedColumnId)}
+              value={options.find(c => c.value === selectedColumnId)}
               autoFocus={true}
-              options={columns}
+              options={options}
               onChange={({ value }: any) => this.onChangeColumnSelection(value)}
             />
           )}
         {column && (
           <>
-            <Button onClick={this.onClickAdd} size="small">
+            <Button
+              onClick={this.onClickAdd}
+              size="small"
+              // disabled while selecting an already added column.
+              disabled={columns.some(c => c.id === selectedColumnId)}
+            >
               Add
             </Button>
             <ProjectColumn
@@ -217,12 +222,14 @@ const mapState = (
     projectStore,
     notification: { notifyingError },
     projectSelector: identifier,
+    columns,
   }: RematchRootState<models>,
   { panelIndex }: { panelIndex: number },
 ) => ({
   token: token || "",
   panelIndex,
   notifyingError,
+  columns,
   ...getLoadingConditionForIdentifer(projectStore, identifier),
 })
 const mapDispatch = ({
@@ -240,7 +247,7 @@ const mapDispatch = ({
 })
 
 const mergeProps = (
-  { token, panelIndex, ...rest }: ReturnType<typeof mapState>,
+  { token, panelIndex, columns, ...rest }: ReturnType<typeof mapState>,
   {
     fetchProject,
     addColumn,
@@ -251,6 +258,7 @@ const mergeProps = (
   return {
     ...rest,
     ...fns,
+    columns: columns[panelIndex].columns,
     addColumn: (column: GitHubProjectColumnIdentifier) =>
       addColumn({ column, index: panelIndex }),
     fetchProject: (identifier: GithubProjectIdentifier) => {

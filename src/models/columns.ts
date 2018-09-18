@@ -1,4 +1,5 @@
 import { createModel, ModelConfig } from "@rematch/core"
+import CHLOError from "../misc/CHLOError"
 import { isGitHubProjectColumnIdentifier } from "../misc/github"
 import {
   GitHubProjectColumnIdentifier,
@@ -23,10 +24,17 @@ export default createModel<ColumnPanelModel, ModelConfig<ColumnPanelModel>>({
   reducers: {
     addColumn: (state, { index, column }: ColumnPayload) => {
       if (!isGitHubProjectColumnIdentifier(column)) {
-        throw new Error("Invalid payload")
+        throw new CHLOError("Invalid payload", "column is required.")
       }
       if (typeof index !== "number") {
-        throw new Error("Invalid payload")
+        throw new CHLOError("Invalid payload", "index is required.")
+      }
+
+      if (state[index].columns.some(c => c.id === column.id)) {
+        throw new CHLOError(
+          "Invalid payload",
+          "That column has already been added.",
+        )
       }
 
       const next = state.slice()
