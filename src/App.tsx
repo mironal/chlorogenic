@@ -4,7 +4,6 @@ import React from "react"
 import { connect } from "react-redux"
 
 import Dashboard from "./containers/Dashboard"
-import Notification from "./containers/Notification"
 
 import Header from "./containers/Header"
 import SignIn from "./containers/SignIn"
@@ -30,7 +29,6 @@ const App = ({ authed }: Props) => (
   <>
     <Container>
       {authed && <Header />}
-      <Notification />
       <Content>
         {!authed && <SignIn />}
         {authed && <Dashboard />}
