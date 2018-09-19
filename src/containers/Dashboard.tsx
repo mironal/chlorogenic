@@ -29,21 +29,26 @@ const DnDBoard = DragDropContext(HTML5Backend)(BoardContainer)
 
 type Props = ReturnType<typeof margeProps>
 interface State {
-  panelIndex: number
   editingIndex?: number
 }
 
 class Board extends React.PureComponent<Props, State> {
-  public state: State = { panelIndex: 0 }
+  public state: State = {}
   private changePanelIndex = (panelIndex: number) =>
-    this.setState({ panelIndex })
+    this.props.updatePanelIndex(panelIndex)
 
   private startEdit = (editingIndex: number) => this.setState({ editingIndex })
   private endEdit = () => this.setState({ editingIndex: undefined })
 
   public render() {
-    const { columns, createPanel, renamePanel, removePanel } = this.props
-    const { panelIndex, editingIndex } = this.state
+    const {
+      columns,
+      createPanel,
+      renamePanel,
+      removePanel,
+      panelIndex,
+    } = this.props
+    const { editingIndex } = this.state
     return (
       <Flexbox style={{ height: "100%" }}>
         <Sidebar
@@ -82,16 +87,19 @@ class Board extends React.PureComponent<Props, State> {
   }
 }
 
-const mapState = ({ columns }: RematchRootState<models>) => ({
+const mapState = ({ columns, panelIndex }: RematchRootState<models>) => ({
   columns,
+  panelIndex,
 })
 
 const mapDispatch = ({
   columns: { createPanel, renamePanel, removePanel },
+  panelIndex: { update: updatePanelIndex },
 }: RematchDispatch<models>) => ({
   createPanel,
   renamePanel,
   removePanel,
+  updatePanelIndex,
 })
 
 const margeProps = (

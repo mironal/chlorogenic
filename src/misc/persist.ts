@@ -80,7 +80,7 @@ const persistPlugin = (config: PersistConfig): Plugin => {
         if (key) {
           const nextState = next(action)
           const after = store.getState()
-          merged = { ...merged, [key]: after[key] || {} }
+          merged = { ...merged, [key]: after[key] }
           debugLog("persist:schedule:store", key, after[key])
           storeLazy()
           return nextState

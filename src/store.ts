@@ -2,8 +2,8 @@ import { init } from "@rematch/core"
 import persistPluginFactory, { persister } from "./misc/persist"
 import models from "./models"
 const persistPlugin = persistPluginFactory({
-  whitelist: ["auth", "columns"],
-  debug: true,
+  whitelist: ["auth", "columns", "panelIndex"],
+  debug: process.env.NODE_ENV !== "production",
   delay: 2000,
   version: 2,
 })
