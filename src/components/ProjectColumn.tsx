@@ -157,6 +157,7 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
           {cards.map(c => (
             <ProjectCard key={c.id} card={c} identifier={identifier} />
           ))}
+          {cards.length === 0 && <p>There are no cards.</p>}
         </div>,
       )
     : null
