@@ -1,14 +1,13 @@
 # chlorogenic :coffee:
 
-A panel based [GitHub Projects](https://help.github.com/articles/about-project-boards/) editor.
+Let's organize your GitHub projects of multiple repositories.
 
 [https://chlorogenic-2ca86.firebaseapp.com/](https://chlorogenic-2ca86.firebaseapp.com/)
 
-## Features φ(•ᴗ•๑)
+## Aim at...
 
-- [x] Operate project's cards across repositories.
-- [ ] Auto reload
-- [ ] API cache
+- Operate project's cards across any projects or repositories.
+- Bulk operation on multiple cards
 
 ![ss](./ss/ss.png)
 
