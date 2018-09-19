@@ -4,14 +4,15 @@ import React from "react"
 import { connect } from "react-redux"
 import styled from "styled-components"
 import { models } from "../store"
-import { Button, Flexbox, Icon } from "../UX"
+import { Button, Icon, VFlexbox } from "../UX"
 
-const Container = styled(Flexbox)`
+const Container = styled(VFlexbox)`
   margin-top: 20vh;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 `
+
+Container.displayName = "SignInContainer"
 
 const Title = styled.h1`
   ::after {
@@ -22,9 +23,11 @@ const Title = styled.h1`
   }
 `
 
+Title.displayName = "Title"
+
 type Props = ReturnType<typeof mapDispatch>
 
-const View = ({ signIn }: Props) => {
+const View: React.SFC<Props> = ({ signIn }) => {
   return (
     <Container>
       <Title>chlorogenic</Title>
@@ -47,3 +50,5 @@ export default connect(
   mapState,
   mapDispatch,
 )(View)
+
+View.displayName = "SignIn"

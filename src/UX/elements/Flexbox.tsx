@@ -18,4 +18,5 @@ export const VFlexbox = styled.div`
   display: flex;
   flex-direction: column;
 `
+
 VFlexbox.displayName = "VFlexbox"

@@ -9,22 +9,27 @@ import Header from "./containers/Header"
 import SignIn from "./containers/SignIn"
 import Modal from "./Modal"
 import { models } from "./store"
-import { Flexbox } from "./UX"
+import { Flexbox, VFlexbox } from "./UX"
 import styled from "./UX/Styled"
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
-const Container = styled(Flexbox)`
-  flex-direction: column;
+const Container = styled(VFlexbox)`
   height: 100%;
   width: 100%;
 `
+Container.displayName = "AppContainer"
 
 const Content = styled(Flexbox)`
   height: 100%;
-`
 
-const App = ({ authed }: Props) => (
+  > * {
+    flex-grow: 1;
+  }
+`
+Content.displayName = "AppContent"
+
+const App: React.SFC<Props> = ({ authed }) => (
   <>
     <Container>
       {authed && <Header />}
@@ -46,3 +51,5 @@ export default connect(
   mapState,
   mapDispatch,
 )(App)
+
+App.displayName = "App"

@@ -75,6 +75,7 @@ const Background = styled.div`
     background: ${({ theme: t }) => t.secondaryBackgroundColor};
   }
 `
+Background.displayName = "Background"
 
 const Root = () => (
   <Provider store={store}>
