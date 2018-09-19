@@ -13,6 +13,7 @@ import {
 } from "../models/github.types"
 import { CreateProjectContentCardOpt, MoveProjectCardOpt } from "../models/ops"
 import { models } from "../store"
+import { Button, Flexbox } from "../UX"
 import ColumnContainer from "../UX/elements/ColumnContainer"
 
 export interface ProjectColumnProps {
@@ -71,6 +72,8 @@ class View extends React.PureComponent<Props> {
       column,
       project,
       columnIdentifier,
+      moveToLeftColumn,
+      moveToRightColumn,
       removeColumn,
       ops: { running },
     } = this.props
@@ -95,6 +98,14 @@ class View extends React.PureComponent<Props> {
             />
           </DragAllCardHandle>
         )}
+        <Flexbox>
+          <Button onClick={moveToLeftColumn} transparent={true}>
+            {"<"}
+          </Button>
+          <Button onClick={moveToRightColumn} transparent={true}>
+            {">"}
+          </Button>
+        </Flexbox>
       </ColumnContainer>
     )
   }
@@ -111,12 +122,13 @@ const mapState = (
 })
 const mapDispatch = ({
   projectStore: { fetchProject },
-  columns: { removeColumn },
+  columns: { removeColumn, moveColumn },
   notification: { clear, setError, setSuccess },
   ops: { createProjectContentCard, moveProjectCard },
 }: RematchDispatch<models>) => ({
   fetchProject,
   removeColumn,
+  moveColumn,
   createProjectContentCard,
   moveProjectCard,
   clearNotification: clear,
@@ -135,6 +147,7 @@ const mergeProps = (
   {
     fetchProject,
     removeColumn,
+    moveColumn,
     createProjectContentCard,
     moveProjectCard,
     ...fns
@@ -159,6 +172,10 @@ const mergeProps = (
       moveProjectCard({ token, opts }),
     createProjectContentCard: (opts: CreateProjectContentCardOpt[]) =>
       createProjectContentCard({ token, opts }),
+    moveToLeftColumn: () =>
+      moveColumn({ index: panelIndex, column: columnIdentifier, add: -1 }),
+    moveToRightColumn: () =>
+      moveColumn({ index: panelIndex, column: columnIdentifier, add: 1 }),
     removeColumn: () =>
       removeColumn({ index: panelIndex, column: columnIdentifier }),
     fetchProject: (purge: boolean = false) =>

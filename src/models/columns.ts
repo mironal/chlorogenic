@@ -1,10 +1,7 @@
 import { createModel, ModelConfig } from "@rematch/core"
 import CHLOError from "../misc/CHLOError"
 import { isGitHubProjectColumnIdentifier } from "../misc/github"
-import {
-  GitHubProjectColumnIdentifier,
-  GithubProjectIdentifier,
-} from "./github.types"
+import { GitHubProjectColumnIdentifier } from "./github.types"
 
 export interface ColumnPanel {
   name?: string
@@ -15,7 +12,7 @@ export type ColumnPanelModel = ColumnPanel[]
 
 export interface ColumnPayload {
   index: number
-  column: GithubProjectIdentifier
+  column: GitHubProjectColumnIdentifier
 }
 
 const initialState: ColumnPanelModel = [{ columns: [] }]
@@ -39,6 +36,39 @@ export default createModel<ColumnPanelModel, ModelConfig<ColumnPanelModel>>({
 
       const next = state.slice()
       next[index].columns.push(column)
+
+      return next
+    },
+    moveColumn: (
+      state,
+      { index, column, add }: ColumnPayload & { add: number },
+    ) => {
+      const from = state[index].columns.findIndex(c => c.id === column.id)
+
+      if (from === -1) {
+        throw new CHLOError("Invalid payload")
+      }
+
+      const columns = state[index].columns.slice()
+      let to = from + add
+      if (to < 0) {
+        to = columns.length + to
+      } else if (to >= columns.length) {
+        to = to % columns.length
+      }
+
+      const temp = columns[from]
+      if (!temp) {
+        throw new CHLOError("Invalid payload")
+      }
+      if (!columns[to]) {
+        throw new CHLOError("Invalid payload")
+      }
+      columns[from] = columns[to]
+      columns[to] = temp
+
+      const next = state.slice()
+      next[index] = { name: next[index].name, columns }
 
       return next
     },
