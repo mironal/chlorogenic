@@ -1,6 +1,6 @@
 # chlorogenic :coffee:
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/mironal/chlorogenic.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.com/mironal/chlorogenic.svg?branch=master)](https://travis-ci.com/mironal/chlorogenic) [![Greenkeeper badge](https://badges.greenkeeper.io/mironal/chlorogenic.svg)](https://greenkeeper.io/) [![codecov](https://codecov.io/gh/mironal/chlorogenic/branch/master/graph/badge.svg)](https://codecov.io/gh/mironal/chlorogenic)
 
 Let's organize your GitHub projects of multiple repositories.
 
