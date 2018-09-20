@@ -6,7 +6,7 @@
     "@rematch/core": "1.0.0-beta.5",
     "axios": "0.18.0",
     "color": "3.0.0",
-    "firebase": "5.5.0",
+    "firebase": "5.5.1",
     "mdi-react": "4.3.0",
     "react": "16.5.2",
     "react-dnd": "5.0.0",
