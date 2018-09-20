@@ -61,7 +61,11 @@ class Board extends React.PureComponent<Props, State> {
         <DnDBoard>
           <Stroller>
             {columns[panelIndex].columns.map(c => (
-              <ProjectColumn key={c.id} panelIndex={panelIndex} column={c} />
+              <ProjectColumn
+                key={c.id}
+                panelIndex={panelIndex}
+                identifier={c}
+              />
             ))}
             <ProjectColumnSelector panelIndex={panelIndex} />
           </Stroller>

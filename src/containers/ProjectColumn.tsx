@@ -5,10 +5,8 @@ import { connect } from "react-redux"
 import DragAllCardHandle from "../components/DragAllCardHandle"
 import ProjectColumn from "../components/ProjectColumn"
 import { createProjectSlug, isSameProject } from "../misc/github"
-import { getLoadingConditionForIdentifer } from "../models/gh_project_store"
 import {
   GitHubProjectCard,
-  GitHubProjectColumn,
   GitHubProjectColumnIdentifier,
 } from "../models/github.types"
 import { CreateProjectContentCardOpt, MoveProjectCardOpt } from "../models/ops"
@@ -17,7 +15,7 @@ import { Button, Flexbox } from "../UX"
 import ColumnContainer from "../UX/elements/ColumnContainer"
 
 export interface ProjectColumnProps {
-  column: GitHubProjectColumnIdentifier
+  identifier: GitHubProjectColumnIdentifier
   panelIndex: number
 }
 type Props = ReturnType<typeof mergeProps>
@@ -27,14 +25,10 @@ class View extends React.PureComponent<Props> {
     column: GitHubProjectColumnIdentifier,
     cards: GitHubProjectCard[],
   ) => {
-    const {
-      columnIdentifier,
-      moveProjectCard,
-      createProjectContentCard,
-    } = this.props
-    if (isSameProject(column.project, columnIdentifier.project)) {
+    const { identifier, moveProjectCard, createProjectContentCard } = this.props
+    if (isSameProject(column.project, identifier.project)) {
       const opts = cards.map(c => ({
-        columnId: columnIdentifier.id,
+        columnId: identifier.id,
         cardId: c.id,
       }))
       // move
@@ -42,7 +36,7 @@ class View extends React.PureComponent<Props> {
     } else {
       // copy
       const opts = cards.map(c => ({
-        columnId: columnIdentifier.id,
+        columnId: identifier.id,
         contentId: c.issue ? c.issue.id : "",
       }))
       createProjectContentCard(opts)
@@ -58,43 +52,53 @@ class View extends React.PureComponent<Props> {
         this.props.setSuccess({ message: "Success φ(•ᴗ•๑)" })
         window.setTimeout(() => this.props.clearNotification(), 2000)
       }
-      this.props.fetchProject(true)
+      this.props.fetchColumn()
     }
   }
 
   public componentDidMount() {
-    this.props.fetchProject()
+    this.props.fetchColumn()
   }
 
   public render() {
     const {
-      loading,
-      column,
-      project,
-      columnIdentifier,
+      columnState,
+      identifier,
       moveToLeftColumn,
       moveToRightColumn,
       removeColumn,
       ops: { running },
     } = this.props
-    if (loading || !column || !project) {
-      return <ColumnContainer header="loading..." />
-    }
+
+    const { loading, column, error } = columnState
+
+    const header: string = (() => {
+      if (loading) {
+        return "Loading"
+      }
+      if (error) {
+        return error.message
+      }
+      if (column) {
+        return column.name
+      }
+      return ""
+    })()
     return (
       <ColumnContainer
-        header={column.name}
-        description={`${createProjectSlug(columnIdentifier.project)}\n${
-          project.name
+        header={header}
+        description={`${createProjectSlug(identifier.project)}\n${
+          identifier.project.number
         }`}
         onClickClose={removeColumn}
       >
         {column && (
-          <DragAllCardHandle identifier={columnIdentifier} cards={column.cards}>
+          <DragAllCardHandle identifier={identifier} cards={column.cards}>
             <ProjectColumn
               loading={running}
               onDropCards={this.onDropCards}
               column={column}
-              identifier={columnIdentifier}
+              identifier={identifier}
             />
           </DragAllCardHandle>
         )}
@@ -112,21 +116,22 @@ class View extends React.PureComponent<Props> {
 }
 
 const mapState = (
-  { projectStore, auth: { token }, ops }: RematchRootState<models>,
-  ownProps: ProjectColumnProps,
+  { auth: { token }, ops, columnLoader }: RematchRootState<models>,
+  { panelIndex, identifier }: ProjectColumnProps,
 ) => ({
-  ...ownProps,
-  projectStore,
+  panelIndex,
+  identifier,
+  columnState: columnLoader[identifier.id] || {},
   token: token || "",
   ops,
 })
 const mapDispatch = ({
-  projectStore: { fetchProject },
   columns: { removeColumn, moveColumn },
   notification: { clear, setError, setSuccess },
   ops: { createProjectContentCard, moveProjectCard },
+  columnLoader: { fetchColumn },
 }: RematchDispatch<models>) => ({
-  fetchProject,
+  fetchColumn,
   removeColumn,
   moveColumn,
   createProjectContentCard,
@@ -137,15 +142,9 @@ const mapDispatch = ({
 })
 
 const mergeProps = (
+  { identifier, token, panelIndex, ...rest }: ReturnType<typeof mapState>,
   {
-    token,
-    projectStore,
-    column: columnIdentifier,
-    panelIndex,
-    ...rest
-  }: ReturnType<typeof mapState>,
-  {
-    fetchProject,
+    fetchColumn,
     removeColumn,
     moveColumn,
     createProjectContentCard,
@@ -153,33 +152,21 @@ const mergeProps = (
     ...fns
   }: ReturnType<typeof mapDispatch>,
 ) => {
-  let column: GitHubProjectColumn | undefined
-  const condition = getLoadingConditionForIdentifer(
-    projectStore,
-    columnIdentifier.project,
-  )
-  if (condition.project) {
-    column = condition.project.columns.find(c => c.id === columnIdentifier.id)
-  }
-
   return {
     ...rest,
     ...fns,
-    columnIdentifier,
-    ...condition,
-    column,
+    identifier,
+    panelIndex,
+    fetchColumn: () => fetchColumn({ identifier, token }),
     moveProjectCard: (opts: MoveProjectCardOpt[]) =>
       moveProjectCard({ token, opts }),
     createProjectContentCard: (opts: CreateProjectContentCardOpt[]) =>
       createProjectContentCard({ token, opts }),
     moveToLeftColumn: () =>
-      moveColumn({ index: panelIndex, column: columnIdentifier, add: -1 }),
+      moveColumn({ index: panelIndex, column: identifier, add: -1 }),
     moveToRightColumn: () =>
-      moveColumn({ index: panelIndex, column: columnIdentifier, add: 1 }),
-    removeColumn: () =>
-      removeColumn({ index: panelIndex, column: columnIdentifier }),
-    fetchProject: (purge: boolean = false) =>
-      fetchProject({ token, identifier: columnIdentifier.project, purge }),
+      moveColumn({ index: panelIndex, column: identifier, add: 1 }),
+    removeColumn: () => removeColumn({ index: panelIndex, column: identifier }),
   }
 }
 
