@@ -7,7 +7,6 @@ import { models } from "../store"
 import { Button, Icon, VFlexbox } from "../UX"
 
 const Container = styled(VFlexbox)`
-  margin-top: 20vh;
   justify-content: center;
   align-items: center;
 `
