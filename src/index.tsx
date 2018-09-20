@@ -1,13 +1,9 @@
 import firebase from "firebase"
 import React from "react"
 import ReactDOM from "react-dom"
-import { Provider } from "react-redux"
-import { ThemeProvider } from "styled-components"
 import App from "./App"
 import registerServiceWorker from "./registerServiceWorker"
-import { store } from "./store"
-import styled, { injectGlobal } from "./UX/Styled"
-import { theme } from "./UX/theme"
+import { injectGlobal } from "./UX/Styled"
 
 const config = {
   apiKey: process.env.REACT_APP_FIREBASE_apiKey,
@@ -54,38 +50,6 @@ injectGlobal`
   }
 
 `
-const Background = styled.div`
-  color: ${({ theme: t }) => t.textColor};
-  height: 100%;
-  background: ${props => props.theme.secondaryBackgroundColor};
 
-  a {
-    color: ${({ theme: t }) => t.secondaryBaseColor};
-
-    &:visited {
-      color: ${({ theme: t }) => t.baseColor};
-    }
-  }
-
-  input {
-    &:placeholder-shown {
-      color: ${({ theme: t }) => t.secondaryTextColor};
-    }
-    color: ${({ theme: t }) => t.textColor};
-    background: ${({ theme: t }) => t.secondaryBackgroundColor};
-  }
-`
-Background.displayName = "Background"
-
-const Root = () => (
-  <Provider store={store}>
-    <ThemeProvider theme={theme.main}>
-      <Background>
-        <App />
-      </Background>
-    </ThemeProvider>
-  </Provider>
-)
-
-ReactDOM.render(<Root />, document.getElementById("root") as HTMLElement)
+ReactDOM.render(<App />, document.getElementById("root") as HTMLElement)
 registerServiceWorker()
