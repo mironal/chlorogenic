@@ -8,18 +8,22 @@ export interface NotificationModel {
   notifyingError?: Error
 }
 
+export type SetSuccessPayload =
+  | Pick<NotificationModel, "message" | "description">
+  | string
+
 export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
   reducers: {
     clear: () => {
       return {}
     },
-    setSuccess: (
-      state,
-      {
-        message,
-        description,
-      }: Pick<NotificationModel, "message" | "description">,
-    ) => {
+    setSuccess: (state, payload: SetSuccessPayload) => {
+      if (typeof payload === "string") {
+        return { type: "success", message: payload }
+      }
+
+      const { message, description } = payload
+
       if (!message) {
         // tslint:disable-next-line:no-console
         console.warn(
