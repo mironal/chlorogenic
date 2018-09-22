@@ -1,11 +1,11 @@
 import React from "react"
 import { ConnectDragSource, DragSource } from "react-dnd"
+import styled from "../../appearance/styled"
 import {
   GitHubProjectCard,
   GitHubProjectColumnIdentifier,
-} from "../models/github.types"
-import { Box } from "../UX"
-import styled from "../UX/Styled"
+} from "../../models/github.types"
+import { Box } from "../parts/Flexbox"
 
 const CardBox = styled(Box)`
   border-radius: 4px;

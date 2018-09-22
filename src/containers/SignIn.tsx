@@ -2,9 +2,9 @@ import { RematchDispatch, RematchRootState } from "@rematch/core"
 import GithubFaceIcon from "mdi-react/GithubFaceIcon"
 import React from "react"
 import { connect } from "react-redux"
-import styled from "styled-components"
+import styled from "../appearance/styled"
+import { Button, Icon, VFlexbox } from "../components/parts"
 import { models } from "../store"
-import { Button, Icon, VFlexbox } from "../UX"
 
 const Container = styled(VFlexbox)`
   justify-content: center;

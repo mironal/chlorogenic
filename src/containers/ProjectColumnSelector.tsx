@@ -3,7 +3,10 @@ import React from "react"
 import { connect } from "react-redux"
 
 import Select from "react-select"
-import ProjectColumn from "../components/ProjectColumn"
+import styled from "../appearance/styled"
+import { currentTheme } from "../appearance/theme"
+import { ColumnContainer, ProjectColumn } from "../components"
+import { Button, Flexbox } from "../components/parts"
 import { parseProjectIdentifierString } from "../misc/parser"
 import Modal from "../Modal"
 import { getLoadingConditionForIdentifer } from "../models/gh_project_store"
@@ -12,10 +15,6 @@ import {
   GithubProjectIdentifier,
 } from "../models/github.types"
 import { models } from "../store"
-import { Button, Flexbox } from "../UX"
-import ColumnContainer from "../UX/elements/ColumnContainer"
-import styled from "../UX/Styled"
-import { currentTheme } from "../UX/theme"
 
 type Props = ReturnType<typeof mergeProps>
 interface State {

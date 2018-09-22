@@ -1,6 +1,7 @@
 import React from "react"
-import { Button, Flexbox, VFlexbox } from "../UX"
-import styled from "../UX/Styled"
+import styled from "../appearance/styled"
+import Button from "./parts/Button"
+import Flexbox, { VFlexbox } from "./parts/Flexbox"
 
 const Title = styled.h3`
   margin: 0;

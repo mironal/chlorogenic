@@ -1,10 +1,10 @@
 import Color from "color"
-import { css, ThemedStyledProps } from "styled-components"
+import { ThemedStyledProps } from "styled-components"
+import { StylesFunc } from "../../appearance/utils"
+import { SizeProps } from "./props"
 
-import styled from "../../UX/Styled"
-import { Theme } from "../../UX/theme"
-import { StylesFunc } from "../../UX/UI"
-import { SizeProps } from "../props"
+import styled, { css } from "../../appearance/styled"
+import { Theme } from "../../appearance/theme"
 
 export type ButtonProps = {
   [key: string]: any

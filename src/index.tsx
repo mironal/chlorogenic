@@ -2,8 +2,8 @@ import firebase from "firebase"
 import React from "react"
 import ReactDOM from "react-dom"
 import App from "./App"
+import { injectGlobal } from "./appearance/styled"
 import registerServiceWorker from "./registerServiceWorker"
-import { injectGlobal } from "./UX/Styled"
 
 const config = {
   apiKey: process.env.REACT_APP_FIREBASE_apiKey,

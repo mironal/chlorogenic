@@ -4,10 +4,10 @@ import {
   GitHubProjectCard,
   GitHubProjectColumn,
   GitHubProjectColumnIdentifier,
-} from "../models/github.types"
+} from "../../models/github.types"
 
-import { isSameProject } from "../misc/github"
-import styled from "../UX/Styled"
+import styled from "../../appearance/styled"
+import { isSameProject } from "../../misc/github"
 import { DragAllCardHandleProps } from "./DragAllCardHandle"
 import ProjectCard, { CardProps } from "./ProjectCard"
 

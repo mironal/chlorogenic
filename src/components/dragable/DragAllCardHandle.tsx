@@ -4,7 +4,7 @@ import { ConnectDragSource, DragSource } from "react-dnd"
 import {
   GitHubProjectCard,
   GitHubProjectColumnIdentifier,
-} from "../models/github.types"
+} from "../../models/github.types"
 
 export interface DragAllCardHandleProps {
   identifier: GitHubProjectColumnIdentifier

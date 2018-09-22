@@ -2,8 +2,9 @@ import { RematchDispatch, RematchRootState } from "@rematch/core"
 import React from "react"
 import { connect } from "react-redux"
 
-import DragAllCardHandle from "../components/DragAllCardHandle"
-import ProjectColumn from "../components/ProjectColumn"
+import { ColumnContainer } from "../components"
+import { DragAllCardHandle, ProjectColumn } from "../components"
+import { Button, Flexbox } from "../components/parts"
 import { createProjectSlug, isSameProject } from "../misc/github"
 import {
   GitHubProjectCard,
@@ -11,8 +12,6 @@ import {
 } from "../models/github.types"
 import { CreateProjectContentCardOpt, MoveProjectCardOpt } from "../models/ops"
 import { models } from "../store"
-import { Button, Flexbox } from "../UX"
-import ColumnContainer from "../UX/elements/ColumnContainer"
 
 export interface ProjectColumnProps {
   identifier: GitHubProjectColumnIdentifier

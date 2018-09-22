@@ -1,8 +1,8 @@
 import { ThemedStyledProps } from "styled-components"
-import { Theme } from "../../UX/theme"
-import { SizeProps } from "../props"
-import styled, { css } from "../Styled"
-import { StylesFunc } from "../UI"
+import styled, { css } from "../../appearance/styled"
+import { Theme } from "../../appearance/theme"
+import { StylesFunc } from "../../appearance/utils"
+import { SizeProps } from "./"
 import Flexbox from "./Flexbox"
 
 export type IconProps = {

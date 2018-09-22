@@ -6,10 +6,10 @@ import styled from "styled-components"
 
 import { DragDropContext } from "react-dnd"
 import HTML5Backend from "react-dnd-html5-backend"
-import { ModalEditor } from "../components/NameEditor"
+import { ModalNameEditor } from "../components"
+import { Flexbox } from "../components/parts"
 import Modal from "../Modal"
 import { models } from "../store"
-import { Flexbox } from "../UX"
 import ProjectColumn from "./ProjectColumn"
 import ProjectColumnSelector from "./ProjectColumnSelector"
 import Sidebar from "./Sidebar"
@@ -72,7 +72,7 @@ class Board extends React.PureComponent<Props, State> {
         </DnDBoard>
         {editingIndex !== undefined && (
           <Modal onClickOutside={this.endEdit}>
-            <ModalEditor
+            <ModalNameEditor
               defaultName={columns[editingIndex].name}
               onClickCancel={this.endEdit}
               onClickDelete={() => {

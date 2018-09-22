@@ -1,8 +1,8 @@
 import CircleEditOutlineIcon from "mdi-react/CircleEditOutlineIcon"
 import React from "react"
+import styled from "../appearance/styled"
+import { Button, Flexbox } from "../components/parts"
 import { ColumnPanel } from "../models/columns"
-import { Button, Flexbox } from "../UX"
-import styled from "../UX/Styled"
 
 interface SidebarProps {
   panelIndex: number

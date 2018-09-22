@@ -2,11 +2,11 @@ import { RematchDispatch, RematchRootState } from "@rematch/core"
 import CloseIcon from "mdi-react/CloseIcon"
 import React from "react"
 import { connect } from "react-redux"
-import HeaderMenu from "../components/HeaderMenu"
+import styled from "../appearance/styled"
+import { HeaderMenu } from "../components"
+import { Button, Flexbox, VFlexbox } from "../components/parts"
 import { NotificationModel } from "../models/notification"
 import { models } from "../store"
-import { Button, Flexbox, VFlexbox } from "../UX"
-import styled from "../UX/Styled"
 
 type Props = ReturnType<typeof margeProps>
 

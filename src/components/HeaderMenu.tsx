@@ -1,6 +1,6 @@
 import React from "react"
-import { Box, Flexbox } from "../UX"
-import styled from "../UX/Styled"
+import styled from "../appearance/styled"
+import Flexbox, { Box } from "./parts/Flexbox"
 
 const HeaderContainer = styled(Flexbox)`
   padding: 0em 1em;

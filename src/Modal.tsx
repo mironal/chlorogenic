@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import styled from "./UX/Styled"
+import styled from "./appearance/styled"
 
 const ModalContainer = styled.div`
   display: flex;

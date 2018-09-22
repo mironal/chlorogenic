@@ -1,9 +1,8 @@
 import CloseIcon from "mdi-react/CloseIcon"
 import React from "react"
-import { Flexbox } from ".."
-import styled from "../Styled"
-import Button from "./Button"
-import { VFlexbox } from "./Flexbox"
+import styled from "../appearance/styled"
+import Button from "./parts/Button"
+import Flexbox, { VFlexbox } from "./parts/Flexbox"
 
 const ColumnContainer = styled(VFlexbox)`
   border: solid 1px ${({ theme }) => theme.baseColor};

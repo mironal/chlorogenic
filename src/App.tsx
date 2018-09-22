@@ -5,13 +5,13 @@ import { connect, Provider } from "react-redux"
 
 import Dashboard from "./containers/Dashboard"
 
+import styled, { ThemeProvider } from "./appearance/styled"
+import { theme } from "./appearance/theme"
+import { Flexbox, VFlexbox } from "./components/parts"
 import Header from "./containers/Header"
 import SignIn from "./containers/SignIn"
 import Modal from "./Modal"
 import { models, store } from "./store"
-import { Flexbox, VFlexbox } from "./UX"
-import styled, { ThemeProvider } from "./UX/Styled"
-import { theme } from "./UX/theme"
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
