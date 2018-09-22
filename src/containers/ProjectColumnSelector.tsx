@@ -79,7 +79,7 @@ class View extends React.PureComponent<Props, State> {
 
   private onClickAdd = () => {
     const { selectedColumnId } = this.state
-    const { project, addColumn, reset } = this.props
+    const { project, addColumn } = this.props
     if (!project || !selectedColumnId) {
       return
     }
@@ -90,7 +90,14 @@ class View extends React.PureComponent<Props, State> {
     }
     if (columnIdentifer) {
       addColumn(columnIdentifer)
-      reset()
+      this.setState({ selectedColumnId: undefined })
+    }
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (prevProps.panelIndex !== this.props.panelIndex) {
+      this.setState({ input: "", selectedColumnId: undefined })
+      this.props.reset()
     }
   }
 
@@ -184,7 +191,7 @@ class View extends React.PureComponent<Props, State> {
                   zIndex: 3,
                 }),
               }}
-              value={options.find(c => c.value === selectedColumnId)}
+              value={options.find(c => c.value === selectedColumnId) || null}
               autoFocus={true}
               options={options}
               onChange={({ value }: any) => this.onChangeColumnSelection(value)}
@@ -257,6 +264,7 @@ const mergeProps = (
   return {
     ...rest,
     ...fns,
+    panelIndex,
     columns: columns[panelIndex].columns,
     addColumn: (column: GitHubProjectColumnIdentifier) =>
       addColumn({ column, index: panelIndex }),
