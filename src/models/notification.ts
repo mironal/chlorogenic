@@ -35,8 +35,8 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
       return { type: "success", message, description }
     },
     setError: (state, payload: CHLOError) => {
-      if (!(payload instanceof CHLOError)) {
-        if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV !== "production") {
+        if (!(payload instanceof CHLOError)) {
           const error = new CHLOError(
             "Invalid payload",
             "payload must be a CHLOError instance",
@@ -45,6 +45,7 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
           // tslint:disable:no-console
           console.error(payload, error)
         }
+        console.log(JSON.parse(JSON.stringify(payload)))
       }
       return {
         type: "error",

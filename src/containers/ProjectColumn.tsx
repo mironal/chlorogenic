@@ -115,17 +115,17 @@ class View extends React.PureComponent<Props> {
 }
 
 const mapState = (
-  { auth: { token }, ops, columnLoader }: RematchRootState<models>,
+  { userConfig: { githubToken }, ops, columnLoader }: RematchRootState<models>,
   { panelIndex, identifier }: ProjectColumnProps,
 ) => ({
   panelIndex,
   identifier,
   columnState: columnLoader[identifier.id] || {},
-  token: token || "",
+  token: githubToken || "",
   ops,
 })
 const mapDispatch = ({
-  columns: { removeColumn, moveColumn },
+  userConfig: { removeColumn, moveColumn },
   notification: { clear, setError, setSuccess },
   ops: { createProjectContentCard, moveProjectCard },
   columnLoader: { fetchColumn },

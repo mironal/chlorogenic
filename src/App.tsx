@@ -1,4 +1,4 @@
-import { RematchRootState } from "@rematch/core"
+import { RematchDispatch, RematchRootState } from "@rematch/core"
 
 import React from "react"
 import { connect, Provider } from "react-redux"
@@ -53,29 +53,50 @@ const Background = styled.div`
 `
 Background.displayName = "Background"
 
-const AppComp: React.SFC<Props> = ({ authed }) => (
-  <>
-    <Container>
-      {authed && <Header />}
-      <Content>
-        {!authed && <SignIn />}
-        {authed && <Dashboard />}
-      </Content>
-    </Container>
-    <Modal />
-  </>
-)
-AppComp.displayName = "AppComp"
+class AppComponent extends React.PureComponent<Props> {
+  public componentDidMount() {
+    this.props.subscribe()
+  }
 
-const mapState = (state: RematchRootState<models>) => ({
-  authed: typeof state.auth.token === "string",
+  public componentWillUnmount() {
+    this.props.unsubscribe()
+  }
+  public render() {
+    const { authed, loading } = this.props
+    if (loading) {
+      return <p>Loading...</p>
+    }
+    return (
+      <>
+        <Container>
+          {authed && <Header />}
+          <Content>
+            {!authed && <SignIn />}
+            {authed && <Dashboard />}
+          </Content>
+        </Container>
+        <Modal />
+      </>
+    )
+  }
+}
+const mapState = ({
+  userConfig: { loading, user },
+}: RematchRootState<models>) => ({
+  loading,
+  authed: loading === false && !!user,
 })
-const mapDispatch = ({}) => ({})
+const mapDispatch = ({
+  userConfig: { subscribe, unsubscribe },
+}: RematchDispatch<models>) => ({
+  subscribe,
+  unsubscribe,
+})
 
 const ConnectedApp = connect(
   mapState,
   mapDispatch,
-)(AppComp)
+)(AppComponent)
 
 const App: React.SFC = () => (
   <Provider store={store}>

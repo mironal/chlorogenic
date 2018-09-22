@@ -14,6 +14,7 @@ import {
   GitHubProjectColumnIdentifier,
   GithubProjectIdentifier,
 } from "../models/github.types"
+import { createAddPanelColumn } from "../models/userConfig"
 import { models } from "../store"
 
 type Props = ReturnType<typeof mergeProps>
@@ -224,28 +225,27 @@ class View extends React.PureComponent<Props, State> {
 
 const mapState = (
   {
-    auth: { token },
+    userConfig: { githubToken, panels },
     projectStore,
     notification: { notifyingError },
     projectSelector: identifier,
-    columns,
   }: RematchRootState<models>,
   { panelIndex }: { panelIndex: number },
 ) => ({
-  token: token || "",
+  token: githubToken || "",
   panelIndex,
   notifyingError,
-  columns,
+  panels,
   ...getLoadingConditionForIdentifer(projectStore, identifier),
 })
 const mapDispatch = ({
   notification: { setSuccess, setError, clear },
   projectStore: { fetchProject },
-  columns: { addColumn },
+  userConfig,
   projectSelector: { update },
 }: RematchDispatch<models>) => ({
   fetchProject,
-  addColumn,
+  addPanelColumn: createAddPanelColumn(userConfig),
   setSuccess,
   setError,
   clearNotification: clear,
@@ -253,10 +253,10 @@ const mapDispatch = ({
 })
 
 const mergeProps = (
-  { token, panelIndex, columns, ...rest }: ReturnType<typeof mapState>,
+  { token, panelIndex, panels, ...rest }: ReturnType<typeof mapState>,
   {
     fetchProject,
-    addColumn,
+    addPanelColumn,
     updateProjectSelector,
     ...fns
   }: ReturnType<typeof mapDispatch>,
@@ -265,9 +265,9 @@ const mergeProps = (
     ...rest,
     ...fns,
     panelIndex,
-    columns: columns[panelIndex].columns,
+    columns: panels[panelIndex].columns,
     addColumn: (column: GitHubProjectColumnIdentifier) =>
-      addColumn({ column, index: panelIndex }),
+      addPanelColumn(panelIndex, column),
     fetchProject: (identifier: GithubProjectIdentifier) => {
       updateProjectSelector(identifier)
       return Promise.resolve(fetchProject({ identifier, token }))

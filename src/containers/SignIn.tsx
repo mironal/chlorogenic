@@ -4,6 +4,7 @@ import React from "react"
 import { connect } from "react-redux"
 import styled from "../appearance/styled"
 import { Button, Icon, VFlexbox } from "../components/parts"
+import { signIn } from "../firebase/auth"
 import { models } from "../store"
 
 const Container = styled(VFlexbox)`
@@ -26,7 +27,7 @@ Title.displayName = "Title"
 
 type Props = ReturnType<typeof mapDispatch>
 
-const View: React.SFC<Props> = ({ signIn }) => {
+const View: React.SFC<Props> = ({}) => {
   return (
     <Container>
       <Title>chlorogenic</Title>
@@ -41,9 +42,7 @@ const View: React.SFC<Props> = ({ signIn }) => {
 }
 
 const mapState = ({  }: RematchRootState<models>) => ({})
-const mapDispatch = ({ auth: { signIn } }: RematchDispatch<models>) => ({
-  signIn,
-})
+const mapDispatch = ({  }: RematchDispatch<models>) => ({})
 
 export default connect(
   mapState,

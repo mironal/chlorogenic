@@ -5,6 +5,7 @@ import { connect } from "react-redux"
 import styled from "../appearance/styled"
 import { HeaderMenu } from "../components"
 import { Button, Flexbox, VFlexbox } from "../components/parts"
+import { signOut } from "../firebase/auth"
 import { NotificationModel } from "../models/notification"
 import { models } from "../store"
 
@@ -36,7 +37,7 @@ const Message = styled(VFlexbox)<{ type: NotificationModel["type"] }>`
   flex-grow: 1;
 `
 
-const View = ({ clear, signOut, message, description, type }: Props) => (
+const View = ({ clear, message, description, type }: Props) => (
   <HeaderMenu
     left="chlorogenic"
     center={
@@ -64,11 +65,7 @@ const mapState = ({ notification }: RematchRootState<models>) => ({
   ...notification,
 })
 
-const mapDispatch = ({
-  auth: { signOut },
-  notification: { clear },
-}: RematchDispatch<models>) => ({
-  signOut,
+const mapDispatch = ({ notification: { clear } }: RematchDispatch<models>) => ({
   clear,
 })
 
