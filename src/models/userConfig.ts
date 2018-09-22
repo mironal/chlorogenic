@@ -38,6 +38,14 @@ const isPanelModel = (obj: any): obj is PanelModel => {
   )
 }
 
+const initialState = {
+  loading: true,
+  user: null,
+  githubToken: null,
+  panelIndex: 0,
+  panels: [{ name: "No name", columns: [] }],
+}
+
 let lastUserState: firebase.User | null = null
 let unsubscribe: firebase.Unsubscribe | null = null
 
@@ -190,8 +198,8 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         name: string
       }
 
-      return produce(state, draftState => {
-        draftState.panels[panelIndex].name = name
+      return produce(state, draft => {
+        draft.panels[panelIndex].name = name
       })
     },
     setPanelIndex: (state, panelIndex) => {
@@ -199,15 +207,14 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         throw new CHLOError("Invalid payload")
       }
 
-      return produce(state, draftState => {
-        draftState.panelIndex = panelIndex
+      return produce(state, draft => {
+        draft.panelIndex = panelIndex
       })
     },
     setUser: (state, user) => {
-      return {
-        ...state,
-        user,
-      }
+      return produce(state, draft => {
+        draft.user = user
+      })
     },
     onSnapshot: (
       state,
@@ -215,42 +222,31 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
     ) => {
       if (payload === null || !payload.exists) {
         return {
-          ...state,
+          ...initialState,
           loading: false,
-          panelIndex: 0,
-          panels: [],
         }
       }
       const data = payload.data()!
-      const { githubToken } = data
-      let { panelIndex, panels } = data
+      const { githubToken, panelIndex, panels } = data
       if (typeof githubToken !== "string") {
         throw new CHLOError("Invalid payload")
       }
-      if (typeof panelIndex !== "number") {
-        panelIndex = 0
-      }
-      if (!Array.isArray(panels) || !panels.every(isPanelModel)) {
-        panels = []
-      }
-
-      return {
-        ...state,
-        loading: false,
-        panelIndex,
-        githubToken,
-        panels,
-      }
+      return produce(state, draft => {
+        draft.loading = false
+        draft.githubToken = githubToken
+        if (typeof panelIndex === "number") {
+          draft.panelIndex = panelIndex
+        }
+        if (Array.isArray(panels) && panels.every(isPanelModel)) {
+          draft.panels = panels
+        }
+      })
     },
   },
-  state: {
-    loading: true,
-    user: null,
-    githubToken: null,
-    panelIndex: 0,
-    panels: [],
-  },
+  state: initialState,
 })
+
+// action creators
 
 type M = ExtractRematchDispatchersFromModel<ModelConfig<UserConfigModel>>
 
