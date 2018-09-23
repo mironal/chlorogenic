@@ -3,7 +3,7 @@ import {
   fetchOrganizationProject,
   fetchRepositoryProject,
 } from "../github/runner"
-import CHLOError from "../misc/CHLOError"
+import { Bug } from "../misc/errors"
 import {
   isGithubOrgProjectIdentifier,
   isGithubRepoProjectIdentifier,
@@ -31,10 +31,7 @@ export default createModel<
     }) {
       try {
         if (!token || !identifier) {
-          throw new CHLOError(
-            "Invalid payload",
-            "token and identifier are required.",
-          )
+          throw new Bug("Invalid payload", "token and identifier are required.")
         }
 
         this.update({ error: undefined, loading: true, identifier })

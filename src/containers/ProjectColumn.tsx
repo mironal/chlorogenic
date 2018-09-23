@@ -10,6 +10,7 @@ import {
   GitHubProjectCard,
   GitHubProjectColumnIdentifier,
 } from "../models/github.types"
+import { createShowError, createShowSuccess } from "../models/notification"
 import { CreateProjectContentCardOpt, MoveProjectCardOpt } from "../models/ops"
 import {
   createMovePanelColumn,
@@ -50,9 +51,9 @@ class View extends React.PureComponent<Props> {
     if (prevProps.ops.running && !this.props.ops.running) {
       const error = this.props.ops.error
       if (error) {
-        this.props.setError(error)
+        this.props.showError(error)
       } else {
-        this.props.setSuccess({ message: "Success φ(•ᴗ•๑)" })
+        this.props.showSuccess("Success φ(•ᴗ•๑)")
         window.setTimeout(() => this.props.clearNotification(), 2000)
       }
       this.props.fetchColumn()
@@ -130,7 +131,7 @@ const mapState = (
 })
 const mapDispatch = ({
   userConfig,
-  notification: { clear, setError, setSuccess },
+  notification,
   ops: { createProjectContentCard, moveProjectCard },
   columnLoader: { fetchColumn },
 }: RematchDispatch<models>) => ({
@@ -139,9 +140,9 @@ const mapDispatch = ({
   moveColumn: createMovePanelColumn(userConfig),
   createProjectContentCard,
   moveProjectCard,
-  clearNotification: clear,
-  setError,
-  setSuccess,
+  clearNotification: notification.clear,
+  showError: createShowError(notification),
+  showSuccess: createShowSuccess(notification),
 })
 
 const mergeProps = (

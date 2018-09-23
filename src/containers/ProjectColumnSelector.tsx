@@ -14,6 +14,7 @@ import {
   GitHubProjectColumnIdentifier,
   GithubProjectIdentifier,
 } from "../models/github.types"
+import { createShowError, createShowSuccess } from "../models/notification"
 import { createAddPanelColumn } from "../models/userConfig"
 import { models } from "../store"
 
@@ -72,9 +73,9 @@ class View extends React.PureComponent<Props, State> {
 
     const identifier = parseProjectIdentifierString(input)
     if (identifier instanceof Error) {
-      this.props.setError(identifier)
+      this.props.showError(identifier)
     } else {
-      this.props.fetchProject(identifier).catch(this.props.setError)
+      this.props.fetchProject(identifier).catch(this.props.showError)
     }
   }
 
@@ -239,16 +240,16 @@ const mapState = (
   ...getLoadingConditionForIdentifer(projectStore, identifier),
 })
 const mapDispatch = ({
-  notification: { setSuccess, setError, clear },
+  notification,
   projectStore: { fetchProject },
   userConfig,
   projectSelector: { update },
 }: RematchDispatch<models>) => ({
   fetchProject,
   addPanelColumn: createAddPanelColumn(userConfig),
-  setSuccess,
-  setError,
-  clearNotification: clear,
+  showSuccess: createShowSuccess(notification),
+  showError: createShowError(notification),
+  clearNotification: notification.clear,
   updateProjectSelector: update,
 })
 

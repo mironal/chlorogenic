@@ -1,5 +1,5 @@
 import { GithubProjectIdentifier } from "../models/github.types"
-import CHLOError from "./CHLOError"
+import { RecoverableError } from "./errors"
 
 const parseUrlString = (input: string): GithubProjectIdentifier | undefined => {
   const { pathname } = new URL(input)
@@ -33,16 +33,19 @@ const parseShorthandString = (
 export const parseProjectIdentifierString = (
   input: string,
 ): GithubProjectIdentifier | Error => {
+  if (input === undefined || input.length === 0) {
+    return new RecoverableError("Invalid input", "Can not input empty string.")
+  }
   try {
-    if (input === undefined) {
-      throw new Error(`A input string is undefined.`)
-    }
     const identifier = parseShorthandString(input) || parseUrlString(input)
     if (identifier) {
       return identifier
     }
-    return new Error(`Can not parse input string: ${input}`)
   } catch (e) {
-    return new CHLOError("Invalid string format", e.message, e)
+    // ignore
   }
+  return new RecoverableError(
+    "Invalid input",
+    `Can not parse input string: ${input}`,
+  )
 }

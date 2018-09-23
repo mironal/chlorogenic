@@ -5,7 +5,8 @@ import {
   organizationProjectQuery,
   repositoryProjectQuery,
 } from "../github/graphql_query"
-import CHLOError from "../misc/CHLOError"
+
+import { RecoverableError } from "../misc/errors"
 import { createProjectSlug } from "../misc/github"
 import {
   GitHubOrgProjectIdentifier,
@@ -76,34 +77,30 @@ export const fetchOrganizationProject = async (
   const resp = await axios({ ...conf(token), data: { query } })
 
   if (!resp.data.data.organization) {
-    throw new CHLOError(
+    throw new RecoverableError(
       "Organization not found",
-      `for ${createProjectSlug(identifier)}`,
+      createProjectSlug(identifier),
     )
   }
 
   if (!resp.data.data.organization.project) {
-    throw new CHLOError(
+    throw new RecoverableError(
       "Project not found",
-      `for ${createProjectSlug(identifier)}`,
+      createProjectSlug(identifier),
     )
   }
 
-  try {
-    const { name, url } = resp.data.data.organization.project as {
-      name: string
-      url: string
-    }
-    const columns = parseProjectColumns(resp.data.data.organization.project)
-    const project: GitHubProject = {
-      name,
-      url,
-      slug: `org/${identifier.organization}/${identifier.number}`,
-      identifier,
-      columns,
-    }
-    return project
-  } catch (error) {
-    throw new CHLOError("Invalid response format")
+  const { name, url } = resp.data.data.organization.project as {
+    name: string
+    url: string
   }
+  const columns = parseProjectColumns(resp.data.data.organization.project)
+  const project: GitHubProject = {
+    name,
+    url,
+    slug: `org/${identifier.organization}/${identifier.number}`,
+    identifier,
+    columns,
+  }
+  return project
 }

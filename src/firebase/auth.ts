@@ -1,6 +1,5 @@
 import firebase from "firebase/app"
 import "firebase/auth"
-import CHLOError from "../misc/CHLOError"
 import { firestoreCollectionReference } from "./firestore"
 
 export const signIn = async () => {
@@ -8,7 +7,7 @@ export const signIn = async () => {
   provider.addScope("repo")
   const { user, credential } = await firebase.auth().signInWithPopup(provider)
   if (!user || !credential) {
-    throw new CHLOError("SignIn", "There are no user or credential")
+    throw new Error("There are no user or credential")
   }
 
   const githubToken = (credential as any).accessToken!

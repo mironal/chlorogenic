@@ -1,6 +1,5 @@
 import { createModel, ModelConfig } from "@rematch/core"
 import { addProjectCard, moveProjectCard } from "../github/runner"
-import CHLOError from "../misc/CHLOError"
 
 export interface OpsModel {
   running: boolean
@@ -60,7 +59,7 @@ export default createModel<OpsModel, ModelConfig<OpsModel>>({
       opts: CreateProjectContentCardOpt[]
     }) {
       if (typeof token !== "string") {
-        throw new CHLOError("Invalid payload")
+        throw new Error("Invalid payload")
       }
       opts.forEach(({ columnId, contentId }) => {
         if (
@@ -68,7 +67,7 @@ export default createModel<OpsModel, ModelConfig<OpsModel>>({
           typeof columnId !== "string" ||
           typeof contentId !== "string"
         ) {
-          throw new CHLOError("Invalid payload")
+          throw new Error("Invalid payload")
         }
       })
 
@@ -95,11 +94,11 @@ export default createModel<OpsModel, ModelConfig<OpsModel>>({
       opts: MoveProjectCardOpt[]
     }) {
       if (typeof token !== "string") {
-        throw new CHLOError("Invalid payload")
+        throw new Error("Invalid payload")
       }
       opts.forEach(({ cardId, columnId }) => {
         if (typeof cardId !== "string" || typeof columnId !== "string") {
-          throw new CHLOError("Invalid payload")
+          throw new Error("Invalid payload")
         }
       })
 

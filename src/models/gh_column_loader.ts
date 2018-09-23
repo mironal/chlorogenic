@@ -3,7 +3,7 @@ import {
   fetchOrganizationProject,
   fetchRepositoryProject,
 } from "../github/runner"
-import CHLOError from "../misc/CHLOError"
+import { Bug } from "../misc/errors"
 import {
   isGithubOrgProjectIdentifier,
   isGitHubProjectColumnIdentifier,
@@ -41,7 +41,7 @@ export default createModel<ColumnLoaderModel, ModelConfig<ColumnLoaderModel>>({
         } else if (isGithubRepoProjectIdentifier(identifier.project)) {
           return fetchRepositoryProject(token, identifier.project)
         } else {
-          throw new CHLOError("Invalid payload")
+          throw new Bug("Invalid payload")
         }
       }
 
@@ -51,7 +51,7 @@ export default createModel<ColumnLoaderModel, ModelConfig<ColumnLoaderModel>>({
           project.columns.forEach(col => this.successLoading(col)),
         )
         .catch(error => {
-          dispatcher.notification.setError(error)
+          dispatcher.notification.showError(error)
           this.failLoading({ identifier, error })
         })
     },
@@ -87,7 +87,7 @@ export default createModel<ColumnLoaderModel, ModelConfig<ColumnLoaderModel>>({
     },
     prepareLoading: (state, identifier: GitHubProjectColumnIdentifier) => {
       if (!isGitHubProjectColumnIdentifier(identifier)) {
-        throw new CHLOError("Invalid payload")
+        throw new Bug("Invalid payload")
       }
 
       return {

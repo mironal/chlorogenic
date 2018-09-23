@@ -1,12 +1,13 @@
 import { init } from "@rematch/core"
-import CHLOError from "../misc/CHLOError"
+
+import { Bug } from "../misc/errors"
 import notification from "./notification"
 
 describe("reducers", () => {
-  it("setSuccess should dispatch an action", () => {
+  it("_setSuccess should dispatch an action", () => {
     const store = init({ models: { notification } })
 
-    store.dispatch.notification.setSuccess("(o´_`o)")
+    store.dispatch.notification._setSuccess("(o´_`o)")
 
     {
       const state = store.getState().notification
@@ -17,7 +18,7 @@ describe("reducers", () => {
       expect(state.notifyingError).toBeUndefined()
     }
 
-    store.dispatch.notification.setSuccess({
+    store.dispatch.notification._setSuccess({
       message: "(੭•̀ᴗ•̀)",
       description: "φ(•ᴗ•๑)",
     })
@@ -32,11 +33,11 @@ describe("reducers", () => {
     }
   })
 
-  it("setError should dispatch an action", () => {
+  it("_setError should dispatch an action", () => {
     const store = init({ models: { notification } })
 
-    const error = new CHLOError("Invalid payload", "(>︿<｡)")
-    store.dispatch.notification.setError(error)
+    const error = new Bug("Invalid payload", "(>︿<｡)")
+    store.dispatch.notification._setError(error)
 
     const state = store.getState().notification
 
@@ -49,8 +50,8 @@ describe("reducers", () => {
   it("clear should dispatch an action", () => {
     const store = init({ models: { notification } })
 
-    const error = new CHLOError("Invalid payload", "(>︿<｡)")
-    store.dispatch.notification.setError(error)
+    const error = new Bug("Invalid payload", "(>︿<｡)")
+    store.dispatch.notification.showError(error)
 
     store.dispatch.notification.clear()
 

@@ -3,12 +3,16 @@ import {
   ExtractRematchDispatchersFromModel,
   ModelConfig,
 } from "@rematch/core"
-import CHLOError from "../misc/CHLOError"
+import { produce } from "immer"
+import { Bug, RecoverableError } from "../misc/errors"
 
-export interface NotificationModel {
-  type?: "error" | "success"
+export interface NotificationContent {
   message?: string
   description?: string
+}
+
+export interface NotificationModel extends NotificationContent {
+  type?: "error" | "success"
   notifyingError?: Error
 }
 
@@ -17,26 +21,48 @@ export type SetSuccessPayload =
   | string
 
 const DEFAULT_DISMISS_AFTER = 2000
-
+let timeoutHandle: number | undefined
 export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
   effects: dispatch => ({
     showSuccess(payload) {
-      this.setSuccess(payload)
-
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle)
+      }
+      this._setSuccess(payload)
       if (
         (typeof payload.dismissAfter === "number" &&
           payload.dismissAfter > 0) ||
         payload.dismissAfter === undefined
       ) {
-        setTimeout(this.clear, payload.dismissAfter || DEFAULT_DISMISS_AFTER)
+        timeoutHandle = setTimeout(
+          this.clear,
+          payload.dismissAfter || DEFAULT_DISMISS_AFTER,
+        )
+      }
+    },
+    showError(payload) {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle)
+      }
+      this._setError(payload)
+
+      if (
+        typeof payload.dismissAfter === "number" &&
+        payload.dismissAfter > 0
+      ) {
+        timeoutHandle = setTimeout(this.clear, payload.dismissAfter)
       }
     },
   }),
   reducers: {
     clear: () => {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle)
+        timeoutHandle = undefined
+      }
       return {}
     },
-    setSuccess: (state, payload: SetSuccessPayload, meta) => {
+    _setSuccess: (state, payload: SetSuccessPayload) => {
       if (typeof payload === "string") {
         return { type: "success", message: payload }
       }
@@ -53,25 +79,19 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
 
       return { type: "success", message, description }
     },
-    setError: (state, payload: CHLOError) => {
-      if (process.env.NODE_ENV !== "production") {
-        if (!(payload instanceof CHLOError)) {
-          const error = new CHLOError(
-            "Invalid payload",
-            "payload must be a CHLOError instance",
-            payload,
-          )
-          // tslint:disable:no-console
-          console.error(payload, error)
-        }
-        console.log(JSON.parse(JSON.stringify(payload)))
+    _setError: (state, payload: Error | Bug | RecoverableError) => {
+      const message = payload.message
+      let description: string | undefined
+      if (payload instanceof Bug || payload instanceof RecoverableError) {
+        description = payload.description
       }
-      return {
-        type: "error",
-        message: payload.message,
-        description: payload.description,
-        notifyingError: payload,
-      }
+
+      return produce(state, draft => {
+        draft.type = "error"
+        draft.message = message
+        draft.description = description
+        draft.notifyingError = payload
+      })
     },
   },
   state: {},
@@ -91,4 +111,4 @@ export const createShowSuccess = (m: M) => (
     dismissAfter,
   })
 
-export const createSetError = (m: M) => (error: CHLOError) => m.setError(error)
+export const createShowError = (m: M) => (error: Error) => m.showError(error)
