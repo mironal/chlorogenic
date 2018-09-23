@@ -37,6 +37,16 @@ const View: React.SFC<Props> = ({}) => {
         </Icon>
         Sign in with GitHub
       </Button>
+      <p>What is stored in firebase?</p>
+      <ul>
+        <li>Your GitHub access token to access GitHub API.</li>
+        <li>Your GitHub profile information for displaying icon etc.</li>
+        <li>An application config for chlorogenic.</li>
+      </ul>
+      <p>
+        Your personal data is kept secure so that it is invisible to other
+        users.
+      </p>
     </Container>
   )
 }
