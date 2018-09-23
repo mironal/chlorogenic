@@ -4,6 +4,7 @@ import {
   ModelConfig,
 } from "@rematch/core"
 import { produce } from "immer"
+import logger from "../logger"
 import { Bug, RecoverableError } from "../misc/errors"
 
 export interface NotificationContent {
@@ -66,7 +67,6 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
       if (typeof payload === "string") {
         return { type: "success", message: payload }
       }
-
       const { message, description } = payload
 
       if (!message) {
@@ -80,6 +80,7 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
       return { type: "success", message, description }
     },
     _setError: (state, payload: Error | Bug | RecoverableError) => {
+      logger.error(payload)
       const message = payload.message
       let description: string | undefined
       if (payload instanceof Bug || payload instanceof RecoverableError) {
