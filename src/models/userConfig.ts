@@ -10,7 +10,7 @@ import produce from "immer"
 import { firestoreCollectionReference } from "../firebase/firestore"
 import CHLOError from "../misc/CHLOError"
 import { isGitHubProjectColumnIdentifier } from "../misc/github"
-import { removeItemAtIndexInArray } from "../misc/prelude"
+import { pick } from "../misc/prelude"
 import { GitHubProjectColumnIdentifier } from "./github.types"
 
 export interface PanelModel {
@@ -34,7 +34,7 @@ const isPanelModel = (obj: any): obj is PanelModel => {
     typeof obj === "object" &&
     typeof obj.name === "string" &&
     Array.isArray(obj.columns) &&
-    obj.columns.evey(isGitHubProjectColumnIdentifier)
+    obj.columns.every(isGitHubProjectColumnIdentifier)
   )
 }
 
@@ -48,6 +48,12 @@ const initialState = {
 
 let lastUserState: firebase.User | null = null
 let unsubscribe: firebase.Unsubscribe | null = null
+
+const firestoreConfigReference = ({
+  userConfig: {
+    user: { uid },
+  },
+}: any) => firestoreCollectionReference("configs").doc(uid)
 
 export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
   effects: dispatch => ({
@@ -89,10 +95,7 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         this.onSnapshot(null)
       }
     },
-  }),
-
-  reducers: {
-    addPanelColumn: (state, payload) => {
+    async addPanelColumn(payload, rootState) {
       const { panelIndex, column } = payload
       if (
         typeof panelIndex !== "number" ||
@@ -100,6 +103,8 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
       ) {
         throw new CHLOError("Invalid payload")
       }
+
+      const state = rootState.userConfig as UserConfigModel
       if (state.panels[panelIndex].columns.some(c => c.id === column.id)) {
         throw new CHLOError(
           "Invalid payload",
@@ -107,11 +112,18 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         )
       }
 
-      return produce(state, draft => {
-        draft.panels[panelIndex].columns.push(column)
+      const panels = produce(state.panels, draft => {
+        draft[panelIndex].columns.push(column)
       })
+      await firestoreConfigReference(rootState)
+        .update({ panels })
+        .catch(error => {
+          dispatch.notification.setError(
+            new CHLOError("Firestore error", "setPanelIndex", error),
+          )
+        })
     },
-    removePanelColumn: (state, payload) => {
+    async removePanelColumn(payload, rootState) {
       const { panelIndex, column } = payload
       if (
         typeof panelIndex !== "number" ||
@@ -119,16 +131,26 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
       ) {
         throw new CHLOError("Invalid payload")
       }
-      return produce(state, draft => {
-        const index = draft.panels[panelIndex].columns.findIndex(
-          c => c.id === column.id,
-        )
-        if (index !== -1) {
-          draft.panels[panelIndex].columns.splice(index, 1)
-        }
-      })
+      const panels: UserConfig["panels"] = produce(
+        rootState.userConfig.panels as UserConfig["panels"],
+        draft => {
+          const index = draft[panelIndex].columns.findIndex(
+            c => c.id === column.id,
+          )
+          if (index !== -1) {
+            draft[panelIndex].columns.splice(index, 1)
+          }
+        },
+      )
+      await firestoreConfigReference(rootState)
+        .update({ panels })
+        .catch(error => {
+          dispatch.notification.setError(
+            new CHLOError("Firestore error", "setPanelIndex", error),
+          )
+        })
     },
-    movePanelColumn: (state, payload) => {
+    async movePanelColumn(payload, rootState) {
       const { panelIndex, column, add } = payload
       if (
         typeof panelIndex !== "number" ||
@@ -137,6 +159,7 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
       ) {
         throw new CHLOError("Invalid payload")
       }
+      const state = rootState.userConfig as UserConfigModel
       const from = state.panels[panelIndex].columns.findIndex(
         c => c.id === column.id,
       )
@@ -154,38 +177,62 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         throw new CHLOError("Invalid payload")
       }
 
-      return produce(state, draft => {
+      const panels = produce(state, draft => {
         const temp = draft.panels[panelIndex].columns[from]
         draft.panels[panelIndex].columns[from] =
           draft.panels[panelIndex].columns[to]
         draft.panels[panelIndex].columns[to] = temp
       })
+
+      await firestoreConfigReference(rootState)
+        .update({ panels })
+        .catch(error => {
+          dispatch.notification.setError(
+            new CHLOError("Firestore error", "setPanelIndex", error),
+          )
+        })
     },
-    createPanel: state => {
-      return produce(state, draft => {
-        draft.panels.push({
+    async createPanel(payload, rootState) {
+      const state = rootState.userConfig as UserConfigModel
+      const panels = produce(state.panels, draft => {
+        draft.push({
           name: "No name",
           columns: [],
         })
       })
+
+      await firestoreConfigReference(rootState)
+        .update({ panels })
+        .catch(error => {
+          dispatch.notification.setError(
+            new CHLOError("Firestore error", "setPanelIndex", error),
+          )
+        })
     },
-    removePanel: (state, panelIndex) => {
+    async removePanel(panelIndex, rootState) {
       if (typeof panelIndex !== "number") {
         throw new CHLOError("Invalid payload")
       }
 
-      const panels = removeItemAtIndexInArray(state.panels, panelIndex)
-      let nextPanelIndex = state.panelIndex
-      if (nextPanelIndex >= panels.length) {
-        nextPanelIndex -= 1
-      }
-      return {
-        ...state,
-        panels,
-        panelIndex: nextPanelIndex,
-      }
+      const config: Pick<UserConfigModel, "panelIndex" | "panels"> = produce(
+        pick(rootState.userConfig, ["panelIndex", "panels"]),
+        draft => {
+          draft.panels.splice(panelIndex, 1)
+          if (draft.panelIndex >= draft.panels.length) {
+            draft.panelIndex -= 1
+          }
+        },
+      )
+
+      await firestoreConfigReference(rootState)
+        .update(config)
+        .catch(error => {
+          dispatch.notification.setError(
+            new CHLOError("Firestore error", "setPanelIndex", error),
+          )
+        })
     },
-    renamePanel: (state, payload) => {
+    async renamePanel(payload, rootState) {
       if (
         !payload ||
         typeof payload.panelIndex !== "number" ||
@@ -198,19 +245,40 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         name: string
       }
 
-      return produce(state, draft => {
-        draft.panels[panelIndex].name = name
-      })
+      const panels = produce<UserConfigModel["panels"]>(
+        rootState.userConfig.panels,
+        draft => {
+          draft[panelIndex].name = name
+        },
+      )
+
+      await firestoreConfigReference(rootState)
+        .update({
+          panels,
+        })
+        .catch(error => {
+          dispatch.notification.setError(
+            new CHLOError("Firestore error", "setPanelIndex", error),
+          )
+        })
     },
-    setPanelIndex: (state, panelIndex) => {
+    async setPanelIndex(panelIndex, rootState) {
       if (typeof panelIndex !== "number") {
         throw new CHLOError("Invalid payload")
       }
 
-      return produce(state, draft => {
-        draft.panelIndex = panelIndex
-      })
+      return firestoreConfigReference(rootState)
+        .update({
+          panelIndex,
+        })
+        .catch(error => {
+          dispatch.notification.setError(
+            new CHLOError("Firestore error", "setPanelIndex", error),
+          )
+        })
     },
+  }),
+  reducers: {
     setUser: (state, user) => {
       return produce(state, draft => {
         draft.user = user
