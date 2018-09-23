@@ -62,6 +62,14 @@ const View: React.SFC<Props> = ({ showSuccess, setError }) => {
         Your personal data is kept secure so that it is invisible to other
         users.
       </p>
+      <p>
+        <a
+          href="https://github.com/mironal/chlorogenic/blob/master/firestore.rules"
+          target="_blank"
+        >
+          You can find a firebase security rule is here.
+        </a>
+      </p>
     </Container>
   )
 }
