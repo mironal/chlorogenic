@@ -2,11 +2,11 @@ import CircleEditOutlineIcon from "mdi-react/CircleEditOutlineIcon"
 import React from "react"
 import styled from "../appearance/styled"
 import { Button, Flexbox } from "../components/parts"
-import { ColumnPanel } from "../models/columns"
+import { PanelModel } from "../models/userConfig"
 
 interface SidebarProps {
   panelIndex: number
-  columns: ColumnPanel[]
+  panels: PanelModel[]
   onClick?(index: number): void
   onClickAdd?(): void
   onClickEdit?(index: number): void
@@ -49,7 +49,7 @@ const LI = styled.li<{ active: boolean }>`
 
 const View = ({
   panelIndex,
-  columns,
+  panels,
   onClick,
   onClickAdd,
   onClickEdit,
@@ -57,11 +57,9 @@ const View = ({
   return (
     <SideBar>
       <UL>
-        {columns.map((c, i) => (
+        {panels.map((p, i) => (
           <LI active={panelIndex === i} key={i}>
-            <span onClick={() => onClick && onClick(i)}>
-              {c.name || `${i}-No name`}{" "}
-            </span>
+            <span onClick={() => onClick && onClick(i)}>{p.name} </span>
             <span onClick={() => onClickEdit && onClickEdit(i)}>
               {" "}
               <CircleEditOutlineIcon size={16} />

@@ -42,3 +42,15 @@ export type NonFunctionPropertyNames<T> = {
 }[keyof T]
 
 export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>
+
+export const pick = <T extends {}, K extends keyof T>(
+  obj: T,
+  keys: K[],
+): Pick<T, K> =>
+  keys.reduce(
+    (a, key) => ({
+      ...a,
+      [key]: obj[key],
+    }),
+    {} as any,
+  )

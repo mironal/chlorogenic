@@ -9,6 +9,12 @@ import HTML5Backend from "react-dnd-html5-backend"
 import { ModalNameEditor } from "../components"
 import { Flexbox } from "../components/parts"
 import Modal from "../Modal"
+import {
+  createCreatePanel,
+  createRemovePanel,
+  createRenamePanel,
+  createSetPanelIndex,
+} from "../models/userConfig"
 import { models } from "../store"
 import ProjectColumn from "./ProjectColumn"
 import ProjectColumnSelector from "./ProjectColumnSelector"
@@ -34,33 +40,32 @@ interface State {
 
 class Board extends React.PureComponent<Props, State> {
   public state: State = {}
-  private changePanelIndex = (panelIndex: number) =>
-    this.props.updatePanelIndex(panelIndex)
 
   private startEdit = (editingIndex: number) => this.setState({ editingIndex })
   private endEdit = () => this.setState({ editingIndex: undefined })
 
   public render() {
     const {
-      columns,
+      panels,
       createPanel,
       renamePanel,
       removePanel,
       panelIndex,
+      setPanelIndex,
     } = this.props
     const { editingIndex } = this.state
     return (
       <Flexbox style={{ height: "100%" }}>
         <Sidebar
           panelIndex={panelIndex}
-          columns={columns}
-          onClick={this.changePanelIndex}
+          panels={panels}
+          onClick={setPanelIndex}
           onClickAdd={createPanel}
           onClickEdit={this.startEdit}
         />
         <DnDBoard>
           <Stroller>
-            {columns[panelIndex].columns.map(c => (
+            {panels[panelIndex].columns.map(c => (
               <ProjectColumn
                 key={c.id}
                 panelIndex={panelIndex}
@@ -73,15 +78,15 @@ class Board extends React.PureComponent<Props, State> {
         {editingIndex !== undefined && (
           <Modal onClickOutside={this.endEdit}>
             <ModalNameEditor
-              defaultName={columns[editingIndex].name}
+              defaultName={panels[editingIndex].name}
               onClickCancel={this.endEdit}
               onClickDelete={() => {
                 this.endEdit()
-                removePanel(columns[editingIndex])
+                removePanel(editingIndex)
               }}
               onClickOk={name => {
                 this.endEdit()
-                renamePanel({ index: editingIndex, name })
+                renamePanel(editingIndex, name)
               }}
             />
           </Modal>
@@ -91,19 +96,18 @@ class Board extends React.PureComponent<Props, State> {
   }
 }
 
-const mapState = ({ columns, panelIndex }: RematchRootState<models>) => ({
-  columns,
+const mapState = ({
+  userConfig: { panelIndex, panels },
+}: RematchRootState<models>) => ({
+  panels,
   panelIndex,
 })
 
-const mapDispatch = ({
-  columns: { createPanel, renamePanel, removePanel },
-  panelIndex: { update: updatePanelIndex },
-}: RematchDispatch<models>) => ({
-  createPanel,
-  renamePanel,
-  removePanel,
-  updatePanelIndex,
+const mapDispatch = ({ userConfig }: RematchDispatch<models>) => ({
+  createPanel: createCreatePanel(userConfig),
+  renamePanel: createRenamePanel(userConfig),
+  removePanel: createRemovePanel(userConfig),
+  setPanelIndex: createSetPanelIndex(userConfig),
 })
 
 const margeProps = (

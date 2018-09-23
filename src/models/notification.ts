@@ -1,4 +1,8 @@
-import { createModel, ModelConfig } from "@rematch/core"
+import {
+  createModel,
+  ExtractRematchDispatchersFromModel,
+  ModelConfig,
+} from "@rematch/core"
 import CHLOError from "../misc/CHLOError"
 
 export interface NotificationModel {
@@ -12,12 +16,27 @@ export type SetSuccessPayload =
   | Pick<NotificationModel, "message" | "description">
   | string
 
+const DEFAULT_DISMISS_AFTER = 2000
+
 export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
+  effects: dispatch => ({
+    showSuccess(payload) {
+      this.setSuccess(payload)
+
+      if (
+        (typeof payload.dismissAfter === "number" &&
+          payload.dismissAfter > 0) ||
+        payload.dismissAfter === undefined
+      ) {
+        setTimeout(this.clear, payload.dismissAfter || DEFAULT_DISMISS_AFTER)
+      }
+    },
+  }),
   reducers: {
     clear: () => {
       return {}
     },
-    setSuccess: (state, payload: SetSuccessPayload) => {
+    setSuccess: (state, payload: SetSuccessPayload, meta) => {
       if (typeof payload === "string") {
         return { type: "success", message: payload }
       }
@@ -35,8 +54,8 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
       return { type: "success", message, description }
     },
     setError: (state, payload: CHLOError) => {
-      if (!(payload instanceof CHLOError)) {
-        if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV !== "production") {
+        if (!(payload instanceof CHLOError)) {
           const error = new CHLOError(
             "Invalid payload",
             "payload must be a CHLOError instance",
@@ -45,6 +64,7 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
           // tslint:disable:no-console
           console.error(payload, error)
         }
+        console.log(JSON.parse(JSON.stringify(payload)))
       }
       return {
         type: "error",
@@ -56,3 +76,19 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
   },
   state: {},
 })
+
+// action creators
+
+type M = ExtractRematchDispatchersFromModel<ModelConfig<NotificationModel>>
+export const createShowSuccess = (m: M) => (
+  message: string,
+  description: string | undefined = undefined,
+  dismissAfter: number | undefined = undefined,
+) =>
+  m.showSuccess({
+    message,
+    description,
+    dismissAfter,
+  })
+
+export const createSetError = (m: M) => (error: CHLOError) => m.setError(error)
