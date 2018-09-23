@@ -5,6 +5,7 @@ import { connect } from "react-redux"
 import styled from "../appearance/styled"
 import { Button, Icon, VFlexbox } from "../components/parts"
 import { signIn } from "../firebase/auth"
+import { createSetError, createShowSuccess } from "../models/notification"
 import { models } from "../store"
 
 const Container = styled(VFlexbox)`
@@ -27,11 +28,25 @@ Title.displayName = "Title"
 
 type Props = ReturnType<typeof mapDispatch>
 
-const View: React.SFC<Props> = ({}) => {
+const View: React.SFC<Props> = ({ showSuccess, setError }) => {
   return (
     <Container>
       <Title>chlorogenic</Title>
-      <Button onClick={signIn} size="big">
+      <Button
+        onClick={() =>
+          signIn()
+            .then(user =>
+              showSuccess(
+                "Successful Signing",
+                `Welcome ${user.displayName} (◍•ᴗ•◍)`,
+              ),
+            )
+            .catch(error => {
+              setError(error)
+            })
+        }
+        size="big"
+      >
         <Icon>
           <GithubFaceIcon />
         </Icon>
@@ -52,7 +67,10 @@ const View: React.SFC<Props> = ({}) => {
 }
 
 const mapState = ({  }: RematchRootState<models>) => ({})
-const mapDispatch = ({  }: RematchDispatch<models>) => ({})
+const mapDispatch = ({ notification }: RematchDispatch<models>) => ({
+  showSuccess: createShowSuccess(notification),
+  setError: createSetError(notification),
+})
 
 export default connect(
   mapState,

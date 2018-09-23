@@ -117,6 +117,9 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
       })
       await firestoreConfigReference(rootState)
         .update({ panels })
+        .then(() =>
+          dispatch.notification.showSuccess({ message: "A column added" }),
+        )
         .catch(error => {
           dispatch.notification.setError(
             new CHLOError("Firestore error", "setPanelIndex", error),
@@ -144,6 +147,9 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
       )
       await firestoreConfigReference(rootState)
         .update({ panels })
+        .then(() =>
+          dispatch.notification.showSuccess({ message: "A column removed" }),
+        )
         .catch(error => {
           dispatch.notification.setError(
             new CHLOError("Firestore error", "setPanelIndex", error),
@@ -177,15 +183,17 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         throw new CHLOError("Invalid payload")
       }
 
-      const panels = produce(state, draft => {
-        const temp = draft.panels[panelIndex].columns[from]
-        draft.panels[panelIndex].columns[from] =
-          draft.panels[panelIndex].columns[to]
-        draft.panels[panelIndex].columns[to] = temp
+      const panels = produce(state.panels, draft => {
+        const temp = draft[panelIndex].columns[from]
+        draft[panelIndex].columns[from] = draft[panelIndex].columns[to]
+        draft[panelIndex].columns[to] = temp
       })
 
       await firestoreConfigReference(rootState)
         .update({ panels })
+        .then(() =>
+          dispatch.notification.showSuccess({ message: "A column moved" }),
+        )
         .catch(error => {
           dispatch.notification.setError(
             new CHLOError("Firestore error", "setPanelIndex", error),
@@ -200,9 +208,11 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
           columns: [],
         })
       })
-
       await firestoreConfigReference(rootState)
         .update({ panels })
+        .then(() =>
+          dispatch.notification.showSuccess({ message: "New panel created" }),
+        )
         .catch(error => {
           dispatch.notification.setError(
             new CHLOError("Firestore error", "setPanelIndex", error),
@@ -226,6 +236,9 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
 
       await firestoreConfigReference(rootState)
         .update(config)
+        .then(() =>
+          dispatch.notification.showSuccess({ message: "A panel removed" }),
+        )
         .catch(error => {
           dispatch.notification.setError(
             new CHLOError("Firestore error", "setPanelIndex", error),
@@ -256,6 +269,9 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         .update({
           panels,
         })
+        .then(() =>
+          dispatch.notification.showSuccess({ message: "A panel renamed" }),
+        )
         .catch(error => {
           dispatch.notification.setError(
             new CHLOError("Firestore error", "setPanelIndex", error),

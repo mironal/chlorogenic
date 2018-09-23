@@ -9,6 +9,7 @@ export type CHLOErrorMessage =
   | "Project not found"
   | "Organization not found"
   | "Firestore error"
+  | "SignIn"
 
 export default class CHLOError extends Error implements NotificationModel {
   constructor(

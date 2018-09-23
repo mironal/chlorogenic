@@ -11,6 +11,10 @@ import {
   GitHubProjectColumnIdentifier,
 } from "../models/github.types"
 import { CreateProjectContentCardOpt, MoveProjectCardOpt } from "../models/ops"
+import {
+  createMovePanelColumn,
+  createRemovePanelColumn,
+} from "../models/userConfig"
 import { models } from "../store"
 
 export interface ProjectColumnProps {
@@ -125,14 +129,14 @@ const mapState = (
   ops,
 })
 const mapDispatch = ({
-  userConfig: { removeColumn, moveColumn },
+  userConfig,
   notification: { clear, setError, setSuccess },
   ops: { createProjectContentCard, moveProjectCard },
   columnLoader: { fetchColumn },
 }: RematchDispatch<models>) => ({
   fetchColumn,
-  removeColumn,
-  moveColumn,
+  removeColumn: createRemovePanelColumn(userConfig),
+  moveColumn: createMovePanelColumn(userConfig),
   createProjectContentCard,
   moveProjectCard,
   clearNotification: clear,
@@ -161,11 +165,9 @@ const mergeProps = (
       moveProjectCard({ token, opts }),
     createProjectContentCard: (opts: CreateProjectContentCardOpt[]) =>
       createProjectContentCard({ token, opts }),
-    moveToLeftColumn: () =>
-      moveColumn({ index: panelIndex, column: identifier, add: -1 }),
-    moveToRightColumn: () =>
-      moveColumn({ index: panelIndex, column: identifier, add: 1 }),
-    removeColumn: () => removeColumn({ index: panelIndex, column: identifier }),
+    moveToLeftColumn: () => moveColumn(panelIndex, identifier, -1),
+    moveToRightColumn: () => moveColumn(panelIndex, identifier, 1),
+    removeColumn: () => removeColumn(panelIndex, identifier),
   }
 }
 
