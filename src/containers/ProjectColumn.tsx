@@ -6,6 +6,7 @@ import { ColumnContainer } from "../components"
 import { DragAllCardHandle, ProjectColumn } from "../components"
 import { Button, Flexbox } from "../components/parts"
 import { createProjectSlug, isSameProject } from "../misc/github"
+import { pipelinePromiseAction } from "../misc/prelude"
 import {
   GitHubProject,
   GitHubProjectCard,
@@ -185,9 +186,15 @@ const mergeProps = (
       moveProjectCard({ token, opts }),
     createProjectContentCard: (opts: CreateProjectContentCardOpt[]) =>
       createProjectContentCard({ token, opts }),
-    moveToLeftColumn: () => moveColumn(panelIndex, identifier, -1),
+    moveToLeftColumn: pipelinePromiseAction(
+      () => moveColumn(panelIndex, identifier, -1),
+      fns.showError,
+    ),
     moveToRightColumn: () => moveColumn(panelIndex, identifier, 1),
-    removeColumn: () => removeColumn(panelIndex, identifier),
+    removeColumn: pipelinePromiseAction(
+      () => removeColumn(panelIndex, identifier),
+      fns.showError,
+    ),
   }
 }
 

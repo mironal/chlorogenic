@@ -9,6 +9,7 @@ import { ColumnContainer, ProjectColumn } from "../components"
 import { Button, Flexbox } from "../components/parts"
 import { createProjectSlug } from "../misc/github"
 import { parseProjectIdentifierString } from "../misc/parser"
+import { pipelinePromiseAction2 } from "../misc/prelude"
 import Modal from "../Modal"
 import {
   GitHubProjectColumnIdentifier,
@@ -76,7 +77,7 @@ class View extends React.PureComponent<Props, State> {
     if (identifier instanceof Error) {
       this.props.showError(identifier)
     } else {
-      this.props.fetchProject(identifier).catch(this.props.showError)
+      this.props.fetchProject(identifier)
     }
   }
 
@@ -248,7 +249,10 @@ const mapDispatch = ({
   userConfig,
   projectSelector: { update },
 }: RematchDispatch<models>) => ({
-  fetchRequest: createFetchRequest(projectLoader),
+  fetchRequest: pipelinePromiseAction2(
+    createFetchRequest(projectLoader),
+    createShowError(notification),
+  ),
   addPanelColumn: createAddPanelColumn(userConfig),
   showSuccess: createShowSuccess(notification),
   showError: createShowError(notification),
@@ -274,7 +278,7 @@ const mergeProps = (
       addPanelColumn(panelIndex, column),
     fetchProject: (identifier: GithubProjectIdentifier) => {
       updateProjectSelector(identifier)
-      return Promise.resolve(fetchRequest(token, identifier))
+      fetchRequest(token, identifier).catch(fns.showError)
     },
     reset: () => updateProjectSelector(null),
   }

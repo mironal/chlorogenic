@@ -8,7 +8,13 @@ import { DragDropContext } from "react-dnd"
 import HTML5Backend from "react-dnd-html5-backend"
 import { ModalNameEditor } from "../components"
 import { Flexbox } from "../components/parts"
+import {
+  pipelinePromiseAction,
+  pipelinePromiseAction1,
+  pipelinePromiseAction2,
+} from "../misc/prelude"
 import Modal from "../Modal"
+import { createShowError, createShowSuccess } from "../models/notification"
 import {
   createCreatePanel,
   createRemovePanel,
@@ -103,12 +109,29 @@ const mapState = ({
   panelIndex,
 })
 
-const mapDispatch = ({ userConfig }: RematchDispatch<models>) => ({
-  createPanel: createCreatePanel(userConfig),
-  renamePanel: createRenamePanel(userConfig),
-  removePanel: createRemovePanel(userConfig),
-  setPanelIndex: createSetPanelIndex(userConfig),
-})
+const mapDispatch = ({ userConfig, notification }: RematchDispatch<models>) => {
+  const showSuccess = createShowSuccess(notification)
+  const showError = createShowError(notification)
+  return {
+    createPanel: pipelinePromiseAction(
+      createCreatePanel(userConfig),
+      showError,
+      () => showSuccess("New panel created"),
+    ),
+    renamePanel: pipelinePromiseAction2(
+      createRenamePanel(userConfig),
+      showError,
+      () => showSuccess("A panel renamed"),
+    ),
+
+    removePanel: pipelinePromiseAction1(
+      createRemovePanel(userConfig),
+      showError,
+      () => showSuccess("A panel removed"),
+    ),
+    setPanelIndex: createSetPanelIndex(userConfig),
+  }
+}
 
 const margeProps = (
   { ...rest }: ReturnType<typeof mapState>,

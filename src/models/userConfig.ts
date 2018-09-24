@@ -18,15 +18,11 @@ export interface PanelModel {
   columns: GitHubProjectColumnIdentifier[]
 }
 
-export interface UserConfig {
+export interface UserConfigModel {
   user: firebase.UserInfo | null
   githubToken: string | null
   panelIndex: number
   panels: PanelModel[]
-}
-
-export interface UserConfigModel extends UserConfig {
-  loading: boolean
 }
 
 const isPanelModel = (obj: any): obj is PanelModel => {
@@ -39,7 +35,6 @@ const isPanelModel = (obj: any): obj is PanelModel => {
 }
 
 const initialState = {
-  loading: true,
   user: null,
   githubToken: null,
   panelIndex: 0,
@@ -71,13 +66,15 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
             snapshot => this.onSnapshot(snapshot),
             error => {
               if (lastUserState) {
-                dispatch.notification.showError(error)
+                // tslint:disable-next-line:no-console
+                console.error(error)
               }
               this.onSnapshot(null)
               off()
             },
           )
         } else {
+          // fake event for signout or not signin
           this.onSnapshot(null)
         }
       })
@@ -106,12 +103,7 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
       const panels = produce(state.panels, draft => {
         draft[panelIndex].columns.push(column)
       })
-      await firestoreConfigReference(rootState)
-        .update({ panels })
-        .then(() =>
-          dispatch.notification.showSuccess({ message: "A column added" }),
-        )
-        .catch(dispatch.notification.showError)
+      await firestoreConfigReference(rootState).update({ panels })
     },
     async removePanelColumn(payload, rootState) {
       const { panelIndex, column } = payload
@@ -121,8 +113,8 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
       ) {
         throw new Bug("Invalid payload")
       }
-      const panels: UserConfig["panels"] = produce(
-        rootState.userConfig.panels as UserConfig["panels"],
+      const panels: UserConfigModel["panels"] = produce(
+        rootState.userConfig.panels as UserConfigModel["panels"],
         draft => {
           const index = draft[panelIndex].columns.findIndex(
             c => c.id === column.id,
@@ -132,12 +124,7 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
           }
         },
       )
-      await firestoreConfigReference(rootState)
-        .update({ panels })
-        .then(() =>
-          dispatch.notification.showSuccess({ message: "A column removed" }),
-        )
-        .catch(dispatch.notification.showError)
+      await firestoreConfigReference(rootState).update({ panels })
     },
     async movePanelColumn(payload, rootState) {
       const { panelIndex, column, add } = payload
@@ -172,12 +159,7 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         draft[panelIndex].columns[to] = temp
       })
 
-      await firestoreConfigReference(rootState)
-        .update({ panels })
-        .then(() =>
-          dispatch.notification.showSuccess({ message: "A column moved" }),
-        )
-        .catch(dispatch.notification.showError)
+      await firestoreConfigReference(rootState).update({ panels })
     },
     async createPanel(payload, rootState) {
       const state = rootState.userConfig as UserConfigModel
@@ -187,12 +169,7 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
           columns: [],
         })
       })
-      await firestoreConfigReference(rootState)
-        .update({ panels })
-        .then(() =>
-          dispatch.notification.showSuccess({ message: "New panel created" }),
-        )
-        .catch(dispatch.notification.showError)
+      await firestoreConfigReference(rootState).update({ panels })
     },
     async removePanel(panelIndex, rootState) {
       if (typeof panelIndex !== "number") {
@@ -209,12 +186,7 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         },
       )
 
-      await firestoreConfigReference(rootState)
-        .update(config)
-        .then(() =>
-          dispatch.notification.showSuccess({ message: "A panel removed" }),
-        )
-        .catch(dispatch.notification.showError)
+      await firestoreConfigReference(rootState).update(config)
     },
     async renamePanel(payload, rootState) {
       if (
@@ -236,25 +208,18 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         },
       )
 
-      await firestoreConfigReference(rootState)
-        .update({
-          panels,
-        })
-        .then(() =>
-          dispatch.notification.showSuccess({ message: "A panel renamed" }),
-        )
-        .catch(dispatch.notification.showError)
+      await firestoreConfigReference(rootState).update({
+        panels,
+      })
     },
     async setPanelIndex(panelIndex, rootState) {
       if (typeof panelIndex !== "number") {
         throw new Bug("Invalid payload")
       }
 
-      return firestoreConfigReference(rootState)
-        .update({
-          panelIndex,
-        })
-        .catch(dispatch.notification.showError)
+      return firestoreConfigReference(rootState).update({
+        panelIndex,
+      })
     },
   }),
   reducers: {
@@ -270,7 +235,6 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
       if (payload === null || !payload.exists) {
         return {
           ...initialState,
-          loading: false,
         }
       }
       const data = payload.data()!
@@ -279,7 +243,6 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         throw new Bug("Invalid payload")
       }
       return produce(state, draft => {
-        draft.loading = false
         draft.githubToken = githubToken
         if (typeof panelIndex === "number") {
           draft.panelIndex = panelIndex
@@ -297,40 +260,48 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
 
 type M = ExtractRematchDispatchersFromModel<ModelConfig<UserConfigModel>>
 
-export const createCreatePanel = (m: M) => () => m.createPanel()
+export const createCreatePanel = (m: M) => () =>
+  Promise.resolve(m.createPanel())
+
 export const createRemovePanel = (m: M) => (panelIndex: number) =>
-  m.removePanel(panelIndex)
+  Promise.resolve(m.removePanel(panelIndex))
 
 export const createRenamePanel = (m: M) => (panelIndex: number, name: string) =>
-  m.renamePanel({
-    panelIndex,
-    name,
-  })
+  Promise.resolve(
+    m.renamePanel({
+      panelIndex,
+      name,
+    }),
+  )
 
 export const createSetPanelIndex = (m: M) => (panelIndex: number) =>
-  m.setPanelIndex(panelIndex)
+  Promise.resolve(m.setPanelIndex(panelIndex))
 
 export const createAddPanelColumn = (m: M) => (
   panelIndex: number,
   column: GitHubProjectColumnIdentifier,
 ) =>
-  m.addPanelColumn({
-    panelIndex,
-    column,
-  })
+  Promise.resolve(
+    m.addPanelColumn({
+      panelIndex,
+      column,
+    }),
+  )
 
 export const createRemovePanelColumn = (m: M) => (
   panelIndex: number,
   column: GitHubProjectColumnIdentifier,
-) => m.removePanelColumn({ panelIndex, column })
+) => Promise.resolve(m.removePanelColumn({ panelIndex, column }))
 
 export const createMovePanelColumn = (m: M) => (
   panelIndex: number,
   column: GitHubProjectColumnIdentifier,
   add: number,
 ) =>
-  m.movePanelColumn({
-    panelIndex,
-    column,
-    add,
-  })
+  Promise.resolve(
+    m.movePanelColumn({
+      panelIndex,
+      column,
+      add,
+    }),
+  )

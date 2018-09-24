@@ -1,4 +1,5 @@
 import {
+  Action,
   createModel,
   ExtractRematchDispatchersFromModel,
   ModelConfig,
@@ -23,7 +24,7 @@ export interface ProjectLoaderModel {
 export default createModel<ProjectLoaderModel, ModelConfig<ProjectLoaderModel>>(
   {
     effects: dispatcher => ({
-      fetchRequest(payload) {
+      async fetchRequest(payload) {
         const { identifier, token } = payload
 
         const run = async () => {
@@ -36,10 +37,11 @@ export default createModel<ProjectLoaderModel, ModelConfig<ProjectLoaderModel>>(
           }
         }
 
-        run()
+        return run()
           .then(project => this.fetchSucceeded({ identifier, project }))
           .catch(error => {
             this.fetchFailed({ identifier, error })
+            throw error
           })
       },
     }),
@@ -70,8 +72,11 @@ type M = ExtractRematchDispatchersFromModel<ModelConfig<ProjectLoaderModel>>
 export const createFetchRequest = (m: M) => (
   token: string,
   identifier: GithubProjectIdentifier,
-) =>
-  m.fetchRequest({
-    token,
-    identifier,
-  })
+): Promise<Action> =>
+  Promise.resolve(
+    // rematch hack
+    m.fetchRequest({
+      token,
+      identifier,
+    }),
+  )

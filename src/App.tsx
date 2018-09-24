@@ -81,7 +81,8 @@ class AppComponent extends React.PureComponent<Props> {
   }
 }
 const mapState = ({
-  userConfig: { loading, user },
+  loadings: { userConfigLoading: loading },
+  userConfig: { user },
 }: RematchRootState<models>) => ({
   loading,
   authed: loading === false && !!user,

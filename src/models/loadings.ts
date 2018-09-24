@@ -3,12 +3,18 @@ import { produce } from "immer"
 import { createProjectSlug } from "../misc/github"
 
 interface LoadingModel {
+  userConfigLoading: boolean
   projectLoadings: { [slug: string]: boolean }
   projectErrors: { [slug: string]: Error | undefined }
 }
 
 export default createModel<LoadingModel, ModelConfig<LoadingModel>>({
   reducers: {
+    "userConfig/onSnapshot": state => {
+      return produce(state, draft => {
+        draft.userConfigLoading = false
+      })
+    },
     "projectLoader/fetchRequest": (state, { identifier }) => {
       const slug = createProjectSlug(identifier)
       return produce(state, draft => {
@@ -31,5 +37,5 @@ export default createModel<LoadingModel, ModelConfig<LoadingModel>>({
       })
     },
   },
-  state: { projectLoadings: {}, projectErrors: {} },
+  state: { projectLoadings: {}, projectErrors: {}, userConfigLoading: true },
 })

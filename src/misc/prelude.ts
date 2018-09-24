@@ -1,5 +1,41 @@
 // tslint:disable:ban-types
 
+export const pipelinePromiseAction = <R>(
+  fn: () => Promise<R>,
+  catchFn: (error: Error) => void,
+  thenFn?: () => void,
+) => () =>
+  fn()
+    .then(thenFn)
+    .catch(catchFn)
+
+export const pipelinePromiseAction1 = <A, R>(
+  fn: (a: A) => Promise<R>,
+  catchFn: (error: Error) => void,
+  thenFn?: () => void,
+) => (a: A) =>
+  fn(a)
+    .then(thenFn)
+    .catch(catchFn)
+
+export const pipelinePromiseAction2 = <A, B, R>(
+  fn: (a: A, b: B) => Promise<R>,
+  catchFn: (error: Error) => void,
+  thenFn?: () => void,
+) => (a: A, b: B) =>
+  fn(a, b)
+    .then(thenFn)
+    .catch(catchFn)
+
+export const pipelinePromiseAction3 = <A, B, C, R>(
+  fn: (a: A, b: B, c: C) => Promise<R>,
+  catchFn: (error: Error) => void,
+  thenFn?: () => void,
+) => (a: A, b: B, c: C) =>
+  fn(a, b, c)
+    .then(thenFn)
+    .catch(catchFn)
+
 /**
  * No side effects.
  *
