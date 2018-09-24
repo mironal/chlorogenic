@@ -26,6 +26,7 @@ injectGlobal`
     padding: 0.2em;
     font-size: 1em;
   }
+}
 `
 
 ReactDOM.render(<App />, document.getElementById("root") as HTMLElement)
