@@ -11,7 +11,7 @@ export default () => {
     storageBucket: process.env.REACT_APP_FIREBASE_storageBucket,
   }
 
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== "test") {
     Object.values(config).forEach(v => {
       if (v === undefined) {
         throw new Error(
