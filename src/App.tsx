@@ -15,14 +15,9 @@ import { models, store } from "./store"
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
-const Container = styled(VFlexbox)`
-  height: 100%;
-  width: 100%;
-`
-Container.displayName = "AppContainer"
-
 const Content = styled(Flexbox)`
-  height: 100%;
+  height: auto;
+  min-height: 100%;
 
   > * {
     flex-grow: 1;
@@ -31,14 +26,14 @@ const Content = styled(Flexbox)`
 Content.displayName = "AppContent"
 
 const LoaidngContainer = styled(Flexbox)`
+  height: 100vh;
   justify-content: center;
   align-items: center;
-  height: 100%;
 `
 
 const Background = styled.div`
   color: ${({ theme: t }) => t.textColor};
-  height: 100%;
+  min-height: 100%;
   background: ${props => props.theme.secondaryBackgroundColor};
 
   a {
@@ -71,24 +66,20 @@ class AppComponent extends React.PureComponent<Props> {
     const { authed, loading } = this.props
     if (loading) {
       return (
-        <Container>
-          <LoaidngContainer>
-            <h1>Loading... (◍•ᴗ•◍)</h1>
-          </LoaidngContainer>
-        </Container>
+        <LoaidngContainer>
+          <h1>Loading... (◍•ᴗ•◍)</h1>
+        </LoaidngContainer>
       )
     }
     return (
-      <>
-        <Container>
-          {authed && <Header />}
-          <Content>
-            {!authed && <SignIn />}
-            {authed && <Dashboard />}
-          </Content>
-        </Container>
+      <VFlexbox>
+        {authed && <Header />}
+        <Content>
+          {!authed && <SignIn />}
+          {authed && <Dashboard />}
+        </Content>
         <Modal />
-      </>
+      </VFlexbox>
     )
   }
 }

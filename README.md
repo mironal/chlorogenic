@@ -9,7 +9,7 @@ Let's organize your GitHub projects of multiple repositories.
 ## Aim at...
 
 - Operate project's cards across any projects or repositories.
-- Bulk operation on multiple cards
+- Batch operation on multiple cards
 
 ![ss](./ss/ss.png)
 

@@ -7,11 +7,13 @@ import registerServiceWorker from "./registerServiceWorker"
 // tslint:disable-next-line:no-unused-expression
 injectGlobal`
   html {
-    height: 100%;
+    min-height: 100vh;
+    background: black;
   }
   body {
-    height: 100%;
+    min-height: 100vh;
     margin: 0;
+    background: black;
     font-family: "Noto Sans", "Noto Sans CJK JP", "Roboto" ,sans-serif;
   }
   input {

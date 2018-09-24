@@ -5,11 +5,11 @@ import { connect } from "react-redux"
 import styled from "../appearance/styled"
 import { Button, Icon, VFlexbox } from "../components/parts"
 import { signIn } from "../firebase/auth"
+import LoadGif from "../gifs/LoadGif"
 import { createShowError, createShowSuccess } from "../models/notification"
 import { models } from "../store"
 
 const Container = styled(VFlexbox)`
-  justify-content: center;
   align-items: center;
 `
 
@@ -25,6 +25,11 @@ const Title = styled.h1`
 `
 
 Title.displayName = "Title"
+
+const PreviewSegment = styled.div`
+  max-width: 80%;
+  margin-bottom: 2em;
+`
 
 type Props = ReturnType<typeof mapDispatch>
 
@@ -68,6 +73,26 @@ const View: React.SFC<Props> = ({ showSuccess, showError }) => {
           You can find a firebase security rule is here.
         </a>
       </p>
+      <PreviewSegment>
+        <h3>Add columns of multiple projects</h3>
+        <p>
+          Columns of multiple projects can be put in one panel regardless of
+          repository or organization.
+        </p>
+        <LoadGif gif="add" />
+      </PreviewSegment>
+      <PreviewSegment>
+        <h3>Batch operation.</h3>
+        <LoadGif gif="move" />
+      </PreviewSegment>
+      <PreviewSegment>
+        <h3>Sync your panels</h3>
+        <p>
+          Even if you open it with a different browser, your panel settings will
+          be synchronized by firebase.
+        </p>
+        <LoadGif gif="sync" />
+      </PreviewSegment>
     </Container>
   )
 }
