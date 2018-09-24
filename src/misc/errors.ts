@@ -14,6 +14,7 @@ export class Bug extends Error implements NotificationContent {
 export type RecoverableErrorMessage =
   | "Organization not found"
   | "Project not found"
+  | "Repository not found"
   | "Invalid input"
 export class RecoverableError extends Error implements NotificationContent {
   public name = "RecoverableError"

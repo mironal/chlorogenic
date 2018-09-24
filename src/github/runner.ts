@@ -51,6 +51,20 @@ export const fetchRepositoryProject = async (
 ): Promise<GitHubProject> => {
   const query = repositoryProjectQuery(identifier)
   const resp = await axios({ ...conf(token), data: { query } })
+
+  if (!resp.data.data.repository) {
+    throw new RecoverableError(
+      "Repository not found",
+      createProjectSlug(identifier),
+    )
+  }
+
+  if (!resp.data.data.repository.project) {
+    throw new RecoverableError(
+      "Project not found",
+      createProjectSlug(identifier),
+    )
+  }
   const { name, url } = resp.data.data.repository.project as {
     name: string
     url: string
