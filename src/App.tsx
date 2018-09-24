@@ -9,9 +9,10 @@ import styled, { ThemeProvider } from "./appearance/styled"
 import { theme } from "./appearance/theme"
 import { Flexbox, VFlexbox } from "./components/parts"
 import Header from "./containers/Header"
-import SignIn from "./containers/SignIn"
 import Modal from "./Modal"
 import { models, store } from "./store"
+
+type SignInComponentType = typeof import("./containers/SignIn")["default"]
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
@@ -53,10 +54,25 @@ const Background = styled.div`
   }
 `
 Background.displayName = "Background"
-
-class AppComponent extends React.PureComponent<Props> {
+interface State {
+  SignInComponent?: SignInComponentType
+}
+class AppComponent extends React.PureComponent<Props, State> {
+  public state: State = {}
   public componentDidMount() {
     this.props.subscribe()
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (
+      !prevProps.needLoadSignInComponent &&
+      this.props.needLoadSignInComponent &&
+      !this.state.SignInComponent
+    ) {
+      import("./containers/SignIn").then(comp =>
+        this.setState({ SignInComponent: comp.default }),
+      )
+    }
   }
 
   public componentWillUnmount() {
@@ -71,13 +87,27 @@ class AppComponent extends React.PureComponent<Props> {
         </LoaidngContainer>
       )
     }
+    const { SignInComponent } = this.state
+
+    if (!authed && !SignInComponent) {
+      return (
+        <LoaidngContainer>
+          <h1>Loading... (◍•ᴗ•◍)</h1>
+        </LoaidngContainer>
+      )
+    }
+    if (!authed && SignInComponent) {
+      return (
+        <VFlexbox>
+          <SignInComponent />
+        </VFlexbox>
+      )
+    }
+
     return (
       <VFlexbox>
         {authed && <Header />}
-        <Content>
-          {!authed && <SignIn />}
-          {authed && <Dashboard />}
-        </Content>
+        <Content>{authed && <Dashboard />}</Content>
         <Modal />
       </VFlexbox>
     )
@@ -89,6 +119,7 @@ const mapState = ({
 }: RematchRootState<models>) => ({
   loading,
   authed: loading === false && !!user,
+  needLoadSignInComponent: loading === false && !user,
 })
 const mapDispatch = ({
   userConfig: { subscribe, unsubscribe },
