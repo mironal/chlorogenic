@@ -13,8 +13,6 @@ Let's organize your GitHub projects of multiple repositories.
 
 ![ss](./ss/ss.png)
 
-![usage gif](./ss/usage.gif)
-
 ## Technologies (੭•̀ᴗ•̀)
 
 - Front end
