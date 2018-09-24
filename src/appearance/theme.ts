@@ -1,4 +1,4 @@
-import Color from "color"
+import * as Color from "color"
 
 const colorPalet = {
   backgroundColor: "#393939",

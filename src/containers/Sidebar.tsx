@@ -1,5 +1,5 @@
 import CircleEditOutlineIcon from "mdi-react/CircleEditOutlineIcon"
-import React from "react"
+import * as React from "react"
 import styled from "../appearance/styled"
 import { Button, Flexbox } from "../components/parts"
 import { PanelModel } from "../models/userConfig"

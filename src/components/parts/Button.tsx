@@ -1,4 +1,4 @@
-import Color from "color"
+import * as Color from "color"
 import { ThemedStyledProps } from "styled-components"
 import { StylesFunc } from "../../appearance/utils"
 import { SizeProps } from "./props"

@@ -1,4 +1,4 @@
-import React from "react"
+import * as React from "react"
 import { ConnectDragSource, DragSource } from "react-dnd"
 import styled from "../../appearance/styled"
 import {

@@ -1,6 +1,6 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
 import CloseIcon from "mdi-react/CloseIcon"
-import React from "react"
+import * as React from "react"
 import { connect } from "react-redux"
 import styled from "../appearance/styled"
 import { HeaderMenu } from "../components"

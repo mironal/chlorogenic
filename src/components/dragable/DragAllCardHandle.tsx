@@ -1,5 +1,5 @@
 import DragHorizontalIcon from "mdi-react/DragHorizontalIcon"
-import React from "react"
+import * as React from "react"
 import { ConnectDragSource, DragSource } from "react-dnd"
 import {
   GitHubProjectCard,

@@ -1,5 +1,5 @@
 import CloseIcon from "mdi-react/CloseIcon"
-import React from "react"
+import * as React from "react"
 import styled from "../appearance/styled"
 import Button from "./parts/Button"
 import Flexbox, { VFlexbox } from "./parts/Flexbox"

@@ -1,6 +1,6 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
 
-import React from "react"
+import * as React from "react"
 import { connect, Provider } from "react-redux"
 
 import Dashboard from "./containers/Dashboard"

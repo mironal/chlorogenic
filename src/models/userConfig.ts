@@ -3,7 +3,7 @@ import {
   ExtractRematchDispatchersFromModel,
   ModelConfig,
 } from "@rematch/core"
-import firebase from "firebase/app"
+import * as firebase from "firebase/app"
 import "firebase/auth"
 import "firebase/firestore"
 import produce from "immer"
