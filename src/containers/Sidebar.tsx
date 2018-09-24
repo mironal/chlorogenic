@@ -1,4 +1,5 @@
 import CircleEditOutlineIcon from "mdi-react/CircleEditOutlineIcon"
+import GithubFaceIcon from "mdi-react/GithubFaceIcon"
 import * as React from "react"
 import styled from "../appearance/styled"
 import { Button, Flexbox } from "../components/parts"
@@ -20,6 +21,10 @@ const SideBar = styled(Flexbox)`
   padding: 0.6em;
   padding-bottom: 0;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+
+  & > :last-child {
+    margin-top: auto;
+  }
 `
 const UL = styled.ul`
   list-style: none;
@@ -68,6 +73,9 @@ const View = ({
         ))}
       </UL>
       <Button onClick={onClickAdd}>Add new panel</Button>
+      <a href="https://github.com/mironal/chlorogenic" target="_blank">
+        <GithubFaceIcon />
+      </a>
     </SideBar>
   )
 }
