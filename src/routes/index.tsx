@@ -3,6 +3,7 @@ import * as React from "react"
 import * as Loadable from "react-loadable"
 import { VFlexbox } from "../components/parts"
 import Header from "../containers/Header"
+import paths from "./paths"
 
 const Loading = () => <div>Loading...</div>
 
@@ -21,14 +22,14 @@ export const MainRouter = ({ authed }: { authed: boolean }) => (
     {authed && <Header />}
     <Router>
       {authed ? (
-        <AsyncDashboard path="/" />
+        <AsyncDashboard path={paths.Root} />
       ) : (
-        <Redirect from="/" to="/signin" noThrow={true} />
+        <Redirect from={paths.Root} to={paths.SignIn} noThrow={true} />
       )}
       {authed ? (
-        <Redirect from="/signin" to="/" noThrow={true} />
+        <Redirect from={paths.SignIn} to={paths.Root} noThrow={true} />
       ) : (
-        <AsyncSignIn path="signin" />
+        <AsyncSignIn path={paths.SignIn} />
       )}
     </Router>
   </VFlexbox>
