@@ -7,14 +7,15 @@ import styled from "../appearance/styled"
 import { currentTheme } from "../appearance/theme"
 import { ColumnContainer, ProjectColumn } from "../components"
 import { Button, Flexbox } from "../components/parts"
+import { createProjectSlug } from "../misc/github"
 import { parseProjectIdentifierString } from "../misc/parser"
 import Modal from "../Modal"
-import { getLoadingConditionForIdentifer } from "../models/gh_project_store"
 import {
   GitHubProjectColumnIdentifier,
   GithubProjectIdentifier,
 } from "../models/github.types"
 import { createShowError, createShowSuccess } from "../models/notification"
+import { createFetchRequest } from "../models/projectLoader"
 import { createAddPanelColumn } from "../models/userConfig"
 import { models } from "../store"
 
@@ -227,9 +228,10 @@ class View extends React.PureComponent<Props, State> {
 const mapState = (
   {
     userConfig: { githubToken, panels },
-    projectStore,
+    projectLoader,
     notification: { notifyingError },
     projectSelector: identifier,
+    loadings: { projectLoadings },
   }: RematchRootState<models>,
   { panelIndex }: { panelIndex: number },
 ) => ({
@@ -237,15 +239,16 @@ const mapState = (
   panelIndex,
   notifyingError,
   panels,
-  ...getLoadingConditionForIdentifer(projectStore, identifier),
+  loading: identifier && projectLoadings[createProjectSlug(identifier)],
+  project: identifier && projectLoader[createProjectSlug(identifier)],
 })
 const mapDispatch = ({
   notification,
-  projectStore: { fetchProject },
+  projectLoader,
   userConfig,
   projectSelector: { update },
 }: RematchDispatch<models>) => ({
-  fetchProject,
+  fetchRequest: createFetchRequest(projectLoader),
   addPanelColumn: createAddPanelColumn(userConfig),
   showSuccess: createShowSuccess(notification),
   showError: createShowError(notification),
@@ -256,7 +259,7 @@ const mapDispatch = ({
 const mergeProps = (
   { token, panelIndex, panels, ...rest }: ReturnType<typeof mapState>,
   {
-    fetchProject,
+    fetchRequest,
     addPanelColumn,
     updateProjectSelector,
     ...fns
@@ -271,7 +274,7 @@ const mergeProps = (
       addPanelColumn(panelIndex, column),
     fetchProject: (identifier: GithubProjectIdentifier) => {
       updateProjectSelector(identifier)
-      return Promise.resolve(fetchProject({ identifier, token }))
+      return Promise.resolve(fetchRequest(token, identifier))
     },
     reset: () => updateProjectSelector(null),
   }

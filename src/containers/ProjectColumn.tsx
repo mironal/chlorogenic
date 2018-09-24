@@ -7,11 +7,13 @@ import { DragAllCardHandle, ProjectColumn } from "../components"
 import { Button, Flexbox } from "../components/parts"
 import { createProjectSlug, isSameProject } from "../misc/github"
 import {
+  GitHubProject,
   GitHubProjectCard,
   GitHubProjectColumnIdentifier,
 } from "../models/github.types"
 import { createShowError, createShowSuccess } from "../models/notification"
 import { CreateProjectContentCardOpt, MoveProjectCardOpt } from "../models/ops"
+import { createFetchRequest } from "../models/projectLoader"
 import {
   createMovePanelColumn,
   createRemovePanelColumn,
@@ -66,15 +68,15 @@ class View extends React.PureComponent<Props> {
 
   public render() {
     const {
-      columnState,
+      column,
+      error,
       identifier,
       moveToLeftColumn,
       moveToRightColumn,
       removeColumn,
       ops: { running },
+      loading,
     } = this.props
-
-    const { loading, column, error } = columnState
 
     const header: string = (() => {
       if (loading) {
@@ -119,23 +121,40 @@ class View extends React.PureComponent<Props> {
   }
 }
 
+const findColumn = (project: GitHubProject | undefined, columnId: string) => {
+  if (!project) {
+    return undefined
+  }
+  return project.columns.find(c => c.id === columnId)
+}
+
 const mapState = (
-  { userConfig: { githubToken }, ops, columnLoader }: RematchRootState<models>,
+  {
+    userConfig: { githubToken },
+    ops,
+    projectLoader,
+    loadings: { projectLoadings, projectErrors },
+  }: RematchRootState<models>,
   { panelIndex, identifier }: ProjectColumnProps,
 ) => ({
+  loading: projectLoadings[createProjectSlug(identifier.project)],
+  error: projectErrors[createProjectSlug(identifier.project)],
   panelIndex,
   identifier,
-  columnState: columnLoader[identifier.id] || {},
+  column: findColumn(
+    projectLoader[createProjectSlug(identifier.project)],
+    identifier.id,
+  ),
   token: githubToken || "",
   ops,
 })
 const mapDispatch = ({
   userConfig,
   notification,
+  projectLoader,
   ops: { createProjectContentCard, moveProjectCard },
-  columnLoader: { fetchColumn },
 }: RematchDispatch<models>) => ({
-  fetchColumn,
+  fetchRequest: createFetchRequest(projectLoader),
   removeColumn: createRemovePanelColumn(userConfig),
   moveColumn: createMovePanelColumn(userConfig),
   createProjectContentCard,
@@ -148,7 +167,7 @@ const mapDispatch = ({
 const mergeProps = (
   { identifier, token, panelIndex, ...rest }: ReturnType<typeof mapState>,
   {
-    fetchColumn,
+    fetchRequest,
     removeColumn,
     moveColumn,
     createProjectContentCard,
@@ -161,7 +180,7 @@ const mergeProps = (
     ...fns,
     identifier,
     panelIndex,
-    fetchColumn: () => fetchColumn({ identifier, token }),
+    fetchColumn: () => fetchRequest(token, identifier.project),
     moveProjectCard: (opts: MoveProjectCardOpt[]) =>
       moveProjectCard({ token, opts }),
     createProjectContentCard: (opts: CreateProjectContentCardOpt[]) =>

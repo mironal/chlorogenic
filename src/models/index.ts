@@ -1,15 +1,15 @@
-import columnLoader from "./gh_column_loader"
-import projectStore from "./gh_project_store"
+import loadings from "./loadings"
 import notification from "./notification"
 import ops from "./ops"
 import projectSelector from "./project_selector"
+import projectLoader from "./projectLoader"
 import userConfig from "./userConfig"
 
 export default {
-  projectStore,
+  loadings,
   notification,
-  columnLoader,
-  projectSelector,
   ops,
+  projectSelector,
+  projectLoader,
   userConfig,
 }
