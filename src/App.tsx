@@ -30,6 +30,12 @@ const Content = styled(Flexbox)`
 `
 Content.displayName = "AppContent"
 
+const LoaidngContainer = styled(Flexbox)`
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`
+
 const Background = styled.div`
   color: ${({ theme: t }) => t.textColor};
   height: 100%;
@@ -64,7 +70,13 @@ class AppComponent extends React.PureComponent<Props> {
   public render() {
     const { authed, loading } = this.props
     if (loading) {
-      return <p>Loading...</p>
+      return (
+        <Container>
+          <LoaidngContainer>
+            <h1>Loading... (◍•ᴗ•◍)</h1>
+          </LoaidngContainer>
+        </Container>
+      )
     }
     return (
       <>
