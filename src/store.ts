@@ -14,7 +14,6 @@ export const store = init({
     },
   },
   name: "chlorogenic",
-  plugins: [],
   models,
 })
 
