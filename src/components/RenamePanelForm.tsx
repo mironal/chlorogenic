@@ -9,14 +9,14 @@ const Title = styled.h3`
   padding: 0;
 `
 
-export interface NameEditorProps {
+export interface RenamePanelFormProps {
   defaultName?: string
   onClickOk?(name: string): void
   onClickCancel?(): void
   onClickDelete?(): void
 }
 
-class Editor extends React.PureComponent<NameEditorProps> {
+class RenamePanelForm extends React.PureComponent<RenamePanelFormProps> {
   private inputRef = React.createRef<HTMLInputElement>()
   public render() {
     const { defaultName, onClickCancel, onClickOk, onClickDelete } = this.props
@@ -49,14 +49,14 @@ class Editor extends React.PureComponent<NameEditorProps> {
   }
 }
 
-export default Editor
+export default RenamePanelForm
 
 const ModalStyle = styled(Flexbox)`
   margin: 1em;
 `
 
-export const ModalEditor = (props: NameEditorProps) => (
+export const RenamePanelFormDialog = (props: RenamePanelFormProps) => (
   <ModalStyle>
-    <Editor {...props} />
+    <RenamePanelForm {...props} />
   </ModalStyle>
 )
