@@ -15,8 +15,8 @@ export type LoadGifProps = {
 
 export default class extends React.PureComponent<LoadGifProps, { file?: any }> {
   public state = { file: undefined }
-  public componentDidMount() {
-    import(`./${this.props.gif}.gif`)
+  public async componentDidMount() {
+    await import(`./${this.props.gif}.gif`)
       .then(file => this.setState({ file }))
       .catch(error => {
         // tslint:disable-next-line:no-console
