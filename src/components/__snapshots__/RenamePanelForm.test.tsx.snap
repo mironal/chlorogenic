@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot 1`] = `
+<div
+  className="sc-bxivhb glCqXO"
+>
+  <h3
+    className="sc-ifAKCX lfULYF"
+  >
+    Edit name
+  </h3>
+  <input
+    autoFocus={true}
+    defaultValue={undefined}
+  />
+  <div
+    className="sc-htpNat cixthU"
+  >
+    <button
+      className="sc-bdVaJa dWNBmp"
+      onClick={undefined}
+    >
+      Delete
+    </button>
+    <button
+      className="sc-bdVaJa dnqbXl"
+      onClick={undefined}
+    >
+      Cancel
+    </button>
+    <button
+      className="sc-bdVaJa bNhLRi"
+      onClick={[Function]}
+    >
+      Change name
+    </button>
+  </div>
+</div>
+`;
+
+exports[`snapshot 2`] = `
+<div
+  className="sc-bxivhb glCqXO"
+>
+  <h3
+    className="sc-ifAKCX lfULYF"
+  >
+    Edit name
+  </h3>
+  <input
+    autoFocus={true}
+    defaultValue="(◍•ᴗ•◍)"
+  />
+  <div
+    className="sc-htpNat cixthU"
+  >
+    <button
+      className="sc-bdVaJa dWNBmp"
+      onClick={[MockFunction]}
+    >
+      Delete
+    </button>
+    <button
+      className="sc-bdVaJa dnqbXl"
+      onClick={[MockFunction]}
+    >
+      Cancel
+    </button>
+    <button
+      className="sc-bdVaJa bNhLRi"
+      onClick={[Function]}
+    >
+      Change name
+    </button>
+  </div>
+</div>
+`;

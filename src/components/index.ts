@@ -6,10 +6,10 @@ export {
 } from "./ColumnContainer"
 
 export {
-  default as NameEditor,
-  ModalEditor as ModalNameEditor,
-  NameEditorProps,
-} from "./NameEditor"
+  default as RenamePanelForm,
+  RenamePanelFormDialog,
+  RenamePanelFormProps,
+} from "./RenamePanelForm"
 
 export { default as ProjectCard, CardProps } from "./dragable/ProjectCard"
 export {

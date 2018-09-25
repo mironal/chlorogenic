@@ -6,7 +6,7 @@ import styled from "styled-components"
 
 import { DragDropContext } from "react-dnd"
 import HTML5Backend from "react-dnd-html5-backend"
-import { ModalNameEditor } from "../components"
+import { RenamePanelFormDialog } from "../components"
 import { Flexbox } from "../components/parts"
 import {
   pipelinePromiseAction,
@@ -83,7 +83,7 @@ class Board extends React.PureComponent<Props, State> {
         </DnDBoard>
         {editingIndex !== undefined && (
           <Modal onClickOutside={this.endEdit}>
-            <ModalNameEditor
+            <RenamePanelFormDialog
               defaultName={panels[editingIndex].name}
               onClickCancel={this.endEdit}
               onClickDelete={() => {
