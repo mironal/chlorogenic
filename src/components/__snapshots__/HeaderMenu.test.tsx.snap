@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot 1`] = `
+<div
+  className="sc-bxivhb ewuPkI sc-bwzfXH jIEWCi"
+>
+  <div
+    className="sc-ifAKCX ezQlwD sc-bdVaJa fpcbkF"
+  />
+  <div
+    className="sc-EHOje cTZJmS sc-bdVaJa fpcbkF"
+  />
+  <div
+    className="sc-bZQynM gRKxIf sc-bwzfXH jIEWCi"
+  />
+</div>
+`;
+
+exports[`snapshot 2`] = `
+<div
+  className="sc-bxivhb ewuPkI sc-bwzfXH jIEWCi"
+>
+  <div
+    className="sc-ifAKCX ezQlwD sc-bdVaJa fpcbkF"
+  >
+    <p>
+      left
+    </p>
+  </div>
+  <div
+    className="sc-EHOje cTZJmS sc-bdVaJa fpcbkF"
+  >
+    <p>
+      center
+    </p>
+  </div>
+  <div
+    className="sc-bZQynM gRKxIf sc-bwzfXH jIEWCi"
+  >
+    <p>
+      right
+    </p>
+  </div>
+</div>
+`;
