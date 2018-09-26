@@ -22,9 +22,10 @@ import { models } from "../store"
 
 type Props = ReturnType<typeof mergeProps>
 interface State {
-  showHint?: boolean
+  showHint: boolean
   input: string
-  selectedColumnId?: string
+  identifier: GithubProjectIdentifier | null
+  selectedColumnId: string | null
 }
 
 const hintText = `- {org name}/{project number}
@@ -57,7 +58,12 @@ const Input = styled(Flexbox)<{ error?: Error }>`
 `
 
 class View extends React.PureComponent<Props, State> {
-  public state: State = { input: "" }
+  public state: State = {
+    input: "",
+    identifier: null,
+    showHint: false,
+    selectedColumnId: null,
+  }
   private onChangeInput = (input: string) => {
     this.props.clearNotification()
     this.setState({ input })
@@ -77,14 +83,17 @@ class View extends React.PureComponent<Props, State> {
     if (identifier instanceof Error) {
       this.props.showError(identifier)
     } else {
+      this.setState({ identifier })
       this.props.fetchProject(identifier)
     }
   }
 
   private onClickAdd = () => {
-    const { selectedColumnId } = this.state
-    const { project, addColumn } = this.props
-    if (!project || !selectedColumnId) {
+    const { selectedColumnId, identifier } = this.state
+    const { projectLoader, addColumn } = this.props
+    const project =
+      (identifier && projectLoader[createProjectSlug(identifier)]) || null
+    if (!project || !selectedColumnId || !identifier) {
       return
     }
 
@@ -94,20 +103,34 @@ class View extends React.PureComponent<Props, State> {
     }
     if (columnIdentifer) {
       addColumn(columnIdentifer)
-      this.setState({ selectedColumnId: undefined })
+      this.setState({ selectedColumnId: null })
     }
   }
 
   public componentDidUpdate(prevProps: Props) {
     if (prevProps.panelIndex !== this.props.panelIndex) {
-      this.setState({ input: "", selectedColumnId: undefined })
-      this.props.reset()
+      this.setState({
+        input: "",
+        selectedColumnId: null,
+        identifier: null,
+      })
     }
   }
 
   public render() {
-    const { input, selectedColumnId } = this.state
-    const { notifyingError, project, loading, columns } = this.props
+    const { input, selectedColumnId, identifier } = this.state
+    const {
+      notifyingError,
+      projectLoadings,
+      projectLoader,
+      columns,
+    } = this.props
+
+    const loading =
+      (identifier && projectLoadings[createProjectSlug(identifier)]) || false
+
+    const project =
+      (identifier && projectLoader[createProjectSlug(identifier)]) || null
 
     let loadingAny = false
     if (!project && loading) {
@@ -231,7 +254,6 @@ const mapState = (
     userConfig: { githubToken, panels },
     projectLoader,
     notification: { notifyingError },
-    projectSelector: identifier,
     loadings: { projectLoadings },
   }: RematchRootState<models>,
   { panelIndex }: { panelIndex: number },
@@ -240,14 +262,13 @@ const mapState = (
   panelIndex,
   notifyingError,
   panels,
-  loading: identifier && projectLoadings[createProjectSlug(identifier)],
-  project: identifier && projectLoader[createProjectSlug(identifier)],
+  projectLoadings,
+  projectLoader,
 })
 const mapDispatch = ({
   notification,
   projectLoader,
   userConfig,
-  projectSelector: { update },
 }: RematchDispatch<models>) => ({
   fetchRequest: pipelinePromiseAction2(
     createFetchRequest(projectLoader),
@@ -257,17 +278,11 @@ const mapDispatch = ({
   showSuccess: createShowSuccess(notification),
   showError: createShowError(notification),
   clearNotification: notification.clear,
-  updateProjectSelector: update,
 })
 
 const mergeProps = (
   { token, panelIndex, panels, ...rest }: ReturnType<typeof mapState>,
-  {
-    fetchRequest,
-    addPanelColumn,
-    updateProjectSelector,
-    ...fns
-  }: ReturnType<typeof mapDispatch>,
+  { fetchRequest, addPanelColumn, ...fns }: ReturnType<typeof mapDispatch>,
 ) => {
   return {
     ...rest,
@@ -276,11 +291,8 @@ const mergeProps = (
     columns: panels[panelIndex].columns,
     addColumn: (column: GitHubProjectColumnIdentifier) =>
       addPanelColumn(panelIndex, column),
-    fetchProject: (identifier: GithubProjectIdentifier) => {
-      updateProjectSelector(identifier)
-      fetchRequest(token, identifier).catch(fns.showError)
-    },
-    reset: () => updateProjectSelector(null),
+    fetchProject: (identifier: GithubProjectIdentifier) =>
+      fetchRequest(token, identifier).catch(fns.showError),
   }
 }
 
