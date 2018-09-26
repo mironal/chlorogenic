@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/polyfill": "7.0.0",
-    "@reach/router": "1.2.0",
+    "@reach/router": "1.2.1",
     "@rematch/core": "1.0.0-beta.5",
     "axios": "0.18.0",
     "color": "3.0.0",
