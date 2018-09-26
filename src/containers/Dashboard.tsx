@@ -19,7 +19,6 @@ import {
   createCreatePanel,
   createRemovePanel,
   createRenamePanel,
-  createSetPanelIndex,
 } from "../models/userConfig"
 import { models } from "../store"
 import ProjectColumn from "./ProjectColumn"
@@ -57,15 +56,17 @@ class Board extends React.PureComponent<Props, State> {
       renamePanel,
       removePanel,
       panelIndex,
-      setPanelIndex,
     } = this.props
     const { editingIndex } = this.state
+
+    if (panelIndex >= panels.length) {
+      return <h1>404</h1>
+    }
     return (
       <Flexbox style={{ height: "100%" }}>
         <Sidebar
           panelIndex={panelIndex}
           panels={panels}
-          onClick={setPanelIndex}
           onClickAdd={createPanel}
           onClickEdit={this.startEdit}
         />
@@ -102,11 +103,12 @@ class Board extends React.PureComponent<Props, State> {
   }
 }
 
-const mapState = ({
-  userConfig: { panelIndex, panels },
-}: RematchRootState<models>) => ({
+const mapState = (
+  { userConfig: { panels } }: RematchRootState<models>,
+  { panelIndex }: { panelIndex: number | string },
+) => ({
   panels,
-  panelIndex,
+  panelIndex: parseInt(`${panelIndex}`, 10),
 })
 
 const mapDispatch = ({ userConfig, notification }: RematchDispatch<models>) => {
@@ -129,7 +131,6 @@ const mapDispatch = ({ userConfig, notification }: RematchDispatch<models>) => {
       showError,
       () => showSuccess("A panel removed"),
     ),
-    setPanelIndex: createSetPanelIndex(userConfig),
   }
 }
 

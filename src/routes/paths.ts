@@ -1,5 +1,6 @@
 const paths = {
-  Root: "/",
+  Dashboard: (panelIndex: number | undefined = undefined) =>
+    `/${panelIndex === undefined ? ":panelIndex" : panelIndex}`,
   SignIn: "/signin",
 }
 

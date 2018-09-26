@@ -21,7 +21,6 @@ export interface PanelModel {
 export interface UserConfigModel {
   user: firebase.UserInfo | null
   githubToken: string | null
-  panelIndex: number
   panels: PanelModel[]
 }
 
@@ -37,7 +36,6 @@ const isPanelModel = (obj: any): obj is PanelModel => {
 const initialState = {
   user: null,
   githubToken: null,
-  panelIndex: 0,
   panels: [{ name: "No name", columns: [] }],
 }
 
@@ -176,7 +174,7 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         throw new Bug("Invalid payload")
       }
 
-      const config: Pick<UserConfigModel, "panelIndex" | "panels"> = produce(
+      const config: Pick<UserConfigModel, "panels"> = produce(
         pick(rootState.userConfig, ["panelIndex", "panels"]),
         draft => {
           draft.panels.splice(panelIndex, 1)
@@ -238,15 +236,12 @@ export default createModel<UserConfigModel, ModelConfig<UserConfigModel>>({
         }
       }
       const data = payload.data()!
-      const { githubToken, panelIndex, panels } = data
+      const { githubToken, panels } = data
       if (typeof githubToken !== "string") {
         throw new Bug("Invalid payload")
       }
       return produce(state, draft => {
         draft.githubToken = githubToken
-        if (typeof panelIndex === "number") {
-          draft.panelIndex = panelIndex
-        }
         if (Array.isArray(panels) && panels.every(isPanelModel)) {
           draft.panels = panels
         }
@@ -273,9 +268,6 @@ export const createRenamePanel = (m: M) => (panelIndex: number, name: string) =>
       name,
     }),
   )
-
-export const createSetPanelIndex = (m: M) => (panelIndex: number) =>
-  Promise.resolve(m.setPanelIndex(panelIndex))
 
 export const createAddPanelColumn = (m: M) => (
   panelIndex: number,
