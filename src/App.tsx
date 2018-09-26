@@ -8,7 +8,6 @@ import { theme } from "./appearance/theme"
 import { Flexbox } from "./components/parts"
 import { MainRouter } from "./routes"
 import { models, store } from "./store"
-
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
 const LoaidngContainer = styled(Flexbox)`
@@ -28,6 +27,12 @@ const Background = styled.div`
     &:visited {
       color: ${({ theme: t }) => t.baseColor};
     }
+  }
+  a.nav {
+    color: ${({ theme: t }) => t.secondaryTextColor};
+  }
+  a.nav-active {
+    color: ${({ theme: t }) => t.textColor};
   }
 
   input {

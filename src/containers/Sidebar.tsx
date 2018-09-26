@@ -1,3 +1,4 @@
+import { Link } from "@reach/router"
 import CircleEditOutlineIcon from "mdi-react/CircleEditOutlineIcon"
 import GithubFaceIcon from "mdi-react/GithubFaceIcon"
 import * as React from "react"
@@ -8,7 +9,6 @@ import { PanelModel } from "../models/userConfig"
 interface SidebarProps {
   panelIndex: number
   panels: PanelModel[]
-  onClick?(index: number): void
   onClickAdd?(): void
   onClickEdit?(index: number): void
 }
@@ -31,6 +31,7 @@ const UL = styled.ul`
   padding: 0;
   margin: 0;
 `
+
 const LI = styled.li<{ active: boolean }>`
   color: ${({ theme, active }) =>
     active ? theme.textColor : theme.secondaryTextColor};
@@ -52,10 +53,18 @@ const LI = styled.li<{ active: boolean }>`
   }
 `
 
+const NavLink: React.SFC<any> = props => (
+  <Link
+    getProps={({ isPartiallyCurrent }) => ({
+      className: isPartiallyCurrent ? "nav-active" : "nav",
+    })}
+    {...props}
+  />
+)
+
 const View = ({
   panelIndex,
   panels,
-  onClick,
   onClickAdd,
   onClickEdit,
 }: SidebarProps) => {
@@ -64,7 +73,7 @@ const View = ({
       <UL>
         {panels.map((p, i) => (
           <LI active={panelIndex === i} key={i}>
-            <span onClick={() => onClick && onClick(i)}>{p.name} </span>
+            <NavLink to={`/${i}`}>{p.name}</NavLink>
             <span onClick={() => onClickEdit && onClickEdit(i)}>
               {" "}
               <CircleEditOutlineIcon size={16} />
