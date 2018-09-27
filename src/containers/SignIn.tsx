@@ -29,7 +29,7 @@ const SubTitle = styled.h2`
   padding-top: 3em;
   margin: 0;
   min-height: 2em;
-  > .mdi-icon {
+  > .Icon {
     margin-right: 0.3em;
     position: relative;
     top: 6px;
@@ -40,10 +40,11 @@ Title.displayName = "Title"
 
 const FeatureTitle = styled.h3`
   margin-bottom: 0;
-  display: inline-flex;
   min-height: 2em;
-  > .mdi-icon {
-    margin-right: 0.1em;
+  > .Icon {
+    margin-right: 0.3em;
+    position: relative;
+    top: 6px;
   }
 `
 
@@ -54,7 +55,7 @@ const PreviewSegment = styled.div`
 
 type Props = ReturnType<typeof mapDispatch>
 
-const View: React.SFC<Props> = ({ showSuccess, showError }) => {
+export const SignInView: React.SFC<Props> = ({ onClickSignIn }) => {
   return (
     <Container>
       <a href="https://github.com/mironal/chlorogenic" target="_blank">
@@ -65,24 +66,12 @@ const View: React.SFC<Props> = ({ showSuccess, showError }) => {
         />
       </a>
       <Title>chlorogenic</Title>
-      <Button
-        onClick={() =>
-          signIn()
-            .then(user =>
-              showSuccess(
-                "Successful Signing",
-                `Welcome ${user.displayName} (◍•ᴗ•◍)`,
-              ),
-            )
-            .catch(showError)
-        }
-        size="big"
-      >
-        <Icon type="githubFace" size={0.6} />
+      <Button onClick={onClickSignIn} size="big">
+        <Icon style={{ marginRight: "0.4em" }} type="githubFace" size={1.4} />
         Sign in with GitHub
       </Button>
       <SubTitle>
-        <Icon type="securityLock" size={0.6} />
+        <Icon type="securityLock" size={1.2} />
         Privacy Policy & Security
       </SubTitle>
       <p>What is stored in firebase?</p>
@@ -104,12 +93,12 @@ const View: React.SFC<Props> = ({ showSuccess, showError }) => {
         </a>
       </p>
       <SubTitle>
-        <Icon type="coffee" size={0.6} />
+        <Icon type="coffee" size={1.2} />
         Features
       </SubTitle>
       <PreviewSegment>
         <FeatureTitle>
-          <Icon type="monitorDashboard" size={0.6} />
+          <Icon type="monitorDashboard" size={1} />
           Add columns of multiple projects
         </FeatureTitle>
         <p>
@@ -120,14 +109,14 @@ const View: React.SFC<Props> = ({ showSuccess, showError }) => {
       </PreviewSegment>
       <PreviewSegment>
         <FeatureTitle>
-          <Icon type="cubeSend" size={0.6} />
+          <Icon type="cubeSend" size={1} />
           Batch operation.
         </FeatureTitle>
         <LoadGif gif="move" />
       </PreviewSegment>
       <PreviewSegment>
         <FeatureTitle>
-          <Icon type="sync" size={0.6} />
+          <Icon spin={true} type="sync" size={1} />
           Sync your panels
         </FeatureTitle>
         <p>
@@ -141,14 +130,26 @@ const View: React.SFC<Props> = ({ showSuccess, showError }) => {
 }
 
 const mapState = ({  }: RematchRootState<models>) => ({})
-const mapDispatch = ({ notification }: RematchDispatch<models>) => ({
-  showSuccess: createShowSuccess(notification),
-  showError: createShowError(notification),
-})
+const mapDispatch = ({ notification }: RematchDispatch<models>) => {
+  const showSuccess = createShowSuccess(notification)
+  const showError = createShowError(notification)
+  const onClickSignIn = () =>
+    signIn()
+      .then(user =>
+        showSuccess(
+          "Successful Signing",
+          `Welcome ${user.displayName} (◍•ᴗ•◍)`,
+        ),
+      )
+      .catch(showError)
+  return {
+    onClickSignIn,
+  }
+}
 
 export default connect(
   mapState,
   mapDispatch,
-)(View)
+)(SignInView)
 
-View.displayName = "SignIn"
+SignInView.displayName = "SignInView"

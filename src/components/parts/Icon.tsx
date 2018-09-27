@@ -11,9 +11,8 @@ import {
   mdiSync,
 } from "@mdi/js"
 import Icon from "@mdi/react"
+
 import * as React from "react"
-import { withTheme } from "../../appearance/styled"
-import { Theme } from "../../appearance/theme"
 import { Bug } from "../../misc/errors"
 
 export type IconType =
@@ -30,8 +29,16 @@ export type IconType =
 
 export interface IconProps {
   type: IconType
-  size: number
-  theme?: Theme
+  // can not import Icon.IconProps ...
+  className?: string
+  size?: number | string | null
+  color?: string | null
+  horizontal?: boolean
+  vertical?: boolean
+  rotate?: number
+  spin?: boolean | number
+  style?: React.CSSProperties
+  inStack?: boolean
 }
 
 const mapTypeToIconPath: { [type: string]: string } = {
@@ -47,10 +54,10 @@ const mapTypeToIconPath: { [type: string]: string } = {
   sync: mdiSync,
 }
 
-export default withTheme<IconProps>(({ type, size }) => {
+export default ({ type, ...rest }: IconProps) => {
   const path = mapTypeToIconPath[type]
   if (!path) {
     throw new Bug("Invalid argument")
   }
-  return <Icon path={path} size={size} color="currentColor" />
-})
+  return <Icon className="Icon" {...rest} path={path} color="currentColor" />
+}

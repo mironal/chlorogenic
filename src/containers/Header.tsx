@@ -47,7 +47,7 @@ const View = ({ clear, message, description, type }: Props) => (
             {description && <span>{description}</span>}
           </Message>
           <Button transparent={true} onClick={clear}>
-            <Icon type="close" size={12} />
+            <Icon type="close" size={0.6} />
           </Button>
         </MessageContainer>
       )
