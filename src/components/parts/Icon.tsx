@@ -1,33 +1,63 @@
-import { ThemedStyledProps } from "styled-components"
-import styled, { css } from "../../appearance/styled"
-import { Theme } from "../../appearance/theme"
-import { StylesFunc } from "../../appearance/utils"
-import { SizeProps } from "./"
-import Flexbox from "./Flexbox"
+import {
+  mdiCircleEditOutline,
+  mdiClose,
+  mdiCloseCircle,
+  mdiCoffee,
+  mdiCubeSend,
+  mdiDragHorizontal,
+  mdiGithubFace,
+  mdiMonitorDashboard,
+  mdiSecurityLock,
+  mdiSync,
+} from "@mdi/js"
+import Icon from "@mdi/react"
 
-export type IconProps = {
-  [key: string]: any
-} & SizeProps
+import * as React from "react"
+import { Bug } from "../../misc/errors"
 
-type ThemedStylesProps = ThemedStyledProps<IconProps, Theme>
-type Styles = StylesFunc<ThemedStylesProps>
+export type IconType =
+  | "githubFace"
+  | "closeCircle"
+  | "close"
+  | "dragHorizontal"
+  | "circleEditOutline"
+  | "coffee"
+  | "cubeSend"
+  | "monitorDashboard"
+  | "securityLock"
+  | "sync"
 
-const iconSize: Styles = ({ theme, size }) => css`
-  > .mdi-icon {
-    width: ${size === "big" ? "1.8em" : "1.3em"};
-    height: ${size === "big" ? "1.8em" : "1.3em"};
-    margin-right: 0.1em;
-    margin-left: -0.2em;
+export interface IconProps {
+  type: IconType
+  // can not import Icon.IconProps ...
+  className?: string
+  size?: number | string | null
+  color?: string | null
+  horizontal?: boolean
+  vertical?: boolean
+  rotate?: number
+  spin?: boolean | number
+  style?: React.CSSProperties
+  inStack?: boolean
+}
+
+const mapTypeToIconPath: { [type: string]: string } = {
+  githubFace: mdiGithubFace,
+  closeCircle: mdiCloseCircle,
+  close: mdiClose,
+  dragHorizontal: mdiDragHorizontal,
+  circleEditOutline: mdiCircleEditOutline,
+  coffee: mdiCoffee,
+  cubeSend: mdiCubeSend,
+  monitorDashboard: mdiMonitorDashboard,
+  securityLock: mdiSecurityLock,
+  sync: mdiSync,
+}
+
+export default ({ type, ...rest }: IconProps) => {
+  const path = mapTypeToIconPath[type]
+  if (!path) {
+    throw new Bug("Invalid argument")
   }
-`
-
-const Icon = styled(Flexbox)<IconProps>`
-  justify-content: center;
-  align-items: center;
-
-  ${iconSize};
-`
-
-Icon.displayName = "Icon"
-
-export default Icon
+  return <Icon className="Icon" {...rest} path={path} color="currentColor" />
+}

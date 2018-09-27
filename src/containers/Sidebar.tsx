@@ -1,9 +1,7 @@
 import { Link } from "@reach/router"
-import CircleEditOutlineIcon from "mdi-react/CircleEditOutlineIcon"
-import GithubFaceIcon from "mdi-react/GithubFaceIcon"
 import * as React from "react"
 import styled from "../appearance/styled"
-import { Button, Flexbox } from "../components/parts"
+import { Button, Flexbox, Icon } from "../components/parts"
 import { PanelModel } from "../models/userConfig"
 
 interface SidebarProps {
@@ -76,14 +74,14 @@ const View = ({
             <NavLink to={`/${i}`}>{p.name}</NavLink>
             <span onClick={() => onClickEdit && onClickEdit(i)}>
               {" "}
-              <CircleEditOutlineIcon size={16} />
+              <Icon type="circleEditOutline" size={0.6} />
             </span>
           </LI>
         ))}
       </UL>
       <Button onClick={onClickAdd}>Add new panel</Button>
       <a href="https://github.com/mironal/chlorogenic" target="_blank">
-        <GithubFaceIcon />
+        <Icon type="githubFace" size={0.6} />
       </a>
     </SideBar>
   )

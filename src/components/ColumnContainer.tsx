@@ -1,6 +1,6 @@
-import CloseIcon from "mdi-react/CloseIcon"
 import * as React from "react"
 import styled from "../appearance/styled"
+import { Icon } from "./parts"
 import Button from "./parts/Button"
 import Flexbox, { VFlexbox } from "./parts/Flexbox"
 
@@ -68,7 +68,7 @@ const Layouted: React.SFC<ColumnContainerProps> = ({
       <h3>{header}</h3>
       {onClickClose && (
         <Button size="small" transparent={true} onClick={onClickClose}>
-          <CloseIcon size={12} />
+          <Icon type="close" size={0.6} />
         </Button>
       )}
     </Header>

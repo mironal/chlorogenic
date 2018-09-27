@@ -1,10 +1,9 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
-import CloseIcon from "mdi-react/CloseIcon"
 import * as React from "react"
 import { connect } from "react-redux"
 import styled from "../appearance/styled"
 import { HeaderMenu } from "../components"
-import { Button, Flexbox, VFlexbox } from "../components/parts"
+import { Button, Flexbox, Icon, VFlexbox } from "../components/parts"
 import { signOut } from "../firebase/auth"
 import { NotificationModel } from "../models/notification"
 import { models } from "../store"
@@ -48,7 +47,7 @@ const View = ({ clear, message, description, type }: Props) => (
             {description && <span>{description}</span>}
           </Message>
           <Button transparent={true} onClick={clear}>
-            <CloseIcon size={12} />
+            <Icon type="close" size={0.6} />
           </Button>
         </MessageContainer>
       )

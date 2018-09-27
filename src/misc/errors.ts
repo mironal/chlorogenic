@@ -1,7 +1,10 @@
 // tslint:disable:max-classes-per-file
 import { NotificationContent } from "../models/notification"
 
-export type BugMessage = "Invalid payload" | "Invalid state"
+export type BugMessage =
+  | "Invalid payload"
+  | "Invalid state"
+  | "Invalid argument"
 
 export class Bug extends Error implements NotificationContent {
   public name = "Bug"
