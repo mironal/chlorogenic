@@ -1,7 +1,7 @@
 import { Link } from "@reach/router"
 import * as React from "react"
 import styled from "../appearance/styled"
-import { Button, Flexbox, Icon } from "../components/parts"
+import { Button, Icon, VFlexbox } from "../components/parts"
 import { PanelModel } from "../models/userConfig"
 
 interface SidebarProps {
@@ -10,9 +10,9 @@ interface SidebarProps {
   onClickAdd?(): void
   onClickEdit?(index: number): void
 }
-const SideBar = styled(Flexbox)`
+
+const Bar = styled(VFlexbox)`
   z-index: 1000;
-  flex-direction: column;
   width: 10em;
   background: ${({ theme }) => theme.backgroundColor};
   border-right: solid 1px ${({ theme }) => theme.baseColor};
@@ -46,9 +46,6 @@ const LI = styled.li<{ active: boolean }>`
     cursor: pointer;
     margin-right: 0.2em;
   }
-  svg.mdi-icon {
-    vertical-align: -0.2em;
-  }
 `
 
 const NavLink: React.SFC<any> = props => (
@@ -60,14 +57,14 @@ const NavLink: React.SFC<any> = props => (
   />
 )
 
-const View = ({
+const Sidebar = ({
   panelIndex,
   panels,
   onClickAdd,
   onClickEdit,
 }: SidebarProps) => {
   return (
-    <SideBar>
+    <Bar>
       <UL>
         {panels.map((p, i) => (
           <LI active={panelIndex === i} key={i}>
@@ -83,8 +80,8 @@ const View = ({
       <a href="https://github.com/mironal/chlorogenic" target="_blank">
         <Icon type="githubFace" size={0.6} />
       </a>
-    </SideBar>
+    </Bar>
   )
 }
 
-export default View
+export default Sidebar
