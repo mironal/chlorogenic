@@ -1,10 +1,10 @@
-import DragHorizontalIcon from "mdi-react/DragHorizontalIcon"
 import * as React from "react"
 import { ConnectDragSource, DragSource } from "react-dnd"
 import {
   GitHubProjectCard,
   GitHubProjectColumnIdentifier,
 } from "../../models/github.types"
+import { Icon } from "../parts"
 
 export interface DragAllCardHandleProps {
   identifier: GitHubProjectColumnIdentifier
@@ -33,7 +33,7 @@ export default DragSource<DragAllCardHandleProps, DnDTargetProps>(
     connectDragSource &&
     connectDragSource(
       <div style={{ height: "100%" }}>
-        <DragHorizontalIcon />
+        <Icon type="dragHorizontal" size={0.6} />
         {props.children}
       </div>,
     )

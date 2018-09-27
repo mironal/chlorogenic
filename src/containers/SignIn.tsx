@@ -1,10 +1,4 @@
 import { RematchDispatch, RematchRootState } from "@rematch/core"
-import CoffeeIcon from "mdi-react/CoffeeIcon"
-import CubeSendIcon from "mdi-react/CubeSendIcon"
-import GithubFaceIcon from "mdi-react/GithubFaceIcon"
-import MonitorDashboardIcon from "mdi-react/MonitorDashboardIcon"
-import SecurityLockIcon from "mdi-react/SecurityLockIcon"
-import SyncIcon from "mdi-react/SyncIcon"
 import * as React from "react"
 import { connect } from "react-redux"
 import styled from "../appearance/styled"
@@ -84,13 +78,11 @@ const View: React.SFC<Props> = ({ showSuccess, showError }) => {
         }
         size="big"
       >
-        <Icon>
-          <GithubFaceIcon />
-        </Icon>
+        <Icon type="githubFace" size={0.6} />
         Sign in with GitHub
       </Button>
       <SubTitle>
-        <SecurityLockIcon size={32} />
+        <Icon type="securityLock" size={0.6} />
         Privacy Policy & Security
       </SubTitle>
       <p>What is stored in firebase?</p>
@@ -112,12 +104,12 @@ const View: React.SFC<Props> = ({ showSuccess, showError }) => {
         </a>
       </p>
       <SubTitle>
-        <CoffeeIcon size={32} />
+        <Icon type="coffee" size={0.6} />
         Features
       </SubTitle>
       <PreviewSegment>
         <FeatureTitle>
-          <MonitorDashboardIcon />
+          <Icon type="monitorDashboard" size={0.6} />
           Add columns of multiple projects
         </FeatureTitle>
         <p>
@@ -128,13 +120,14 @@ const View: React.SFC<Props> = ({ showSuccess, showError }) => {
       </PreviewSegment>
       <PreviewSegment>
         <FeatureTitle>
-          <CubeSendIcon /> Batch operation.
+          <Icon type="cubeSend" size={0.6} />
+          Batch operation.
         </FeatureTitle>
         <LoadGif gif="move" />
       </PreviewSegment>
       <PreviewSegment>
         <FeatureTitle>
-          <SyncIcon />
+          <Icon type="sync" size={0.6} />
           Sync your panels
         </FeatureTitle>
         <p>

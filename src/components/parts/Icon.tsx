@@ -1,33 +1,56 @@
-import { ThemedStyledProps } from "styled-components"
-import styled, { css } from "../../appearance/styled"
+import {
+  mdiCircleEditOutline,
+  mdiClose,
+  mdiCloseCircle,
+  mdiCoffee,
+  mdiCubeSend,
+  mdiDragHorizontal,
+  mdiGithubFace,
+  mdiMonitorDashboard,
+  mdiSecurityLock,
+  mdiSync,
+} from "@mdi/js"
+import Icon from "@mdi/react"
+import * as React from "react"
+import { withTheme } from "../../appearance/styled"
 import { Theme } from "../../appearance/theme"
-import { StylesFunc } from "../../appearance/utils"
-import { SizeProps } from "./"
-import Flexbox from "./Flexbox"
+import { Bug } from "../../misc/errors"
 
-export type IconProps = {
-  [key: string]: any
-} & SizeProps
+export type IconType =
+  | "githubFace"
+  | "closeCircle"
+  | "close"
+  | "dragHorizontal"
+  | "circleEditOutline"
+  | "coffee"
+  | "cubeSend"
+  | "monitorDashboard"
+  | "securityLock"
+  | "sync"
 
-type ThemedStylesProps = ThemedStyledProps<IconProps, Theme>
-type Styles = StylesFunc<ThemedStylesProps>
+export interface IconProps {
+  type: IconType
+  size: number
+  theme?: Theme
+}
 
-const iconSize: Styles = ({ theme, size }) => css`
-  > .mdi-icon {
-    width: ${size === "big" ? "1.8em" : "1.3em"};
-    height: ${size === "big" ? "1.8em" : "1.3em"};
-    margin-right: 0.1em;
-    margin-left: -0.2em;
+const mapTypeToIconPath: { [type: string]: string } = {
+  githubFace: mdiGithubFace,
+  closeCircle: mdiCloseCircle,
+  close: mdiClose,
+  dragHorizontal: mdiDragHorizontal,
+  circleEditOutline: mdiCircleEditOutline,
+  coffee: mdiCoffee,
+  cubeSend: mdiCubeSend,
+  monitorDashboard: mdiMonitorDashboard,
+  securityLock: mdiSecurityLock,
+  sync: mdiSync,
+}
+
+export default withTheme<IconProps>(({ type, size }) => {
+  const path = mapTypeToIconPath[type]
+  if (!path) {
+    throw new Bug("Invalid argument")
   }
-`
-
-const Icon = styled(Flexbox)<IconProps>`
-  justify-content: center;
-  align-items: center;
-
-  ${iconSize};
-`
-
-Icon.displayName = "Icon"
-
-export default Icon
+  return <Icon path={path} size={size} color="currentColor" />
+})
