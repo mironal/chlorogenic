@@ -2,7 +2,7 @@
 
 exports[`snapshot 1`] = `
 <div
-  className="sc-EHOje gCvFAV sc-bxivhb glCqXO"
+  class="sc-EHOje gCvFAV sc-bxivhb glCqXO"
 >
   <a
     href="https://github.com/mironal/chlorogenic"
@@ -11,66 +11,40 @@ exports[`snapshot 1`] = `
     <img
       alt="Fork me on GitHub"
       src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"
-      style={
-        Object {
-          "border": 0,
-          "position": "absolute",
-          "right": 0,
-          "top": 0,
-        }
-      }
+      style="position: absolute; top: 0px; right: 0px; border: 0px;"
     />
   </a>
   <h1
-    className="sc-bZQynM gUxVCT"
+    class="sc-bZQynM gUxVCT"
   >
     chlorogenic
   </h1>
   <button
-    className="sc-bdVaJa gJzOsU"
-    onClick={[MockFunction]}
-    size="big"
+    class="sc-bdVaJa gJzOsU"
   >
     <svg
-      className="Icon"
-      style={
-        Object {
-          "marginRight": "0.4em",
-          "width": "2.0999999999999996rem",
-        }
-      }
+      class="Icon"
+      style="margin-right: 0.4em; width: 2.0999999999999996rem;"
       viewBox="0 0 24 24"
     >
       <path
         d="M20.38,8.53C20.54,8.13 21.06,6.54 20.21,4.39C20.21,4.39 18.9,4 15.91,6C14.66,5.67 13.33,5.62 12,5.62C10.68,5.62 9.34,5.67 8.09,6C5.1,3.97 3.79,4.39 3.79,4.39C2.94,6.54 3.46,8.13 3.63,8.53C2.61,9.62 2,11 2,12.72C2,19.16 6.16,20.61 12,20.61C17.79,20.61 22,19.16 22,12.72C22,11 21.39,9.62 20.38,8.53M12,19.38C7.88,19.38 4.53,19.19 4.53,15.19C4.53,14.24 5,13.34 5.8,12.61C7.14,11.38 9.43,12.03 12,12.03C14.59,12.03 16.85,11.38 18.2,12.61C19,13.34 19.5,14.23 19.5,15.19C19.5,19.18 16.13,19.38 12,19.38M8.86,13.12C8.04,13.12 7.36,14.12 7.36,15.34C7.36,16.57 8.04,17.58 8.86,17.58C9.69,17.58 10.36,16.58 10.36,15.34C10.36,14.11 9.69,13.12 8.86,13.12M15.14,13.12C14.31,13.12 13.64,14.11 13.64,15.34C13.64,16.58 14.31,17.58 15.14,17.58C15.96,17.58 16.64,16.58 16.64,15.34C16.64,14.11 16,13.12 15.14,13.12Z"
-        style={
-          Object {
-            "fill": "currentColor",
-          }
-        }
+        style="fill: currentColor;"
       />
     </svg>
     Sign in with GitHub
   </button>
   <h2
-    className="sc-gzVnrw jHmekS"
+    class="sc-gzVnrw jHmekS"
   >
     <svg
-      className="Icon"
-      style={
-        Object {
-          "width": "1.7999999999999998rem",
-        }
-      }
+      class="Icon"
+      style="width: 1.7999999999999998rem;"
       viewBox="0 0 24 24"
     >
       <path
         d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.1 14.8,9.5V11C15.4,11 16,11.6 16,12.3V15.8C16,16.4 15.4,17 14.7,17H9.2C8.6,17 8,16.4 8,15.7V12.2C8,11.6 8.6,11 9.2,11V9.5C9.2,8.1 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,9.5V11H13.5V9.5C13.5,8.7 12.8,8.2 12,8.2Z"
-        style={
-          Object {
-            "fill": "currentColor",
-          }
-        }
+        style="fill: currentColor;"
       />
     </svg>
     Privacy Policy & Security
@@ -101,50 +75,34 @@ exports[`snapshot 1`] = `
     </a>
   </p>
   <h2
-    className="sc-gzVnrw jHmekS"
+    class="sc-gzVnrw jHmekS"
   >
     <svg
-      className="Icon"
-      style={
-        Object {
-          "width": "1.7999999999999998rem",
-        }
-      }
+      class="Icon"
+      style="width: 1.7999999999999998rem;"
       viewBox="0 0 24 24"
     >
       <path
         d="M2,21H20V19H2M20,8H18V5H20M20,3H4V13C4,15.21 5.79,17 8,17H14C16.21,17 18,15.21 18,13V10H20C21.1,10 22,9.1 22,8V5C22,3.89 21.1,3 20,3Z"
-        style={
-          Object {
-            "fill": "currentColor",
-          }
-        }
+        style="fill: currentColor;"
       />
     </svg>
     Features
   </h2>
   <div
-    className="sc-dnqmqq joPdSj"
+    class="sc-dnqmqq joPdSj"
   >
     <h3
-      className="sc-htoDjs fqcMTe"
+      class="sc-htoDjs fqcMTe"
     >
       <svg
-        className="Icon"
-        style={
-          Object {
-            "width": "1.5rem",
-          }
-        }
+        class="Icon"
+        style="width: 1.5rem;"
         viewBox="0 0 24 24"
       >
         <path
           d="M21,16V4H3V16H21M21,2C22.1,2 23,2.9 23,4V16C23,17.1 22.1,18 21,18H14V20H16V22H8V20H10V18H3C1.89,18 1,17.1 1,16V4C1,2.89 1.89,2 3,2H21M5,6H14V11H5V6M15,6H19V8H15V6M19,9V14H15V9H19M5,12H9V14H5V12M10,12H14V14H10V12Z"
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
+          style="fill: currentColor;"
         />
       </svg>
       Add columns of multiple projects
@@ -154,75 +112,50 @@ exports[`snapshot 1`] = `
     </p>
     <img
       alt="Loading..."
-      className="sc-ifAKCX idwtlV"
-      src={undefined}
+      class="sc-ifAKCX idwtlV"
     />
   </div>
   <div
-    className="sc-dnqmqq joPdSj"
+    class="sc-dnqmqq joPdSj"
   >
     <h3
-      className="sc-htoDjs fqcMTe"
+      class="sc-htoDjs fqcMTe"
     >
       <svg
-        className="Icon"
-        style={
-          Object {
-            "width": "1.5rem",
-          }
-        }
+        class="Icon"
+        style="width: 1.5rem;"
         viewBox="0 0 24 24"
       >
         <path
           d="M16,4L9,8.04V15.96L16,20L23,15.96V8.04M16,6.31L19.8,8.5L16,10.69L12.21,8.5M0,7V9H7V7M11,10.11L15,12.42V17.11L11,14.81M21,10.11V14.81L17,17.11V12.42M2,11V13H7V11M4,15V17H7V15"
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
+          style="fill: currentColor;"
         />
       </svg>
       Batch operation.
     </h3>
     <img
       alt="Loading..."
-      className="sc-ifAKCX idwtlV"
-      src={undefined}
+      class="sc-ifAKCX idwtlV"
     />
   </div>
   <div
-    className="sc-dnqmqq joPdSj"
+    class="sc-dnqmqq joPdSj"
   >
     <h3
-      className="sc-htoDjs fqcMTe"
+      class="sc-htoDjs fqcMTe"
     >
       <svg
-        className="Icon"
-        style={
-          Object {
-            "width": "1.5rem",
-          }
-        }
+        class="Icon"
+        style="width: 1.5rem;"
         viewBox="0 0 24 24"
       >
         <style>
           @keyframes spin { to { transform: rotate(360deg) } }
         </style>
-        <g
-          style={
-            Object {
-              "animation": "spin linear 2s infinite",
-              "transformOrigin": "center",
-            }
-          }
-        >
+        <g>
           <path
             d="M12,18C8.69,18 6,15.31 6,12C6,11 6.25,10.03 6.7,9.2L5.24,7.74C4.46,8.97 4,10.43 4,12C4,16.42 7.58,20 12,20V23L16,19L12,15M12,4V1L8,5L12,9V6C15.31,6 18,8.69 18,12C18,13 17.75,13.97 17.3,14.8L18.76,16.26C19.54,15.03 20,13.57 20,12C20,7.58 16.42,4 12,4Z"
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
+            style="fill: currentColor;"
           />
           <rect
             fill="transparent"
@@ -238,8 +171,7 @@ exports[`snapshot 1`] = `
     </p>
     <img
       alt="Loading..."
-      className="sc-ifAKCX idwtlV"
-      src={undefined}
+      class="sc-ifAKCX idwtlV"
     />
   </div>
 </div>

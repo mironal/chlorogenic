@@ -1,15 +1,21 @@
 import * as React from "react"
-import * as renderer from "react-test-renderer"
+import { render, wait } from "react-testing-library"
 import LoadGif, { LoadGifProps } from "./LoadGif"
 
 it("snapshot", async () => {
   const gifs: Array<LoadGifProps["gif"]> = ["add", "move", "sync"]
   for (const gif of gifs) {
-    const Comp = renderer.create(<LoadGif gif={gif} />)
-    expect(Comp.toJSON()).toMatchSnapshot()
+    const { container, queryByAltText } = render(<LoadGif gif={gif} />)
 
-    await (Comp.getInstance() as any) /* hack */
-      .componentDidMount()
-    expect(Comp.toJSON()).toMatchSnapshot()
+    expect(container.firstChild).toMatchSnapshot()
+
+    await wait(() => {
+      const img: HTMLImageElement = queryByAltText(
+        "Loading...",
+      ) as HTMLImageElement
+      return expect(img.src).not.toBeFalsy()
+    })
+
+    expect(container.firstChild).toMatchSnapshot()
   }
 })

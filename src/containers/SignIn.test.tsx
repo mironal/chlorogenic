@@ -1,10 +1,9 @@
 import * as React from "react"
-import * as renderer from "react-test-renderer"
+
+import { render } from "react-testing-library"
 import { SignInView } from "./SignIn"
 
 it("snapshot", () => {
-  const tree = renderer
-    .create(<SignInView onClickSignIn={jest.fn()} />)
-    .toJSON()
-  expect(tree).toMatchSnapshot()
+  const { container } = render(<SignInView onClickSignIn={jest.fn()} />)
+  expect(container.firstChild).toMatchSnapshot()
 })

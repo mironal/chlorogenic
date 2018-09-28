@@ -35,7 +35,7 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
           payload.dismissAfter > 0) ||
         payload.dismissAfter === undefined
       ) {
-        timeoutHandle = setTimeout(
+        timeoutHandle = window.setTimeout(
           this.clear,
           payload.dismissAfter || DEFAULT_DISMISS_AFTER,
         )
@@ -51,7 +51,7 @@ export default createModel<NotificationModel, ModelConfig<NotificationModel>>({
         typeof payload.dismissAfter === "number" &&
         payload.dismissAfter > 0
       ) {
-        timeoutHandle = setTimeout(this.clear, payload.dismissAfter)
+        timeoutHandle = window.setTimeout(this.clear, payload.dismissAfter)
       }
     },
   }),
