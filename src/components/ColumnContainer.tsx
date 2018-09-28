@@ -18,11 +18,9 @@ const ColumnContainer = styled(VFlexbox)`
 
 ColumnContainer.displayName = "ColumnContainer"
 
-const Scroller = styled(Flexbox)`
+const Scroller = styled(VFlexbox)`
   height: 100%;
-  overflow-x: hidden;
   overflow-y: auto;
-  flex-direction: column;
 `
 
 const Header = styled(Flexbox)`

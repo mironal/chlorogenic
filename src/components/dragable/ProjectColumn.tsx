@@ -153,7 +153,7 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
     msg = <ErrorSpan>The card Can not copy or move.</ErrorSpan>
   }
   return connectDropTarget(
-    <div>
+    <div className="DragProjectColumn">
       {loading && <p>Loading...</p>}
       {msg}
       {cards.map(c => (

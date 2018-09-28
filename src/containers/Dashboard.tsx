@@ -29,7 +29,7 @@ const BoardContainer = styled(Flexbox)`
   flex-flow: row nowrap;
   justify-content: center;
   width: calc(100vw - 12em);
-  min-height: calc(100vh - 3em);
+  height: calc(100vh - 3em);
 `
 
 const Stroller = styled(Flexbox)`
