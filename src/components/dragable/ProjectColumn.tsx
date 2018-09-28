@@ -111,8 +111,11 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
     item,
     itemType,
   } = props
+  if (!connectDropTarget) {
+    return null
+  }
 
-  const myColumn = column && item && column.id === item.identifier.id
+  const myColumn = () => column && item && column.id === item.identifier.id
   const cards = loading || !column ? [] : column.cards
   let msg = <span />
 
@@ -146,19 +149,17 @@ export default DropTarget<ProjectColumnProps & DnDTargetProps>(
         )
       }
     }
-  } else if (isOver && !canDrop && !myColumn) {
+  } else if (isOver && !canDrop && !myColumn()) {
     msg = <ErrorSpan>The card Can not copy or move.</ErrorSpan>
   }
-  return connectDropTarget
-    ? connectDropTarget(
-        <div>
-          {loading && <p>Loading...</p>}
-          {msg}
-          {cards.map(c => (
-            <ProjectCard key={c.id} card={c} identifier={identifier} />
-          ))}
-          {cards.length === 0 && <p>There are no cards.</p>}
-        </div>,
-      )
-    : null
+  return connectDropTarget(
+    <div>
+      {loading && <p>Loading...</p>}
+      {msg}
+      {cards.map(c => (
+        <ProjectCard key={c.id} card={c} identifier={identifier} />
+      ))}
+      {cards.length === 0 && <p>There are no cards.</p>}
+    </div>,
+  )
 })
