@@ -5,7 +5,11 @@ import { connect } from "react-redux"
 import { ColumnContainer } from "../components"
 import { DragAllCardHandle, ProjectColumn } from "../components"
 import { Button, Flexbox } from "../components/parts"
-import { createProjectSlug, isSameProject } from "../misc/github"
+import {
+  createProjectSlug,
+  createProjectUrl,
+  isSameProject,
+} from "../misc/github"
 import { pipelinePromiseAction } from "../misc/prelude"
 import {
   GitHubProject,
@@ -94,9 +98,13 @@ class View extends React.PureComponent<Props> {
     return (
       <ColumnContainer
         header={header}
-        description={`${createProjectSlug(identifier.project)}\n${
-          identifier.project.number
-        }`}
+        description={
+          column && (
+            <a href={createProjectUrl(identifier.project)} target="_blank">
+              {createProjectSlug(identifier.project)}
+            </a>
+          )
+        }
         onClickClose={removeColumn}
       >
         {column && (

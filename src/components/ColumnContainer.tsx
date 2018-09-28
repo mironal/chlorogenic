@@ -51,7 +51,7 @@ const Description = styled.p`
 
 export interface ColumnContainerProps {
   header: string
-  description?: string
+  description?: React.ReactNode
   onClickClose?(): void
 }
 

@@ -5,6 +5,21 @@ import {
   GitHubRepoProjectIdentifier,
 } from "../models/github.types"
 
+const GITHUB_BASE_URL = "https://github.com"
+
+export const createProjectUrl = (
+  identifier: GithubProjectIdentifier,
+): string => {
+  if (isGithubRepoProjectIdentifier(identifier)) {
+    return `${GITHUB_BASE_URL}/${identifier.repository.owner}/${
+      identifier.repository.name
+    }/projects/${identifier.number}`
+  }
+  return `${GITHUB_BASE_URL}/orgs/${identifier.organization}/projects/${
+    identifier.number
+  }`
+}
+
 export const createProjectSlug = (
   identifier: GithubProjectIdentifier,
 ): string => {
