@@ -80,7 +80,7 @@ class View extends React.PureComponent<Props> {
     } = this.props
 
     const header: string = (() => {
-      if (loading) {
+      if (loading && !column) {
         return "Loading"
       }
       if (error) {
