@@ -1,22 +1,21 @@
 import * as React from "react"
-import * as renderer from "react-test-renderer"
+
+import { render } from "react-testing-library"
 import HeaderMenu from "./HeaderMenu"
 
 it("snapshot", () => {
   {
-    const tree = renderer.create(<HeaderMenu />).toJSON()
-    expect(tree).toMatchSnapshot()
+    const { container } = render(<HeaderMenu />)
+    expect(container.firstChild).toMatchSnapshot()
   }
   {
-    const tree = renderer
-      .create(
-        <HeaderMenu
-          left={<p>left</p>}
-          right={<p>right</p>}
-          center={<p>center</p>}
-        />,
-      )
-      .toJSON()
-    expect(tree).toMatchSnapshot()
+    const { container } = render(
+      <HeaderMenu
+        left={<p>left</p>}
+        right={<p>right</p>}
+        center={<p>center</p>}
+      />,
+    )
+    expect(container.firstChild).toMatchSnapshot()
   }
 })

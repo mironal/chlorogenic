@@ -3,15 +3,14 @@
 exports[`snapshot 1`] = `
 <img
   alt="Loading..."
-  className="sc-bdVaJa cuYrOR"
-  src={undefined}
+  class="sc-bdVaJa cuYrOR"
 />
 `;
 
 exports[`snapshot 2`] = `
 <img
   alt="Loading..."
-  className="sc-bdVaJa cuYrOR"
+  class="sc-bdVaJa cuYrOR"
   src="add.gif"
 />
 `;
@@ -19,15 +18,14 @@ exports[`snapshot 2`] = `
 exports[`snapshot 3`] = `
 <img
   alt="Loading..."
-  className="sc-bdVaJa cuYrOR"
-  src={undefined}
+  class="sc-bdVaJa cuYrOR"
 />
 `;
 
 exports[`snapshot 4`] = `
 <img
   alt="Loading..."
-  className="sc-bdVaJa cuYrOR"
+  class="sc-bdVaJa cuYrOR"
   src="move.gif"
 />
 `;
@@ -35,15 +33,14 @@ exports[`snapshot 4`] = `
 exports[`snapshot 5`] = `
 <img
   alt="Loading..."
-  className="sc-bdVaJa cuYrOR"
-  src={undefined}
+  class="sc-bdVaJa cuYrOR"
 />
 `;
 
 exports[`snapshot 6`] = `
 <img
   alt="Loading..."
-  className="sc-bdVaJa cuYrOR"
+  class="sc-bdVaJa cuYrOR"
   src="sync.gif"
 />
 `;

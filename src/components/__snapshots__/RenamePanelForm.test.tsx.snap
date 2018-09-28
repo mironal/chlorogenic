@@ -2,35 +2,31 @@
 
 exports[`snapshot 1`] = `
 <div
-  className="sc-bxivhb glCqXO"
+  class="sc-bxivhb glCqXO"
 >
   <h3
-    className="sc-ifAKCX lfULYF"
+    class="sc-ifAKCX lfULYF"
   >
     Edit name
   </h3>
   <input
-    autoFocus={true}
-    defaultValue={undefined}
+    value=""
   />
   <div
-    className="sc-htpNat cixthU"
+    class="sc-htpNat cixthU"
   >
     <button
-      className="sc-bdVaJa dWNBmp"
-      onClick={undefined}
+      class="sc-bdVaJa dWNBmp"
     >
       Delete
     </button>
     <button
-      className="sc-bdVaJa dnqbXl"
-      onClick={undefined}
+      class="sc-bdVaJa dnqbXl"
     >
       Cancel
     </button>
     <button
-      className="sc-bdVaJa bNhLRi"
-      onClick={[Function]}
+      class="sc-bdVaJa bNhLRi"
     >
       Change name
     </button>
@@ -40,35 +36,31 @@ exports[`snapshot 1`] = `
 
 exports[`snapshot 2`] = `
 <div
-  className="sc-bxivhb glCqXO"
+  class="sc-bxivhb glCqXO"
 >
   <h3
-    className="sc-ifAKCX lfULYF"
+    class="sc-ifAKCX lfULYF"
   >
     Edit name
   </h3>
   <input
-    autoFocus={true}
-    defaultValue="(◍•ᴗ•◍)"
+    value="(◍•ᴗ•◍)"
   />
   <div
-    className="sc-htpNat cixthU"
+    class="sc-htpNat cixthU"
   >
     <button
-      className="sc-bdVaJa dWNBmp"
-      onClick={[MockFunction]}
+      class="sc-bdVaJa dWNBmp"
     >
       Delete
     </button>
     <button
-      className="sc-bdVaJa dnqbXl"
-      onClick={[MockFunction]}
+      class="sc-bdVaJa dnqbXl"
     >
       Cancel
     </button>
     <button
-      className="sc-bdVaJa bNhLRi"
-      onClick={[Function]}
+      class="sc-bdVaJa bNhLRi"
     >
       Change name
     </button>

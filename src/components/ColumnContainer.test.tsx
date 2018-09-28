@@ -1,11 +1,9 @@
 import * as React from "react"
-import * as renderer from "react-test-renderer"
+import { render } from "react-testing-library"
 import ColumnContainer from "./ColumnContainer"
 it("snapshot", () => {
   {
-    const tree = renderer
-      .create(<ColumnContainer header="header text" />)
-      .toJSON()
-    expect(tree).toMatchSnapshot()
+    const { container } = render(<ColumnContainer header="header text" />)
+    expect(container.firstChild).toMatchSnapshot()
   }
 })
