@@ -22,9 +22,9 @@ export default DragSource<DragAllCardHandleProps, DnDTargetProps>(
     beginDrag(props) {
       return props
     },
-    canDrag({identifier, cards}) {
+    canDrag({ identifier, cards }) {
       return identifier && cards.length > 0
-    }
+    },
   },
   (connect, monitor) => ({
     connectDragSource: connect.dragSource(),
