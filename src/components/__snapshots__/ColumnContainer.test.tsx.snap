@@ -2,7 +2,7 @@
 
 exports[`snapshot 1`] = `
 <div
-  class="sc-ifAKCX hyrIVx sc-bxivhb glCqXO"
+  class="sc-ifAKCX gNENdy sc-bxivhb glCqXO"
 >
   <div
     class="sc-bZQynM iEfYBC sc-htpNat cixthU"
@@ -12,7 +12,7 @@ exports[`snapshot 1`] = `
     </h3>
   </div>
   <div
-    class="sc-EHOje gGXDvz sc-bxivhb glCqXO"
+    class="sc-EHOje hKkseG sc-bxivhb glCqXO"
   />
 </div>
 `;
