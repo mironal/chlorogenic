@@ -11,7 +11,7 @@ const ColumnContainer = styled(VFlexbox)`
   padding: 0.6em;
   padding-bottom: 0;
   background: ${({ theme }) => theme.backgroundColor};
-  width: 16em;
+  width: 13em;
   flex-shrink: 0;
   margin-left: 0.2em;
 `
@@ -21,6 +21,7 @@ ColumnContainer.displayName = "ColumnContainer"
 const Scroller = styled(VFlexbox)`
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 `
 
 const Header = styled(Flexbox)`

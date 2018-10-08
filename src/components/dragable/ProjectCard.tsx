@@ -6,6 +6,7 @@ import {
   GitHubProjectColumnIdentifier,
 } from "../../models/github.types"
 import { Box } from "../parts/Flexbox"
+import Markdown from "../parts/Markdown"
 
 const CardBox = styled(Box)`
   border-radius: 4px;
@@ -13,14 +14,6 @@ const CardBox = styled(Box)`
   border-bottom: solid 1px ${({ theme }) => theme.secondaryBackgroundColor};
   margin-bottom: 0.2em;
   font-size: small;
-`
-
-const EllipsisP = styled.p`
-  font-size: small;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  margin: 2px;
 `
 
 export interface CardProps {
@@ -49,14 +42,14 @@ export default DragSource<CardProps, DnDTargetProps>(
   const { card, connectDragSource } = props as DnDTargetProps & CardProps
   let Content = <span>Unknown</span>
   if (card.note) {
-    Content = <EllipsisP>{card.note}</EllipsisP>
+    Content = <Markdown>{card.note}</Markdown>
   } else if (card.issue) {
     Content = (
-      <a href={card.issue.url} target="_blank">
-        <EllipsisP>
-          #{card.issue.number} {card.issue.title}
-        </EllipsisP>
-      </a>
+      <Markdown
+        source={`[${card.issue.title} #${card.issue.number}](${
+          card.issue.url
+        })`}
+      />
     )
   }
 
