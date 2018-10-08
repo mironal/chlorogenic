@@ -7,7 +7,7 @@
     "@mdi/js": "2.8.94",
     "@mdi/react": "1.0.1",
     "@reach/router": "1.2.1",
-    "@rematch/core": "1.0.4",
+    "@rematch/core": "1.0.6",
     "axios": "0.18.0",
     "color": "3.0.0",
     "firebase": "5.5.3",
