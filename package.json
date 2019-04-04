@@ -11,7 +11,7 @@
     "axios": "0.18.0",
     "color": "3.0.0",
     "firebase": "5.5.3",
-    "immer": "1.7.2",
+    "immer": "2.1.5",
     "react": "16.5.2",
     "react-dnd": "5.0.0",
     "react-dnd-html5-backend": "5.0.1",
