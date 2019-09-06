@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/polyfill": "7.0.0",
-    "@mdi/js": "2.8.94",
+    "@mdi/js": "4.3.95",
     "@mdi/react": "1.0.1",
     "@reach/router": "1.2.1",
     "@rematch/core": "1.0.4",
