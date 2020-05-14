@@ -10,7 +10,7 @@
     "@rematch/core": "1.0.4",
     "axios": "0.18.0",
     "color": "3.0.0",
-    "firebase": "5.5.3",
+    "firebase": "7.14.4",
     "immer": "1.7.2",
     "react": "16.5.2",
     "react-dnd": "5.0.0",
