@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@babel/polyfill": "7.0.0",
+    "@babel/polyfill": "7.10.1",
     "@mdi/js": "2.8.94",
     "@mdi/react": "1.0.1",
     "@reach/router": "1.2.1",
